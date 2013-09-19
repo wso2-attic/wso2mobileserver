@@ -1,0 +1,62 @@
+Installing  WSO2 Mobile Device Management 1.0.0-SNAPSHOT
+===================================================
+
+Standalone Mode
+=======================
+1. The directory containing this INSTALL.txt file will be the root and it will be
+   treated as Carbon home directory and let it be CARBON_HOME.
+
+2. All the shell scripts and .bat files are available in CARBON_HOME/bin folder.
+
+3. To start Mobile Device Management one can use either wso2server.sh in all Unix
+   systems & wso2server.bat file on Windows operating systems.
+
+4. Either of the following commands can be used to start Mobile Device Management
+      i)  ./wso2server.sh {console|start|stop|restart|status|dump|version}
+     ii)  wso2server.bat {start|stop|version}
+
+        Usage: wso2server.sh [command] [options] [system-properties]
+
+            command:
+                --run		    Run the Mobile Device Management server
+                --start		    Start Mobile Device Management as a Unix daemon in the background
+                --console	    Start Mobile Device Management as a Unix daemon in the foreground
+                --stop		    Stop the Mobile Device Management Unix daemon
+                --status	    Get the status of the Mobile Device Management Unix daemon
+                --dump		    Print a thread dump of the Mobile Device Management Unix daemon
+                --restart	    Restart the Mobile Device Management Unix daemon
+                --version	    What version of the Mobile Device Management server are you running
+		--n 		    Start Multiple Instances of the same server after you 
+				    have successfully installed the Multiple-instances features
+				    from a feature repo.
+            options:
+                --debug <port> 	Start the server in remote debugging mode.
+                                port: The remote debugging port.
+                --cleanCache	Clean cache & component repository
+                --cleanRegistry	Clean registry space
+                --reset		    Clean the cache & component repository and the
+                                registry space
+
+            system-properties:
+                -DhttpPort		Overrides the HTTP port defined in the
+                                transports.xml file
+                -DhttpsPort		Overrides the HTTPS port defined in the
+                                transports.xml file
+                -DSynapseServerName=[server-name]
+                                Server name of the synapse server
+                -DosgiConsole=[port]
+                                Start Carbon with Equinox OSGi console.
+                                If the optional 'port' parameter is provided, a
+                                telnet port will be opened
+                -DosgiDebugOptions=[options-file]
+                                Start Carbon with OSGi debugging enabled.
+                                If the optional 'options-file is provided, the
+                                OSGi debug options will be loaded from it.
+                -Dsetup			Clean the Registry database & other
+                                configuration, recreate DB, re-populate the
+                                configuration, and start Carbon
+                -Dcarbon.registry.root
+                                The root of the Registry used by
+                                this Carbon instance             
+                -Dweb.location	The directory into which UI artifacts
+                                included in an Axis2 AAR file are extracted to

@@ -1,0 +1,173 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.wso2mobile.projects</groupId>
+    <artifactId>platform</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>WSO2Mobile Mobile Device Management - Platform Pom</name>
+    <url>http://wso2mobile.com</url>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.1</version>
+            </extension>
+        </extensions>
+    </build>
+  
+    <profiles>
+		<profile>
+		  <id>default</id>
+		  <activation>
+			<activeByDefault>true</activeByDefault>
+		  </activation>
+			 <modules>
+				<module>products</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>builder</id>
+			<activation>
+				<property>
+					<name>builder</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<modules>
+				<module>products</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>sonar-profile</id>
+			<activation>
+			 <property>
+				<name>bamboo</name>
+				<value>sonar</value>
+			</property>
+			</activation>
+			<modules>
+				<module>products</module>
+			</modules>
+		</profile>
+    </profiles>
+
+     <distributionManagement>
+        <repository>
+            <id>wso2-maven2-repository</id>
+            <name>WSO2 Maven2 Repository</name>
+            <url>scp://dist.wso2.org/home/httpd/dist.wso2.org/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>wso2-maven2-snapshot-repository</id>
+            <name>WSO2 Maven2 Snapshot Repository</name>
+            <url>scp://dist.wso2.org/home/httpd/dist.wso2.org/snapshots/maven2/</url>
+        </snapshotRepository>
+    </distributionManagement>
+	
+	<dependencyManagement>
+        <dependencies>
+			<!-- OSGi dependencies -->
+			<dependency>
+				<groupId>org.eclipse.osgi</groupId>
+				<artifactId>org.eclipse.osgi</artifactId>
+				<version>${version.equinox.osgi}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.osgi</groupId>
+				<artifactId>org.eclipse.osgi.services</artifactId>
+				<version>${version.equinox.osgi.services}</version>
+			</dependency>
+
+			<!-- Carbon dependencies -->
+			<dependency>
+				<groupId>org.wso2.carbon</groupId>
+				<artifactId>org.wso2.carbon.core</artifactId>
+				<version>${carbon.platform.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.carbon</groupId>
+				<artifactId>org.wso2.carbon.user.core</artifactId>
+				<version>${carbon.platform.version}</version>
+			</dependency>
+			<dependency>
+                <groupId>org.wso2.carbon</groupId>
+                <artifactId>org.wso2.carbon.logging</artifactId>
+                <version>${carbon.platform.version}</version>
+            </dependency>
+			
+			<!-- Axis dependencies -->
+			<dependency>
+				<groupId>org.apache.axis2.wso2</groupId>
+				<artifactId>axis2</artifactId>
+				<version>${orbit.version.axis2}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.h2database.wso2</groupId>
+				<artifactId>h2-database-engine</artifactId>
+				<version>${orbit.version.h2.engine}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.rampart</groupId>
+				<artifactId>rampart</artifactId>
+				<version>${rampart.mar.version}</version>
+				<type>mar</type>
+			</dependency>
+			<dependency>
+				<groupId>bouncycastle</groupId>
+				<artifactId>bcprov-jdk15</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<scope>test</scope>
+				<version>${junit.version}</version>
+			</dependency>
+        </dependencies>
+    </dependencyManagement>
+	
+	<repositories>
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>wso2-maven2-repository</id>
+            <url>http://dist.wso2.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+	<properties>
+        <carbon.platform.version>4.1.0</carbon.platform.version>
+        <version.equinox.osgi>3.6.0.v20100517</version.equinox.osgi>
+        <version.equinox.osgi.services>3.2.100.v20100503</version.equinox.osgi.services>
+		<orbit.version.axis2>1.6.1.wso2v9</orbit.version.axis2>
+		<orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
+		<rampart.mar.version></rampart.mar.version>
+		<bouncycastle.version></bouncycastle.version>
+		<axis2.osgi.version></axis2.osgi.version>
+		<junit.version>3.8.1</junit.version>
+		<rampart.mar.version>1.6.1-wso2v4</rampart.mar.version>
+		<bouncycastle.version>132</bouncycastle.version>
+		<carbon.p2.plugin.version>1.5.1</carbon.p2.plugin.version>
+		<caramel.feature.version>1.0.0-SNAPSHOT</caramel.feature.version>
+		<sso.hostobjects.version>1.0.1</sso.hostobjects.version>
+    </properties>
+</project>
+
+
