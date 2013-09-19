@@ -1,0 +1,9 @@
+instructions.configure = \
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/features/org.wso2.carbon.registry.commentstream_1.0.0/src/modules/comment,target:${installFolder}/../deployment/server/jaggeryapps/components/modules/comment,overwrite:false);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/features/org.wso2.carbon.registry.commentstream_1.0.0/src/site/blocks/comment,target:${installFolder}/../deployment/server/jaggeryapps/components/site/blocks/comment,overwrite:false);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/features/org.wso2.carbon.registry.commentstream_1.0.0/src/site/themes/default/templates/comment,target:${installFolder}/../deployment/server/jaggeryapps/components/site/themes/default/templates/comment,overwrite:false);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/features/org.wso2.carbon.registry.commentstream_1.0.0/src/jaggery-modules/registry,target:${installFolder}/../deployment/server/jaggeryapps/components/resources/jaggery-modules/registry,overwrite:false);\
+org.eclipse.equinox.p2.touchpoint.natives.remove(path:${installFolder}/features/org.wso2.carbon.registry.commentstream_1.0.0/src);\
+
+
+

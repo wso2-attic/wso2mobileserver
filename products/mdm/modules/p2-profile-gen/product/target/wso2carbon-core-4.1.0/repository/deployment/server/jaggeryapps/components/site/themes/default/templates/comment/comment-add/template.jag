@@ -1,0 +1,16 @@
+<% jagg.template("comment/comment-add", function(inputs, outputs, jagg) { %>
+<div id="comment-add">
+    <div class="alert alert-error" id="commentAdd-error" style="display:none">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Characters left: 450</strong>
+      </div>
+    <textarea id="comment-text" class="comment-box" style="width:99%;"></textarea>
+    <button id="comment-add-button" class="btn"><i class=" icon-plus-sign"></i>Add</button>
+</div>
+<script>
+	var addCommentRef = "<%= inputs.reference %>";
+</script>
+<% }); %>
+
+<script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('templates/comment/comment-add/js/comment-add.js'))%>"></script>
+<script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile('templates/comment/comment-add/js/jquery.charCount.js'))%>"></script>

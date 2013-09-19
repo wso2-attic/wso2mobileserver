@@ -1,0 +1,13 @@
+<%
+jagg.module("comment", {
+
+	getComments:function () {
+    	return jagg.require(jagg.getModulesDir() + "comment/list.jag").getComments.apply(this, arguments);
+    },
+	
+    addComment:function () {
+    	return jagg.require(jagg.getModulesDir() + "comment/add.jag").addComment.apply(this, arguments);
+    }
+
+});
+%>

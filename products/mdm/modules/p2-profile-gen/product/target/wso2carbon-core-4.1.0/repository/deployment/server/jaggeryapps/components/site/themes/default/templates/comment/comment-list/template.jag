@@ -1,0 +1,38 @@
+<% jagg.template("comment/comment-list", function(inputs, outputs, jagg) { %>
+<% var i, comment, comments = outputs.comments, length = comments.length; %>
+<div id="comment-list">
+    <%
+    if(length > 0) {
+        for(i = 0; i < length; i++) {
+            comment = comments[i];
+    %>
+    <div class="comment">
+        <hr />
+        <div>Posted By <strong><%=comment.username%></strong> <span class="dateFull"><%=comment.createdTime%></span></div>
+        <div class="comment-text"><%=comment.comment%></div>
+    </div>
+    <% }
+    } else {
+    %>
+    <p>No comments yet 	</p>
+    <% } %>
+</div>
+<style>
+	.dateFull{
+		font-style:italic;
+		color:#888;
+		text-indent:20px;
+		float:right;
+	}
+	.comment-text{
+		background:#efefef;
+		padding:5px;
+	}
+	.comment-box{
+		min-height:100px;
+	}
+</style>
+<script type="text/javascript">
+jagg.printDate();
+</script>
+<% }); %>

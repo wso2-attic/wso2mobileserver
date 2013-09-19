@@ -1,0 +1,54 @@
+<%
+include("/jagg/jagg.jag");
+
+var log = new Log();
+var msg = require("/site/conf/ui-messages.jag");
+var mod = jagg.module("comment");
+
+(function () {
+	
+	var obj, error, message;
+	var user = jagg.getUser();	
+	
+	var action = request.getParameter("action");	
+	log.debug("Action recieved in comment block - " + action);
+	
+	if(action == "addComment"){		
+		if (!user) {
+			log.info("User is not logged in........................");
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+		
+		var reference =  request.getParameter("ref");
+		var comment = request.getParameter("comment");		
+		log.debug("Comment is going to be added - " + comment + " for reference - " + reference);
+		
+		var result = mod.addComment(reference, comment, user);
+		
+		 if (result.error) {
+	            obj = {
+	                error:result.error,
+	                message:msg.error.authError(action, user)
+	            };
+	        } else {
+	            obj = {
+	                error:false
+	            }
+	        }
+	        
+	}else{		
+		obj = {
+	            error:true,
+	            message:msg.error.invalidAction(action)
+	        };
+	}
+	
+	print(obj);
+	
+}()); 
+
+%>

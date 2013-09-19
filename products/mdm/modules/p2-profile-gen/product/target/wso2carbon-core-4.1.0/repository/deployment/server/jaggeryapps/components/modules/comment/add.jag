@@ -1,0 +1,26 @@
+<%
+var log = new Log();
+
+var addComment = function (reference, comment, user) {
+	log.info("adding comment..................................................");
+	
+	try{
+		var registry =  require('registry');
+		var commentStreamHostObj = new registry.CommentStream();
+	
+		log.debug("calling hots object method to add comment - " + comment);
+		commentStreamHostObj.addComment(reference, comment, user);
+	
+		 return {
+	         error:false
+	     };
+     
+	} catch (e) {
+	    log.error(e.message);
+	    return {
+	        error:e
+	    };
+	}
+}
+
+%>

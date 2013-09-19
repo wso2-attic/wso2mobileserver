@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feature id="org.wso2.carbon.coordination.core" label="WSO2 Carbon - Coordination Core Feature" provider-name="%providerName" version="4.1.0">
+  <description>This feature contains the core bundles required for coordination core functionality</description>
+  <copyright>%copyright</copyright>
+  <license url="%licenseURL">%license</license>
+  <plugin id="org.wso2.carbon.coordination.core" unpack="false" version="4.1.0"/>
+  <plugin id="apache-zookeeper" unpack="false" version="3.3.6.wso2v1"/>
+  <plugin id="org.wso2.carbon.coordination.common" unpack="false" version="4.1.0"/>
+</feature>
