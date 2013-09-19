@@ -160,8 +160,7 @@
      }
      */
     ArtifactManager.prototype.add = function (options) {
-		var artif = createArtifact(this.manager, options);
-        this.manager.addGenericArtifact(artif);
+        this.manager.addGenericArtifact(createArtifact(this.manager, options));
     };
 
     ArtifactManager.prototype.update = function (options) {

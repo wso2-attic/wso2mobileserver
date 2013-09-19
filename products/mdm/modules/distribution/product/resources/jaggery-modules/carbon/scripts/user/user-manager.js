@@ -55,7 +55,7 @@
     UserManager.prototype.setClaims = function (username, claims, profile) {
         return this.manager.setUserClaimValues(username, claims, profile);
     };
-    UserManager.prototype.listUsers = function () {
+	UserManager.prototype.listUsers = function () {
         return this.manager.listUsers("*", -1);
     };
     UserManager.prototype.isAuthorized = function (role, permission, action) {
@@ -87,11 +87,12 @@
     };
 
     UserManager.prototype.updateRoleListOfUser = function(name, deletedRoles, newRoles){
+
     return this.manager.updateRoleListOfUser(name, deletedRoles, newRoles);
     }
     UserManager.prototype.updateUserListOfRole = function(name, deletedUsers, newUsers){
     return this.manager.updateUserListOfRole(name, deletedUsers, newUsers);
-    }        
+    } 
     /**
      * um.authorizeRole('store-admin', '/permissions/mypermission', 'ui-execute');
      *
@@ -141,5 +142,4 @@
             });
         }
     };
-
 }(server, user));
