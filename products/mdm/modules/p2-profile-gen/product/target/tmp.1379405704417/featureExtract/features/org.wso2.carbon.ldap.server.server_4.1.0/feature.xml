@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feature id="org.wso2.carbon.ldap.server.server" label="WSO2 Carbon - LDAP Server Feature" provider-name="%providerName" version="4.1.0">
+  <description>This feature contains the required ldap server feature</description>
+  <copyright>%copyright</copyright>
+  <license url="%licenseURL">%license</license>
+  <plugin id="org.wso2.carbon.ldap.server" unpack="false" version="4.1.0"/>
+  <plugin id="apacheds" unpack="false" version="1.5.7.wso2v2"/>
+  <require>
+    <import feature="org.wso2.carbon.core.server" match="equivalent" version="4.1.0"/>
+  </require>
+</feature>

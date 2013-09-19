@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feature id="org.wso2.carbon.stratos.throttling.agent" label="WSO2 Stratos - Throttling Agent Feature" provider-name="%providerName" version="2.1.0">
+  <description>This feature contains the bundles required for throttle resource usage</description>
+  <copyright>%copyright</copyright>
+  <license url="%licenseURL">%license</license>
+  <plugin id="org.wso2.carbon.throttling.agent" unpack="false" version="2.1.0"/>
+  <plugin id="org.wso2.carbon.throttling.agent.stub" unpack="false" version="4.1.0"/>
+</feature>

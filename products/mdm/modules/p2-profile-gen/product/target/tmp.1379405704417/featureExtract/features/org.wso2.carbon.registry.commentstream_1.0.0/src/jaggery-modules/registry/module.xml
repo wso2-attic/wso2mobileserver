@@ -1,0 +1,8 @@
+<module name="registry" expose="true" xmlns="http://wso2.org/projects/jaggery/module.xml">
+		<hostObject>
+			<className>org.wso2.carbon.registry.commentstream.hostobject.CommentStreamHostObject</className>
+			<name>CommentStream</name>
+		</hostObject>
+</module>
+
+

@@ -1,0 +1,58 @@
+<%
+var log = new Log();
+
+var getComments = function (reference) {
+	
+	log.debug("Trying to retrieve comments for the reference ---------------------------------------" + reference);
+	
+	try {
+		var registry =  require('registry');
+		var commentStreamHostObj = new registry.CommentStream();
+	
+		log.debug("calling hots object method to get comments - " + reference);
+		var comments = commentStreamHostObj.getComments(reference);
+		
+		log.debug("getComments : " + stringify(comments));
+	    
+		var list = [];
+	    var length = comments.length;
+		
+	    for (var i = 0; i < length; i++) {
+	        var comment = comments[i];
+	        list.push({
+	            username:comment.userName,
+	            comment:HTMLEncode(comment.comment),
+	            createdTime:comment.createdTime
+	        });
+	    }
+	    
+	    return {
+	        error:false,
+	        comments:list
+	    };
+	 } catch (e) {
+	        log.error(e.message);
+	        return {
+	            error:e,
+	            comments:null
+	        };
+	 }    
+   
+};
+
+var HTMLEncode = function(str){
+  var i = str.length,
+      aRet = [];
+
+  while (i--) {
+    var iC = str[i].charCodeAt();
+    if (iC < 65 || iC > 127 || (iC>90 && iC<97)) {
+      aRet[i] = '&#'+iC+';';
+    } else {
+      aRet[i] = str[i];
+    }
+   }
+  return aRet.join('');
+};
+%>
+

@@ -1,0 +1,24 @@
+<%
+var log = new Log();
+jagg.block("comment/comment-list", {
+    initializer:function (data) {
+    	
+    },
+
+    getInputs:function (data) {
+
+    },
+
+    getOutputs:function (inputs) {
+    	var comments, result;
+        result = jagg.module("comment").getComments(inputs.reference);
+        comments = result.comments;
+        
+        log.debug("Total Comments Recieved............" + comments.length);
+    
+        return {
+            "comments":comments
+        };
+    }
+});
+%>

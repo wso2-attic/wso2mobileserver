@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feature id="org.wso2.carbon.unifiedendpoint.server" label="WSO2 Carbon - Unified Endpoint Management Core Feature" provider-name="%providerName" version="4.1.0">
+  <description>This feature contains the core bundles required for Back-end Unified Endpoint Management functionality</description>
+  <copyright>%copyright</copyright>
+  <license url="%licenseURL">%license</license>
+  <plugin id="org.wso2.carbon.unifiedendpoint.core" unpack="false" version="4.1.0"/>
+</feature>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<feature id="org.wso2.carbon.identity.relying.party.server" label="Identity Relying Party Server Feature" provider-name="%providerName" version="4.1.0">
+  <description>This feature contains the core bundles required for Back-end Relying Party functionality</description>
+  <copyright>%copyright</copyright>
+  <license url="%licenseURL">%license</license>
+  <plugin id="smack" unpack="false" version="3.0.4.wso2v1"/>
+  <plugin id="org.wso2.carbon.identity.provider" unpack="false" version="4.1.0"/>
+  <plugin id="org.wso2.carbon.identity.relyingparty" unpack="false" version="4.1.0"/>
+  <plugin id="openid4java-nodeps" unpack="false" version="0.9.6.wso2v2"/>
+  <require>
+    <import feature="org.wso2.carbon.identity.core.server" match="equivalent" version="4.1.0"/>
+  </require>
+</feature>
