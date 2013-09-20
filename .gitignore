@@ -221,3 +221,4 @@ pip-log.txt
 #################
 .idea/ 
 org.wso2mobile.mdm.feature-1.0.0.zip
+products/mdm/modules/p2-profile-gen/product/target

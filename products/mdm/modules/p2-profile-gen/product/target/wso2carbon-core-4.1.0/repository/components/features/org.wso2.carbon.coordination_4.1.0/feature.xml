@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<feature id="org.wso2.carbon.coordination" label="WSO2 Carbon - Coordination Feature" provider-name="%providerName" version="4.1.0">
-  <description>This feature contains the bundles required for Coordination functionality</description>
-  <copyright>%copyright</copyright>
-  <license url="%licenseURL">%license</license>
-  <includes id="org.wso2.carbon.coordination.server" optional="false" version="4.1.0"/>
-  <includes id="org.wso2.carbon.coordination.core" optional="false" version="4.1.0"/>
-</feature>
