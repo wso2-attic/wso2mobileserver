@@ -1,0 +1,44 @@
+<%
+var caramel;
+
+(function () {
+    var context,username, sso,
+            log = new Log(),
+            user = require('/modules/user.js').current(),
+            ssoUser = session.get('LOGGED_IN_USER'),
+            mode = 'design',
+            dashboard = request.getParameter("dashboard"),
+   			layout = request.getParameter("layout");
+
+    caramel = require('caramel');
+
+    sso = true;
+   // if(!configs.standalone){
+        var portalConfigs = require('/portal.js').config();
+        sso = portalConfigs.ssoConfiguration.enabled;
+   // }
+
+    if (!ssoUser && !user) {
+        context = caramel.configs().context;
+        response.sendRedirect(context + '?path=' + context + '/designer.jag');
+        return;
+    }
+
+ 	loggedUser = (sso && ssoUser) ? {username:ssoUser} : user;
+
+    var bookmarks = require('/modules/navigation.js').getMyBookmarks();
+
+
+	// mode == 'design' and widgets != null is not handled (draws widgets)
+    caramel.render({
+        'navigation': {user:loggedUser, sso:sso, designer:true, dashboard:dashboard} ,
+        'title': 'Designer | User Engagement Server',
+        'portal-dashboard-designer': {
+            dashboard: dashboard,
+            layout: layout,
+            mode: mode
+        }
+    });
+
+}());
+%>

@@ -1,0 +1,347 @@
+<%
+var user = require('/modules/user.js').current();
+if (!user) {
+    response.sendRedirect('/{{appName}}/login');
+}
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My Dashboard | User Engagement Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <!-- END imports needed for gadget rendering -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/font-awesome-ie7.min.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" type="text/css" href="css/navigation.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.gridster.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/portal-dashboard-designer.css"/>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="/portal/themes/portal/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="img/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="img/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="img/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+
+    
+</head>
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+
+	<div class="navbar-inner">
+
+		<div class="container-fluid">
+
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+			
+			<a class="brand" href="#"></a>
+			
+
+			
+
+			<div class="nav-collapse collapse">
+				<ul class="nav pull-right">
+
+					<li class="nav-separator">
+
+						<a href="/store?user=<%=session.get('LOGGED_IN_USER')%>" target="_blank"><i class="icon-shopping-cart"></i> Store</a>
+
+					</li>
+
+					
+					<li>
+
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-user"></i> <%= session.get("LOGGED_IN_USER") %> <b class="caret"></b></a>
+						<ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
+							<li>
+
+								
+								<a href="/{{appName}}/logout.jag"><i class="icon-signout"></i> Sign out</a>
+								
+
+							</li>
+
+						</ul>
+
+					</li>
+					
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+	
+	<div class="navbar-inner sub-navbar-designer">
+
+		<div class="container-fluid">
+
+			<a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+
+			<div class="row-fluid">
+
+				<div class="span5">
+					<input id="inp-designer-title" type="text" value="{{title}}">
+				</div>
+				<div class="span7">
+					<div class="nav-collapse collapse">
+						<ul class="nav pull-right">
+
+							<li class="dropdown">
+								<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="icon-plus"></i> Add Block <b class="caret"></b></a>
+								<ul class="dropdown-menu dropdown-share">
+									<form>
+										<li>
+											<h4>Define gadget size in grid</h4>
+
+										</li>
+										<li>
+
+											<div id="dummy-gadget-wrapper">
+												<div id="dummy-gadget-container" class="ui-widget-content">
+													<div id="dummy-gadget"  class="ui-widget-content">
+														<div id="dummy-size">
+															1x1
+														</div>
+													</div>
+												</div>
+											</div>
+										</li>
+
+										<li>
+											<button id="btn-add-dummy-gadget" class="btn btn-primary">
+												Add Empty Block
+											</button>
+										</li>
+									</form>
+								</ul>
+
+							</li>
+
+							<li id="btn-save">
+								<a href="#"><i class="icon-save"></i> Save</a>
+							</li>
+							<li>
+								<a id="btn-exit-editor" href="#"><i class="icon-signout"></i> Exit Editor</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+	
+	<div class="navbar-inner sub-navbar-designer-view">
+
+		<div class="container-fluid">
+
+			<a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
+
+			<div class="row-fluid">
+
+				<div class="span5">
+					
+				</div>
+				<div class="span7">
+					<div class="nav-collapse collapse">
+						<ul class="nav pull-right">
+
+							<li class="li-edit-dashboard">
+								<a href="#" id="btn-exit-view" data-toggle="dropdown" class="dropdown-toggle float-left-link"><i class="icon-magic"></i> Personalize</a>
+								
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+
+	
+</div>
+
+
+<div class="container-fluid">
+    
+    <div class="row-fluid">
+
+        <div class="span12">
+<input type="hidden" value="design" id="inp-view-mode" />
+<input type="hidden" value="{{appName}}" id="inp-dashboard" />
+<iframe style="display: none;height: 0;width: 0;" src="{{httpServerUrl}}/store/hidden-logger.jag?user=<%=session.get('LOGGED_IN_USER')%>"></iframe>
+
+<div id="gridster-cont" class="container-fluid">
+	<div id="dashboardName"><i class="icon-th-large"></i> <span></span></div>
+	<div class="layouts_grid" id="layouts_grid">
+		<input type="hidden" id="inp-layout" value="grid">
+		<ul>
+			<div id="grid-guides"></div>
+            
+			{{#each widgets}}
+            <li class="layout_block {{wclass}}" data-sizey="{{height}}" data-sizex="{{width}}" data-col="{{x}}" data-row="{{y}}"
+                data-url="{{url}}" data-wid="{{wid}}" data-prefs="{{prefs}}" data-title="{{title}}">
+                <div class="grid_header">
+           			<h3></h3>
+            		<span class="grid_header_controls">
+                		<a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
+                		<a class="expand-widget"><i class="icon-resize-full"></i></a>
+                		<a class="shrink-widget"><i class="icon-resize-small"></i></a>
+                		<a class="close-widget" href="#"><i class="icon-remove"></i></a>
+            		</span>
+        		</div>
+        		<div class="gadget-pref-cont">
+        	
+        		</div>
+                {{#unless wclass}}
+
+                <div class="add-gadget-item">
+
+                </div>
+                {{/unless}}
+                {{#unless url}}
+                 <div class="designer-placeholder">
+
+        		</div>
+
+       			<button class="btn btn-add-gadget">Add Gadget</button>
+         		{{/unless}}
+            </li>
+            {{/each}}
+
+					
+			
+		</ul>
+	</div>
+
+</div>
+<!-- /container -->
+
+
+<!-- Modal -->
+<div id="modal-add-gadget" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel" aria-hidden="true">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+		<i class="icon-remove"></i>
+	</button>
+	<div id="store-gadget-div"></div>
+
+</div>
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<script id="widget-template" type="text/x-handlebars-template">
+	<li class="layout_block">
+		<div class="grid_header">
+            <input class="gadget-title-txt">
+            <span class="grid_header_controls">
+                <a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
+                <a class="expand-widget"><i class="icon-resize-full"></i></a>
+                <a class="shrink-widget"><i class="icon-resize-small"></i></a>
+                <a class="close-widget" href="#"><i class="icon-remove"></i></a>
+            </span>
+        </div>
+        <div class="gadget-pref-cont">
+        	
+        </div>
+		<div class="designer-placeholder">
+	
+		</div>
+		<div class="add-gadget-item">
+	
+		</div>
+		<button class="btn btn-add-gadget">Add Gadget</button>
+
+	</li>
+</script>
+
+<script id="widget-template2" type="text/x-handlebars-template">
+	<li class="layout_block" data-wid="[[wid]]" data-url="[[url]]" data-prefs="[[prefs]]">
+		<div class="grid_header">
+            <input class="gadget-title-txt">
+            <span class="grid_header_controls">
+                <a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
+                <a class="expand-widget"><i class="icon-resize-full"></i></a>
+                <a class="shrink-widget"><i class="icon-resize-small"></i></a>
+                <a class="close-widget" href="#"><i class="icon-remove"></i></a>
+            </span>
+        </div>
+        <div class="gadget-pref-cont">
+        	
+        </div>
+		<div class="add-gadget-item">
+	
+		</div>
+
+	</li>
+</script>
+
+<script id="widget-template-blank2" type="text/x-handlebars-template">
+	<li class="layout_block" data-url="[[url]]" data-row="[[y]]" data-col="[[x]]" data-sizex="[[width]]" data-sizey="[[height]]" data-wid="[[wid]]" data-prefs="[[prefs]]">
+		<div class="grid_header">
+            <input class="gadget-title-txt">
+            <span class="grid_header_controls">
+                <a class="show-widget-pref" data-collapse="true"><i class="icon-cog"></i></a>
+                <a class="expand-widget"><i class="icon-resize-full"></i></a>
+                <a class="shrink-widget"><i class="icon-resize-small"></i></a>
+                <a class="close-widget" href="#"><i class="icon-remove"></i></a>
+            </span>
+        </div>
+        <div class="gadget-pref-cont">
+        	
+        </div>
+		<div class="add-gadget-item">
+	
+		</div>
+	</li>
+</script>
+
+<!-- /container -->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery-1.8.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/jquery-ui-1.10.1.custom.min.js"></script>
+<script src="js/jquery.gridster.with-extras.min.js"></script>
+<script src="js/handlebars.js"></script>
+<script src="js/shindig.js"></script>
+<script src="js/UESContainer.js"></script>
+<script src="js/portal-dashboard-designer.js"></script>
+<script>
+    UESContainer.renderGadget('store-gadget-div', "{{showAssetGadget}}");
+</script>
+
+</body>
+</html>
+

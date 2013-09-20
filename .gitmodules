@@ -1,0 +1,12 @@
+[submodule "products/mdm/modules/jaggery-apps/mdm"]
+	path = products/mdm/modules/jaggery-apps/mdm
+	url = https://github.com/WSO2Mobile/mdm
+[submodule "products/mdm/modules/jaggery-apps/publisher"]
+	path = products/mdm/modules/jaggery-apps/publisher
+	url = https://github.com/WSO2Mobile/mobilepublisher
+[submodule "products/mdm/modules/jaggery-apps/store"]
+	path = products/mdm/modules/jaggery-apps/store
+	url = https://github.com/WSO2Mobile/mobilestore
+[submodule "products/mdm/modules/jaggery-apps/mdm-dashboard"]
+	path = products/mdm/modules/jaggery-apps/mdm-dashboard
+	url = https://github.com/WSO2Mobile/mdm-dashboard

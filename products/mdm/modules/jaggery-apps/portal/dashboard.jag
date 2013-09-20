@@ -1,0 +1,34 @@
+<%
+var caramel;
+
+(function () {
+    var context, username, sso,
+            log = new Log(),
+            user = require('/modules/user.js').current(),
+            configs = require('/portal.js').config(),
+            ssoUser = session.get('LOGGED_IN_USER'),
+            loggedUser;
+
+    caramel = require('caramel');
+
+    sso = configs.ssoConfiguration.enabled;
+
+    if (!ssoUser && !user) {
+        context = caramel.configs().context;
+        response.sendRedirect(context + '?path=' + context + '/dashboard.jag');
+        return;
+    }
+
+    loggedUser = (sso && ssoUser) ? {username: ssoUser} : user;
+
+    var bookmarks = require('/modules/navigation.js').getMyBookmarks();
+    var storeLoginURL = configs.server.http + "/store/hidden-logger.jag?user=" + loggedUser;
+
+    caramel.render({
+        'navigation': {user: loggedUser, sso: sso},
+        'title': 'Dashboard | User Engagement Server',
+        'portal-dashboard-browser': {'storeLoginURL': storeLoginURL}
+    });
+
+}());
+%>

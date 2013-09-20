@@ -1,0 +1,40 @@
+<%
+var caramel;
+
+
+(function () {
+    var context,
+            sso,
+            log = new Log(),
+            configs = require('/portal.js').config(),
+            user = require('/modules/user.js').current(),
+            ssoLogin = require('/modules/sso-login.js');
+    userSSO = session.get("Loged");
+    caramel = require('caramel');
+    context = caramel.configs().context;
+
+    sso = configs.ssoConfiguration.enabled;
+
+    if (user || userSSO) {
+        response.sendRedirect(context + '/dashboard.jag');
+        return;
+    }
+
+    var path = request.getParameter('path');
+    
+    caramel.render({
+        'navigation': {
+            guest: true,
+            path: path,
+            sso: sso,
+            ssoEncodedRequest: ssoLogin.ssoEncodedRequest,
+            ssoRelayState: ssoLogin.ssoRelayState,
+            ssoSessionId: ssoLogin.ssoSessionId, 
+            ssoIdpURL: ssoLogin.ssoIdpURL
+        },
+        'title': 'Welcome | User Engagement Server',
+        'portal-homepage': {httpUrl:configs.server.http}
+    });
+
+}());
+%>

@@ -1,0 +1,31 @@
+<%
+response.addHeader("Access-Control-Allow-Origin", "*");
+response.addHeader("Content-Type", "application/json");
+
+(function () {
+
+    var nonSsoUser = require('/modules/user.js').current(),
+        configs = require('/portal.js').config(),
+        ssoUser = session.get('LOGGED_IN_USER'),
+        sso = configs.ssoConfiguration.enabled,
+        user = (sso && ssoUser) ? {username: ssoUser} : nonSsoUser;
+
+    if (!user) {
+        response.sendError(401, 'Unauthorized');
+        return;
+    }
+
+
+    var matcher = new URIMatcher(request.getRequestURI());
+    var dashboard = require('/modules/dashboard-create.js');
+
+    //TODO: make this POST
+    if (request.getMethod() == 'POST' && matcher.match('/{context}/apis/dashboard/{appName}')) {
+        var appName = matcher.elements().appName;
+        var layoutDef = parse(request.getParameter("layout"));
+        print(dashboard.create(appName,layoutDef));
+    } else {
+        response.sendError(404, 'API Endpoint Not Found');
+    }
+})();
+%>
