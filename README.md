@@ -1,4 +1,4 @@
-wso2mobile-server
+WSO2 MDM
 =================
 
 WSO2Mobile - Mobile Device Management
