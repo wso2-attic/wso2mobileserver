@@ -30,5 +30,11 @@
             <SignResponse>true</SignResponse>
             <CustomLoginPage>/publisher/controllers/login.jag</CustomLoginPage>
         </ServiceProvider>
+				<ServiceProvider>
+            <Issuer>mdm</Issuer>
+            <AssertionConsumerService>https://localhost:9443/mdm/acs</AssertionConsumerService>
+            <SignResponse>true</SignResponse>
+            <CustomLoginPage>/mdm/login</CustomLoginPage>
+        </ServiceProvider>
     </ServiceProviders>
 </SSOIdentityProviderConfig>

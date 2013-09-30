@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1380267621952
+Bnd-LastModified: 1380518918530
 Build-Jdk: 1.7.0_07
 Built-By: dulitharasangawijewantha
 Bundle-Description: WSO2Mobile Enterprise Mobile Platform

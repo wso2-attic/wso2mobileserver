@@ -169,6 +169,29 @@
                             </tasks>
                         </configuration>
                     </execution>
+										<execution>
+                        <id>copy_modules_apps</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+															<copy todir="target/wso2carbon-core-${carbon.kernal.version}/modules"
+                                    overwrite="true">
+                                  <fileset
+                                          dir="src/repository/modules">
+                                  </fileset>
+                              </copy>
+															<copy todir="target/wso2carbon-core-${carbon.kernal.version}/repository/deployment/server/jaggeryapps"
+                                    overwrite="true">
+                                  <fileset
+                                          dir="../apps/">
+                                  </fileset>
+                              </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                     <execution>
                         <id>clean_target</id>
                         <phase>install</phase>
