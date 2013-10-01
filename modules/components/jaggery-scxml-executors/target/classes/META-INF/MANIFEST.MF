@@ -49,7 +49,7 @@ Bundle-Name: jaggery-scxml-executors
 Created-By: Apache Maven Bundle Plugin
 Build-Jdk: 1.7.0_07
 Bundle-Version: 1.0.0
-Bnd-LastModified: 1380518912095
+Bnd-LastModified: 1380630490620
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.wso2.jaggery.scxml.Activator
 Import-Package: javax.xml.namespace;resolution:=optional,javax.xml.str

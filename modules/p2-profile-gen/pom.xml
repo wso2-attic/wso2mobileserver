@@ -151,6 +151,9 @@
                                 <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.governance.lifecycle.management.server.feature:${carbon.platform.version}
                                 </featureArtifactDef>
+															 <featureArtifactDef>
+															                                    org.wso2.carbon:org.wso2.carbon.user.mgt.feature:${carbon.platform.version}
+															                                </featureArtifactDef>
                                 <!-- <featureArtifactDef>
                                                                     org.wso2.carbon:org.wso2.carbon.cassandra.explorer.feature:${carbon.platform.patch.version.412}
                                                                 </featureArtifactDef>
@@ -223,6 +226,10 @@
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.webapp.mgt.server.feature.group</id>
+                                    <version>${carbon.platform.version}</version>
+                                </feature>
+                                <feature>
+                                    <id>org.wso2.carbon.user.mgt.feature.group</id>
                                     <version>${carbon.platform.version}</version>
                                 </feature>
                                 <feature>
