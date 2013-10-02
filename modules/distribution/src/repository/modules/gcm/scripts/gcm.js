@@ -8,3 +8,11 @@ var gcm = gcm || {};
     };
 
 }());
+
+(function(){
+    gcm.setApiKey = function(api_key) {
+        var log = new Log();  
+        return Packages.com.mycompany.app.GCMServerBridge.setApiKey(api_key);
+    };
+
+}());

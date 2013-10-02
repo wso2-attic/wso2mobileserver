@@ -225,3 +225,8 @@ products/mdm/modules/p2-profile-gen/product/target
 modules/features/org.wso2mobile.platform.feature/target
 modules/distribution/target
 modules/p2-profile-gen/target
+modules/components/jaggery-scxml-executors/target
+modules/components/org.wso2.carbon.databridge.datasink.cassandra/target
+modules/components/social/target
+modules/components/sso-common/target
+modules/components/store-admin/target

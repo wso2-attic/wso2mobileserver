@@ -196,7 +196,10 @@
                                                                 <featureArtifactDef>
                                                                     org.wso2.carbon:org.wso2.carbon.event.statistics.feature:${cep.component.version}
                                                                 </featureArtifactDef> -->
-
+																																<!-- xacml features -->
+																																                <featureArtifactDef>org.wso2.carbon:org.wso2.carbon.identity.xacml.feature:${carbon.platform.version}
+																																                </featureArtifactDef>
+																																                <featureArtifactDef>org.wso2.carbon:org.wso2.carbon.claim.mgt.feature:${carbon.platform.version}</featureArtifactDef>
                             </featureArtifacts>
 
                         </configuration>
@@ -361,7 +364,15 @@
                                                                     <id>org.wso2.carbon.event.statistics.feature.group</id>
                                                                     <version>${cep.component.version}</version>
                                                                 </feature> -->
-
+																																<!-- xacml features -->
+																																                <feature>
+																																                                    <id>org.wso2.carbon.identity.xacml.feature.group</id>
+																																                                    <version>${carbon.platform.version}</version>
+																																                                </feature>
+																																                <feature>
+																																                    <id>org.wso2.carbon.claim.mgt.feature.group</id>
+																																                    <version>${carbon.platform.version}</version>
+																																                </feature>
                             </features>
 
 
