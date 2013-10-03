@@ -148,13 +148,6 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>target/shindig</directory>
-            <outputDirectory>wso2mobileserver-${pom.version}/repository/deployment/server/webapps/ROOT</outputDirectory>
-            <includes>
-                <include>**/**</include>
-            </includes>
-        </fileSet>
-        <fileSet>
             <directory>target/jaxwebapps</directory>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/deployment/server/jaxwebapps</outputDirectory>
             <includes>
