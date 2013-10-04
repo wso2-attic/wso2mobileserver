@@ -1,0 +1,96 @@
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WSO2 Enterprise Mobile Management</title>		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset=utf-8 />
+		<!-- Bootstrap -->
+		<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+		<link href="assets/boostrapext/selectpicker/bootstrap-select.min.css" rel="stylesheet" media="screen">		
+		<link href="css/main.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+
+			<header>
+				<div class="navbar navbar-fixed-top">
+					<div class="navbar-inner">
+				<a class="brand" href="#" style="padding:0px; padding-left:20px"><img src="img/mobile-platform.png" style="height:40px"></a>					
+					</div>
+
+				</div>
+		   </header>
+		
+			
+
+			<div class="container">
+				<div class="row-fluid">					
+					
+					
+					
+					
+					
+
+
+						<div class="span4 block" >
+							<div class="block-header">
+								<div class="block-header-title">Mobile Device Management</div>
+							</div>
+							<div id="newest-app-list" class="container-fluid raw-fluid" style="text-align:center">							
+								
+								<a href="/mdm">
+								<img src="img/mdm.png">
+								</a>
+								
+								
+							</div>
+						</div>
+
+						
+						<div class="span4 block" >
+							<div class="block-header">
+								<div class="block-header-title">Mobile Application Store</div>
+							</div>
+							<div id="newest-app-list" class="container-fluid raw-fluid" style="text-align:center">							
+								
+								<a href="/store">
+									<img src="img/store.png">
+								</a>
+								
+							</div>
+						</div>
+					
+					
+						<div class="span4 block" >
+							<div class="block-header">
+								<div class="block-header-title">Mobile Application Publisher</div>
+							</div>
+							<div id="newest-app-list" class="container-fluid raw-fluid"  style="text-align:center">					
+								
+								<a href="/publisher">
+									<img src="img/publisher.png" >
+								</a>
+								
+							</div>
+						</div>
+					
+					
+					
+					
+					
+				</div>
+
+			</div>
+			
+		
+		
+
+		<script src="assets/jquery/jquery-min.js"></script>
+		<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+		
+
+	</body>
+</html>
+
