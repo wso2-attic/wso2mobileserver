@@ -50,6 +50,7 @@
 					<parameter name="STATE_RULE1:Published" value="private_{asset_author}:+get,+add,-delete,+authorize" />
 					<parameter name="STATE_RULE2:Published" value="reviewer:+get,-add,-delete,-authorize"/>
 					<parameter name="STATE_RULE3:Published" value="everyone:+get,-add,-delete,-authorize" />
+					<parameter name="STATE_RULE3:Published" value="system/wso2.anonymous.role:+get" />
 				</execution>
 			</data>
                     </datamodel>
@@ -67,6 +68,7 @@
 					<parameter name="STATE_RULE1:Unpublished" value="private_{asset_author}:+get,+add,+delete,+authorize" />
 					<parameter name="STATE_RULE2:Unpublished" value="reviewer:-get,-add,-delete,-authorize"/>
 					<parameter name="STATE_RULE3:Unpublished" value="everyone:-get,-add,-delete,-authorize"/>
+					<parameter name="STATE_RULE3:Unpublished" value="system/wso2.anonymous.role:-get" />
 				</execution>
 			</data>
                     </datamodel>

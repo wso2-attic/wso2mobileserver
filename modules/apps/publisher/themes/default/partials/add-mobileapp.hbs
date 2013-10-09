@@ -1,0 +1,282 @@
+<style>
+/*------FILE UPLOAD-----*/
+
+.fileupload{
+	float:left;
+}
+
+.fileupload-preview{
+	width: 160px;
+	height: 240px;
+}
+
+.fileupload-preview-icon{
+	width: 160px;
+	height: 160px;
+}
+
+.fileupload-preview-banner{
+	width: 512px;
+	height: 160px;
+}
+
+
+.fileupload-image{
+	
+}
+
+.form-buttons{
+	padding-top: 10px;
+}
+
+
+
+.app-icon-small{
+	width:40px;
+}
+
+</style>
+
+<div class="content-div">
+
+	<div class="row-fluid">
+		<form class="form-horizontal" id='form-asset-create' action="/publisher/api/asset/mobileapp" method="post" enctype="multipart/form-data">
+			<div class="well-small offset9">
+				<a class="btn btn-primary" href="#modal-upload" data-toggle="modal">Upload Application</a>
+			</div>
+
+			
+			
+			
+			<input type="hidden" id="appmeta" name="appmeta" value="">
+
+							<input type="hidden" name="version" value="1.0"> <input
+								type="hidden" name="provider" value="1WSO2Mobile">
+
+							<div class="control-group">
+								<label class="control-label" for="txtName">Name</label>
+								<div class="controls">
+									<input class="field span6" type="text" name="name" id="txtName">
+								</div>
+							</div>
+							<!--
+							<div class="control-group">
+								<label class="control-label" for="txtName">Package Name</label>
+								<div class="controls">
+									<input class="field span6" type="text" name="package_name" id="txtPackageName">
+								</div>
+							</div>
+							-->
+							<div class="control-group">
+								<label class="control-label" for="txtDescription">Description</label>
+								<div class="controls">
+									<textarea class="field span6" id="txtDescription"
+										name="description" rows="6"> </textarea>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="txtRecentChanges">Recent
+									Changes</label>
+								<div class="controls">
+									<textarea class="field span6" id="txtRecentChanges"
+										name="recentChanges" rows="6"> </textarea>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="txtCategory">Category</label>
+								<div class="controls">
+									<select id="txtCategory" name="category" class="selectpicker">
+										<option>Finance</option>
+										<option>Utilities</option>
+										<option>Tools</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="txtOS">OS</label>
+								<div class="controls">
+									<select id="txtOS" name="platform" class="selectpicker">
+										<option value="android">Android</option>
+										<option value="ios">iOS</option>
+										<option value="webapp">Web App</option>
+									</select>
+								</div>
+							</div>
+
+
+							<div id="control-webapp" style="display: none;"
+								class="control-group">
+								<label class="control-label" for="txtName">Web App URL</label>
+								<div class="controls">
+									<input class="field span6" type="text" name="url"
+										id="txtWebapp">
+								</div>
+							</div>
+
+
+							<div class="control-group">
+								<label class="control-label" for="txtOS">Market Type</label>
+								<div class="controls">
+									<select id="txtMarket" name="markettype" class="selectpicker">
+										<option value="Enterprise">Enterprise</option>
+										<option value="Market">Market</option>
+									</select>
+								</div>
+							</div>
+
+
+
+							<div id="control-packagename" style="display: none;"
+								class="control-group">
+								<label class="control-label" for="txtName">Package Name</label>
+								<div class="controls">
+									<input class="field span6" type="text" name="packagename"
+										id="txtPackagename">
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="txtBanner">Banner</label>
+								<div class="controls">
+									<div class="fileupload fileupload-new"
+										data-provides="fileupload">
+										<div
+											class="fileupload-preview fileupload-preview-banner thumbnail"></div>
+										<div>
+											<span class="btn btn-file"><span
+												class="fileupload-new"><i class="icon-plus-sign"></i></span><span
+												class="fileupload-exists"><i class="icon-edit"></i></span> <input
+												type="file" name="bannerFile" id="txtBanner" /> </span> <a
+												href="#" class="btn fileupload-exists"
+												data-dismiss="fileupload"><i class="icon-remove"></i></a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="txtScreenShot">Screen
+									Shots</label>
+								<div class="controls">
+
+									<div class="fileupload fileupload-new"
+										data-provides="fileupload">
+										<div class="fileupload-preview thumbnail"></div>
+										<div>
+											<span class="btn btn-file"><span
+												class="fileupload-new"><i class="icon-plus-sign"></i></span><span
+												class="fileupload-exists"><i class="icon-edit"></i></span> <input
+												type="file" class="uploadAction" name="screenshot1File"
+												id="txtScreenShot1" data-url="/publisher/api/apps/upload" />
+											</span> <a href="#" class="btn fileupload-exists"
+												data-dismiss="fileupload"><i class="icon-remove"></i></a>
+										</div>
+									</div>
+
+									<div class="fileupload fileupload-new"
+										data-provides="fileupload">
+										<div class="fileupload-preview thumbnail"></div>
+										<div>
+											<span class="btn btn-file"><span
+												class="fileupload-new"><i class="icon-plus-sign"></i></span><span
+												class="fileupload-exists"><i class="icon-edit"></i></span> <input
+												type="file" class="uploadAction" name="screenshot2File"
+												id="txtScreenShot2" data-url="/publisher/api/apps/upload" />
+											</span> <a href="#" class="btn fileupload-exists"
+												data-dismiss="fileupload"><i class="icon-remove"></i></a>
+										</div>
+									</div>
+
+									<div class="fileupload fileupload-new"
+										data-provides="fileupload">
+										<div class="fileupload-preview thumbnail"></div>
+										<div>
+											<span class="btn btn-file"><span
+												class="fileupload-new"><i class="icon-plus-sign"></i></span><span
+												class="fileupload-exists"><i class="icon-edit"></i></span> <input
+												type="file" class="uploadAction" name="screenshot3File"
+												id="txtScreenShot3" data-url="/publisher/api/apps/upload" />
+											</span> <a href="#" class="btn fileupload-exists"
+												data-dismiss="fileupload"><i class="icon-remove"></i></a>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label" for="txtIconfile">Icon file</label>
+								<div class="controls">
+									<div class="fileupload fileupload-new"
+										data-provides="fileupload">
+										<div
+											class="fileupload-preview fileupload-preview-icon thumbnail"></div>
+										<div>
+											<span class="btn btn-file"><span
+												class="fileupload-new"><i class="icon-plus-sign"></i></span><span
+												class="fileupload-exists"><i class="icon-edit"></i></span> <input
+												name="iconFile" type="file" /> </span> <a href="#"
+												class="btn fileupload-exists" data-dismiss="fileupload"><i
+												class="icon-remove"></i></a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+								
+			
+			
+
+			
+			<div id="saveButtons" class="form-actions">
+				<input type="submit" value="Create" class="btn btn-primary" name="addNewAssetButton" id="btn-create-asset-mobileapp">
+				<input type="hidden" value="{{shortName}}" name="{{shortName}}" id="meta-asset-type">
+				<input type="reset" value="Cancel" class="btn">
+			</div>
+		</form>
+	</div>
+
+</div>
+
+<div id="modal-upload" class="modal hide fade">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+		aria-hidden="true">
+			&times;
+		</button>
+		<h4>Upload Application</h4>
+	</div>
+	<div class="modal-body">
+		<form>
+			<div class="control-group">
+				<div class="controls">
+					<div class="fileupload fileupload-new" data-provides="fileupload">
+						<div class="input-append">
+							<div class="uneditable-input span3">
+								<i class="icon-file fileupload-exists"></i><span
+								class="fileupload-preview"></span>
+							</div>
+							<span class="btn btn-file" style="width: 20px; height: 20px"><span
+								class="fileupload-new"><i class="icon-plus-sign"> </i></span><span
+								class="fileupload-exists"><i class="icon-edit"> </i></span>
+								<input
+								id="txtAppUpload" type="file" name="file"
+								data-url="/publisher/api/mobileapp/upload">
+							</span><a href="#"
+							class="btn fileupload-exists" data-dismiss="fileupload"><i
+							class="icon-remove"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+		<a href="#" id="btn-app-upload" class="btn btn-primary"
+		data-dismiss="modal" aria-hidden="true">Upload</a>
+	</div>
+</div>

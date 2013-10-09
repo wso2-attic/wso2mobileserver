@@ -125,8 +125,8 @@ $(function () {
             url = caramel.url('/assets/' + store.asset.type + '/?' + buildParams(searchVal));
             caramel.data({
                 title: null,
-                header: ['sort-assets'],
-                body: ['assets', 'pagination']
+                header: ['header'],
+                body: ['assets', 'pagination', 'sort-assets']
             }, {
                 url: url,
                 success: function (data, status, xhr) {
@@ -149,7 +149,8 @@ $(function () {
             url = caramel.url('/assets/all/?' + buildParams(searchVal));
             caramel.data({
                 title: null,
-                body: ['top-assets']
+                header: ['header'],
+                body: ['top-assets', 'navigation', 'sort-assets']
             }, {
                 url: url,
                 success: function (data, status, xhr) {
@@ -278,6 +279,11 @@ $(function () {
         e.stopPropagation();
     });
 
+	 $('#search-dropdown-cont').find('input').keypress(function(e){
+	 	if(e.keyCode == 13){
+	 		$('#search-button2').trigger('click');
+	 	}
+	 });
     /*
      $('#search').keypress(function (e) {
      if (e.keyCode === 13) {
@@ -365,4 +371,8 @@ $(function () {
         search();
         return false;
     });
+    
+    $('#container-search').affix({
+       offset: { top: $('.navbar').offset().top + 80}
+   });
 });

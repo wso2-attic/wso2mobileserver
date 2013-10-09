@@ -20,28 +20,34 @@
 <wso2mobile-mdm>
 
 	<ios-mdm-conf>
-		<!-- ios mdm endpoint urls -->
+		<!-- iOS mdm endpoint urls -->
 		<ios-enroll-url>https://192.168.1.157:9443/mdm/scep</ios-enroll-url>
 		<ios-profile-url>https://192.168.1.157:9443/mdm/profile</ios-profile-url>
 		<ios-checkin-url>https://192.168.1.157:9443/mdm/checkin</ios-checkin-url>
 		<ios-server-url>https://192.168.1.157:9443/mdm/server</ios-server-url>
 		
-		<!-- ios mdm APNS configurations -->
+		<!-- iOS mdm APNS configurations -->
 		<ios-apns-cert-path>E:/Mobile/iOS_MDM_Impl/keys/PlainCert.pfx</ios-apns-cert-path>
 		<ios-apns-cert-password>shan130474</ios-apns-cert-password>
+		
+		<!-- iOS mdm topic id -->
+		<ios-mdm-topic-id>com.apple.mgmt.External.becee161-1896-423e-ad81-76a5d8fb44d9</ios-mdm-topic-id>
+		
+		<!-- device property post url -->
+		<ios-device-property-post-url>http://192.168.1.157:9763/mdm/api/devices/register</ios-device-property-post-url>
 		
 		<!-- use carbon.xml entries later -->
 		<keystore>
             <!-- Keystore file location-->
-            <keystore-location>E:/Mobile/iOS_MDM_Impl/generated_keys_openssl/keystore.jks</keystore-location>
+            <keystore-location>E:/wso2mobile/milestone6_mdm_server/wso2mobileserver-1.0.0/repository/resources/security/wso2carbon.jks</keystore-location>
             <!-- Keystore type (JKS/PKCS12 etc.)-->
             <keystore-type>JKS</keystore-type>
             <!-- Keystore password-->
-            <keystore-password>123456</keystore-password>
+            <keystore-password>wso2carbon</keystore-password>
             <!-- Private Key alias-->
-            <keystore-key-alias>1</keystore-key-alias>
+            <keystore-key-alias>wso2carbon</keystore-key-alias>
             <!-- Private Key password-->
-            <keystore-key-password>123456</keystore-key-password>
+            <keystore-key-password>wso2carbon</keystore-key-password>
 			
 			<!-- below configurations will be moved to the keystore later -->
 			<ca-cert-path>E:/Mobile/iOS_MDM_Impl/keys/ca_cert.pem</ca-cert-path>
@@ -52,5 +58,3 @@
 	</ios-mdm-conf>
 	
 </wso2mobile-mdm>
-
-

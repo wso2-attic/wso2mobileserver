@@ -11,6 +11,13 @@ var render=function(theme,data,meta,require){
 	switch(data.op){
 	case 'create':
 		listPartial='add-asset';
+		
+		if(data.data.meta.shortName=='mobileapp'){
+			log.info('Special rendering case for mobileapp-using add-mobilepp.hbs');
+			listPartial='add-mobileapp';
+		}
+		
+		
 		break;
 	case 'view':
 		listPartial='view-asset';
@@ -44,7 +51,7 @@ var render=function(theme,data,meta,require){
         leftnav: [
             {
                 partial: 'left-nav',
-                context: require('/helpers/left-nav.js').generateLeftNavJson(data)
+                context: require('/helpers/left-nav.js').generateLeftNavJson(data, listPartial)
             }
         ],
         listassets: [

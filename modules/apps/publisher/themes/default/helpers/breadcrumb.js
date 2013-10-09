@@ -19,7 +19,13 @@ var generateBreadcrumbJson = function(data) {
                 assetType : "Site",
                 url : "/publisher/assets/site/",
                 assetIcon : "icon-compass" //font-awesome icon class
+            },
+            {
+                assetType : "Mobile Apps",
+                url : "/publisher/assets/mobileapp/",
+                assetIcon : "icon-mobile-phone" //font-awesome icon class
             }
+            
         ]
     };
     if(data.artifact){

@@ -1,16 +1,19 @@
 <%
 var caramel;
 (function () {
-    var assets, paging, count, current, total, loggedUser, sso, url, mainPage, subPage,title
+    var assets, paging, count, current, total, sso, url, mainPage, subPage,title
             options = {},
+			subscriptions ={},
+	    	subscription = false;
             log = new Log(),
-            user = require('/modules/user.js'),
+            user = require('/modules/user.js').current(session),
             configs = require('/store.js').config(),
             store = require('/modules/store.js').store(request, session),
             site = require('/modules/site.js'),
             tag = request.getParameter('tag'),
             query = request.getParameter('query'),
             fields = request.getParameter('fields'),
+            selectedCategory = request.getParameter('category'),
             event = require('/modules/event.js');
 
     caramel = require('caramel');
@@ -18,8 +21,6 @@ var caramel;
     log.info('SESSIONS ################ ::' + stringify(application.get('sso_sessions')));
 
     sso = configs.ssoConfiguration.enabled;
-
-    loggedUser = user.current(session);
 
     url = '/assets/' + type + '/?' + (tag ? 'tag=' + tag + '&' : '') + (query ? 'query=' + query + '&' : '');
 
@@ -31,6 +32,16 @@ var caramel;
     
     title = store.assetLinks(type).title;
     
+    if(user){
+	subscriptions = store.subscriptions(type);
+	var count = Object.keys(subscriptions).length;
+	    if(count == 0){
+			subscriptions[type]={};
+		}else{
+			subscription =true;
+		}
+	}	
+     
     if (tag) {
 
         total = store.assetCount(type, {
@@ -112,24 +123,30 @@ var caramel;
         var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
         log.info('After obtaining rxt attributes');
     }*/
+   
+   log.info(selectedCategory);
+   
 
     var rxtAttributes = require('modules/util.js').getRXTAttributes(tenantId, type);
 
     caramel.render({
         title: 'Store | Assets',
-        user: loggedUser,
+        user: user,
         sso: sso,
-        navigation: site.navigation(tenantId, {
+        header : site.header(tenantId, {
             sso: sso,
-            user: loggedUser
+            user: user
         }),
+        navigation: site.navigation(tenantId),
+       
         search: {
-            mainPage: mainPage,
-            subPage: subPage,
-            isTopAssets: false,
-            searchFields: rxtAttributes
-        },
+                   mainPage: mainPage,
+                   subPage: subPage,
+                   isTopAssets: false,
+                   searchFields: rxtAttributes
+               },
         type: type,
+        selectedCategory: selectedCategory,
         /*tag: tag,*/
         tags: function () {
             return [
@@ -152,7 +169,7 @@ var caramel;
         sorting: {
             url: url + 'sort='
         },
-        myAssets : { title: title },
+        myAssets : { user:user, type: type, title: title, subscriptions: subscriptions[type], subscription : subscription},
         recentAssets: function () {
             return store.recentAssets(type);
         }

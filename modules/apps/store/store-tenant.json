@@ -1,5 +1,5 @@
 {
-    "assets": ["gadget", "site", "ebook"],
+    "assets": ["gadget", "site", "ebook", "mobileapp"],
     "assetsPageSize": 12,
     "commentsPageSize": 10,
     "roles": {

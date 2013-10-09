@@ -159,6 +159,10 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf</outputDirectory>
             <includes>
                 <include>**/api-manager.xml</include>
+								<include>**/user-mgt.xml</include>
+								<include>**/carbon.xml</include>
+							  <include>**/sso-idp-config.xml</include>
+								<include>**/mdm-config.xml</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -167,14 +171,6 @@
             <includes>
                 <include>**/application-authenticators.xml</include>
 								<include>**/entitlement.properties</include>
-            </includes>
-        </fileSet>
-		<fileSet>
-            <directory>src/repository/conf</directory>
-            <outputDirectory>wso2mobileserver-${pom.version}/repository/conf</outputDirectory>
-            <includes>
-                <include>**/sso-idp-config.xml</include>
-								<include>**/mdm-config.xml</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -315,6 +311,7 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/multitenancy/</outputDirectory>
             <filtered>true</filtered>
         </file>
+
         <!-- Including coordination-client-config.xml file -->
         <!--file>
             <source>
@@ -388,7 +385,11 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/etc</outputDirectory>
             <fileMode>644</fileMode>
         </file>
-
+				<file>
+            <source>src/repository/conf/user-mgt.xml</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/</outputDirectory>
+            <filtered>true</filtered>
+        </file>
         <!--        <file>
             <source>conf/wso2is-user-certs.jks</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security/</outputDirectory>

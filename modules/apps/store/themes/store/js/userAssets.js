@@ -57,5 +57,14 @@ $(".popover-content").live("mouseleave",function(){
 
 	});
 	
+	$("#asset-in-mobileapp").carouFredSel({
+		items:4,
+		infinite: false,
+		auto : false,
+		circular: false,
+		pagination  : "#own-asset-slideshow-pag-mobileapp"
+
+	});
+	
 
 });

@@ -1,2 +1,4 @@
 #Ignore temporary files
 *~
+/.project
+upload

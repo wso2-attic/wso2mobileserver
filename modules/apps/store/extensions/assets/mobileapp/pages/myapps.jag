@@ -1,0 +1,15 @@
+<%
+
+caramel = require('caramel');
+site = require('/modules/site.js'),
+
+
+caramel.render({
+    'title': 'Store | My Apps',
+    'navigation': site.navigation(),
+     header : site.header(tenantId, {
+            sso: sso,
+            user: user
+     })
+});
+%>

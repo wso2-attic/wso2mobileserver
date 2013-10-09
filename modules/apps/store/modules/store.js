@@ -166,6 +166,7 @@ var Store = function (tenantId, session) {
         this.registry = user.userRegistry(session);
         this.session = session;
         this.userSpace = user.userSpace(this.user.username);
+		log.info(">>Userspace "+this.userSpace);
     } else {
         configs(tenantId).assets.forEach(function (type) {
             var path = ASSETS_EXT_PATH + type + '/asset.js',
@@ -225,6 +226,7 @@ Store.prototype.subscriptionSpace = function(type) {
 
 Store.prototype.subscribe = function(type, id) {
     var path = this.subscriptionSpace(type) + '/' + id;
+	log.info(">>>path "+path);
     if(!this.registry.exists(path)) {
         this.registry.put(path, {
             name: id,
@@ -245,6 +247,10 @@ Store.prototype.subscriptions = function (type) {
         path = this.subscriptionSpace(type),
         assetz = {};
     fn = function (path) {
+		var semiPath = path;
+		if(path.indexOf('~') !== -1){
+			path = path.replace(':', '@');
+		}
         var type,
             items = [],
             obj = registry.content(path);
@@ -254,7 +260,16 @@ Store.prototype.subscriptions = function (type) {
         type = path.substr(path.lastIndexOf('/') + 1);
         //obj = obj();
         obj.forEach(function (path) {
-            items.push(that.asset(type, path.substr(path.lastIndexOf('/') + 1)))
+			var i = that.asset(type, path.substr(path.lastIndexOf('/') + 1));
+			if(type=="mobileapp"){
+				var description = registry.get(semiPath).description;
+				if(description!=null){
+					try{
+						i.subscribed_devices = parse(registry.get(semiPath).description).devices;
+					}catch(e){}
+				}
+			}
+			items.push(i);
         });
         assetz[type] = items;
     };

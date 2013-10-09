@@ -1,0 +1,233 @@
+<%
+var type = "mobileapp";
+// Find the place for server URL
+var serverURL = "https://192.168.1.1:9443/";
+var goose = require('/modules/goose.js').goose;
+var Handle = require("handlebars").Handlebars;
+var router = new goose({CONTEXT: "/store/"});
+var configs = require('/config/dataconf.json');
+var log =new Log();
+log.info("inside");
+var store = require('/modules/store.js');
+var process = require("process");
+//	Refactor neccessary since the user routes don't belong here
+// Find away to send the user email to the MDM server
+router.get('apps/users/{userid}/devices', function(ctx){
+	var mam = require('/modules/mam.js').mam;
+	var mamServer = new mam();
+	var user = require('/modules/user.js').current();
+	if(user!=undefined){
+		var result = mamServer.getDevices(user.username, ctx.platform);
+		print(result.data);
+	}else{
+		response.sendError(404);
+	}
+});
+function spli(item){
+	if(item.attributes.images_screenshots){
+		item.attributes.images_screenshots =item.attributes.images_screenshots.split(',');
+	}
+	return item;
+}
+function getRegistry(){
+	server = new carbon.server.Server(),
+   	registry = new carbon.registry.Registry(server, {
+           username : 'admin',
+           tenantId : -1234
+    });
+	return registry;
+}
+function getAssetForPackage(packagename){
+	var registry = getRegistry();
+	var am = new carbon.registry.ArtifactManager(registry, 'mobileapp');
+	var items = am.list();
+	var arr= [];
+	for (var i = items.length - 1; i >= 0; i--){
+		var item = items[i];
+		if(item.attributes.overview_package_name==packagename){
+			arr.push(spli(item));
+		}
+	};
+	print(sp(arr));
+}
+router.get("apps/test", function(ctx){
+	
+});
+router.get("apps/devices/{deviceid}/getApps", function(ctx){
+	var user = require('/modules/user.js'), 
+		store = require("/modules/store.js").store(request, session);
+    if (!user.current(session)) {
+       response.sendError(401, 'Unauthorized');
+       return;
+   	}
+	var mam = require('/modules/mam.js').mam;
+	var mamServer = new mam();
+	var apps = mamServer.getDeviceApps(ctx.deviceid)['received_data'];
+	log.info(apps);
+	var subscriptions = store.subscriptions(type);
+	for(subscription in subscriptions){
+		log.info(subscription);
+		for(app in apps){
+			log.info(app);
+			if(app.package == subscription.overview_package){
+				var path = "/subscriptions/"+subscription.aid;
+				if(store.registry.exists(path)) {
+					var devicelist = store.registry.content(path).devices;
+					if(devicelist){
+						devicelist = {};
+					}
+					devicelist.push(ctx.deviceid);
+			        store.registry.put(path, {
+			            name: id,
+			            content: '',
+						devices: devicelist
+			        });
+			    }
+			}
+		}
+	}
+
+});
+/*
+	iOS device will first perform a request to the below end point - it will serve a plist file
+	with an endpoint to pickup the .ipa archive
+*/
+router.get("apps/install/ios/{id}", function(ctx){
+	var appName = ctx.id;
+	var asset =  store.assetID(type, appName);
+	//Assuming that the extension is of 3 letters
+	log.info(asset);
+	var iosManifest = compileTemplate("/assets/"+type+"/resources/ios_profile.hbs", {url:configs.mam.ip+asset.attributes.overview_url, bundleid: asset.attributes.overview_packageName, bundleversion: asset.attributes.overview_bundleVersion,  appname:asset.name});
+	response.contentType = "application/xml";
+	print(iosManifest);
+});
+
+
+
+// DEVICES APIS
+router.post('apps/devices/{deviceid}/install', function(ctx){
+	var user = require('/modules/user.js'), store = require("/modules/store.js").store(request, session);;
+    if (!user.current(session)) {
+        response.sendError(401, 'Unauthorized');
+        return;
+    }
+	var mam = require('/modules/mam.js').mam;
+	var mamServer = new mam();
+	var asset =  store.asset(type, ctx.asset);
+	var url = asset.attributes.overview_url; 
+	log.info(asset.attributes.overview_type);
+	if(asset.attributes.overview_platform.toUpperCase()=='WEBAPP'){
+		mamServer.installWebClip(url,getAsset(ctx.id).attributes.overview_name, ctx.deviceid);
+	}
+	url = configs.mam.server+url;
+	if(asset.attributes.overview_type.toUpperCase()=="MARKET"){
+		url=asset.attributes.overview_packageName;
+	}
+	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
+		url =  configs.mam.ip+"/store/apps/install/ios/"+asset.id;
+		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
+	}else if(asset.attributes.overview_platform.toUpperCase()=='ANDROID'){
+		mamServer.install(asset.attributes.overview_type, url, ctx.deviceid);
+	}
+});
+
+router.post('apps/devices/{deviceid}/uninstall', function(ctx){
+	var store = require("/modules/store.js").store(request, session);
+	var asset =  store.assetID(type, ctx.asset);
+	var install_asset = asset.attributes.overview_packageName; 
+	if(asset.attributes.overview_platform.toUpperCase()=='IOS'){
+		install_asset = asset.attributes.overview_appid;
+	}
+	//saveAppToUser(ctx.id);
+	var mam = require('/modules/mam.js').mam;
+	var mamServer = new mam();
+	mamServer.uninstall(install_asset, ctx.deviceid);
+});
+
+// router.get('devices/{deviceid}/apps/{id}/update', function(ctx){
+// 	var package_name = getAsset(ctx.id).attributes.overview_packageName; 
+// 	var mam = require('/modules/mam.js').mam;
+// 	var mamServer = new mam();
+// 	mamServer.uninstall(package_name,deviceid);
+// });
+
+// ARTIFACT APIS
+router.get('apps', function(ctx){
+	var paging = ctx.paging || 0;
+	var items = store.assets(type, {"start" : 0.0, "count" : 16});
+	items = sp(items);
+	var state = ctx.state;
+	var platform = ctx.platform;
+	var sort = ctx.sort;
+	if(platform!=undefined){
+		items = filterByType(items, platform);
+	}
+	if(sort!=undefined){
+		if(sort=="date"){
+			items.sort(function (l, r) {
+				log.info(l.attributes.overview_name);
+			   var date1 =parseDate(l.attributes[l.attributes.overview_status+"_date"]).toDate();
+			   var date2 = parseDate(r.attributes[r.attributes.overview_status+"_date"]).toDate();
+			   return date2<date1?-1:date2>date1?1:0;
+		    });
+		}
+	}
+	print(items);
+});
+
+var filterByCategory =function(items, category){
+	var ite=[];
+	for (var i = items.length - 1; i >= 0; i--){
+	   var item = items[i];
+	   if(item.attributes.overview_category==category){
+			ite.push(item);
+		}
+	};
+	return ite;
+}
+
+var filterByType = function(items,type){
+	var ite=[];
+	for (var i = items.length - 1; i >= 0; i--){
+	   var item = items[i];
+	   if(item.attributes.overview_platform==type){
+			ite.push(item);
+		}
+	}
+	return ite;
+}
+
+//Method to filter live artifacts
+var sp = function(items){
+	var arr = [];
+	for (var i = items.length - 1; i >= 0; i--){
+		var item = items[i];
+		if(item.attributes.overview_status=="LIVE"){
+			arr.push(spli(item));
+		}
+	}
+	return arr;
+}
+//Method to convert the image screenshots to an array
+var spli = function(item){
+	if(item.attributes.overview_status=="LIVE"){
+		if(item.attributes.images_screenshots){
+			item.attributes.images_screenshots =item.attributes.images_screenshots.split(',');
+		}
+		return item;
+	}
+	return null;
+}
+var compileTemplate = function(templatePath, context){
+	var template = Handle.compile(getResource(templatePath));
+	return template(context);
+}
+function getResource(name){
+	var f = new File(name);
+	f.open("r");
+	var cont = f.readAll();
+	f.close();
+	return cont;
+}
+router.process(request);
+%>

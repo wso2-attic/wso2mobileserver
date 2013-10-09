@@ -1,5 +1,6 @@
 var resources = function (page, meta) {
     return {
-        js: ['search.js']
+        template: 'search.hbs',
+        js: ['search.js' ]
     };
 };
