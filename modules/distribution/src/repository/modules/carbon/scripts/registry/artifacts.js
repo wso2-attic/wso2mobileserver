@@ -7,19 +7,25 @@
     var ByteArrayInputStream = Packages.java.io.ByteArrayInputStream;
     var QName = Packages.javax.xml.namespace.QName;
     var IOUtils = Packages.org.apache.commons.io.IOUtils;
-
+    var PrivilegedCarbonContext = Packages.org.wso2.carbon.context.PrivilegedCarbonContext;
+    var List = java.util.List;
+	var Map = java.util.Map;
+	var ArrayList = java.util.ArrayList;
+	var HashMap = java.util.HashMap;
+	
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;//Used to obtain Asset Types
     var DEFAULT_MEDIA_TYPE = 'application/vnd.wso2.registry-ext-type+xml';//Used to obtain Asset types
+	var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;//Used for pagination on register
 
     var REGISTRY_ABSOLUTE_PATH = "/_system/governance";
 
     var HISTORY_PATH_SEPERATOR = '_';
     var ASSET_PATH_SEPERATOR = '/';
     var lcHistoryRegExpression = new RegExp(ASSET_PATH_SEPERATOR, 'g');
-    var HISTORY_PATH = '/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
+    var HISTORY_PATH = '/_system/governance/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
 
 
-    var buildArtifact = function (manager, artifact) {
+    var buildArtifact = function (manager, artifact) {    	
         return {
             id: String(artifact.id),
             type: String(manager.type),
@@ -89,21 +95,87 @@
     };
     registry.ArtifactManager = ArtifactManager;
 
-    ArtifactManager.prototype.find = function (fn, paging) {
-        var i, length, artifacts,
-            artifactz = [];
-        artifacts = this.manager.findGenericArtifacts(new GenericArtifactFilter({
-            matches: function (artifact) {
-                return fn(buildArtifact(this, artifact));
-            }
-        }));
-        length = artifacts.length;
-        for (i = 0; i < length; i++) {
-            artifactz.push(buildArtifact(this, artifacts[i]));
-        }
+ArtifactManager.prototype.find = function (fn, paging) {
+        var i, length, artifacts,pagi = paging;
+            
+		var artifactz = [];
+		if(paging != null) {
+		var pagination = generatePaginationForm(paging);
+		}
+		try {
+			
+			if(paging != null) {
+				
+				PaginationContext.init(pagination.start, pagination.count, pagination.sortOrder, pagination.sortBy, pagination.paginationLimit);
+
+			}
+
+		} catch(error) {
+			//Handle errors here
+			log.info('Pagination problem occurs '+error);
+		} finally {
+			// Final-block
+			artifacts = this.manager.findGenericArtifacts(new GenericArtifactFilter({
+				matches : function(artifact) {
+					return fn(buildArtifact(this, artifact));
+				}
+			}));
+			length = artifacts.length;
+			
+			for( i = 0 ; i < length; i++) {				
+				artifactz.push(buildArtifact(this, artifacts[i]));
+				}
+
+			if(paging != null) {
+				PaginationContext.destroy();
+			}
+		}
+
         return artifactz;
     };
 
+ArtifactManager.prototype.search = function (query, paging) {
+        var i, length, artifacts,pagi = paging;            
+		var artifactz = [];
+		if(paging != null) {
+		var pagination = generatePaginationForm(paging);
+		}
+		try {
+			
+			if(paging != null) {
+				
+				PaginationContext.init(pagination.start, pagination.count, pagination.sortOrder, pagination.sortBy, pagination.paginationLimit);
+
+			}
+
+		} catch(error) {
+			//Handle errors here
+			log.info('Pagination problem occurs '+error);
+		} finally {
+			
+			var us = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+			//To-Do meeting for idea
+			PrivilegedCarbonContext.getThreadLocalCarbonContext().setUsername(this.registry.username);
+			
+			var map = HashMap();
+			var list  = new ArrayList();
+			//case senstive search
+			//To-Do for all attribute 
+			list.add(query+'*');
+			map.put('overview_name',list);			
+			artifacts = this.manager.findGenericArtifacts(map);
+			length = artifacts.length;			
+			for( i = 0 ; i < length; i++) {				
+				artifactz.push(buildArtifact(this, artifacts[i]));
+				}
+
+			if(paging != null) {
+				PaginationContext.destroy();
+			}
+		}
+
+        return artifactz;
+    };
     ArtifactManager.prototype.get = function (id) {
         return buildArtifact(this, this.manager.getGenericArtifact(id));
     };
@@ -440,7 +512,61 @@
         return fullPath;
     };
 
+    /*
+     generatePaginationForm will genrate json for registry pagination context
+     @pagin:The pagination details from UI
+     @
+     */
+    var generatePaginationForm = function (pagin) {
 
+		//pagination context for default
+		var paginationLimit = 300;
+		var paginationForm = {
+			'start' : 0,
+			'count' : 12,
+			'sortOrder' : 'ASC',
+			'sortBy' : 'overview_name',
+			'paginationLimit' : 500
+		};
+		// switch sortOrder from ES to pagination Context
+
+		switch (pagin.sort) {
+			case 'recent':
+				paginationForm.sortOrder = 'ASC'
+				break;
+			case 'older':
+				paginationForm.sortOrder = 'DES'
+				break;
+			case 'popular':
+				// no regsiter pagination support, socail feature need to check
+				break;
+			case 'unpopular':
+				// no regsiter pagination support, socail feature need to check
+				break;
+			case 'az':
+				paginationForm.sortOrder = 'ASC'
+				break;
+			case 'za':
+				paginationForm.sortOrder = 'DES'
+				break;
+			default:
+				paginationForm.sortOrder = 'ASC'
+		}
+		//sortBy only have overview_name name still for assert type attributes
+		if(pagin.count != null) {
+			paginationForm.count = pagin.count;
+		}
+		if(pagin.start != null) {
+			paginationForm.start = pagin.start;
+		}
+		if(pagin.paginationLimit != null) {
+			paginationForm.paginationLimit = pagin.paginationLimit;
+		}
+		return paginationForm;
+
+
+
+    };
     /*
      Helper function to create an artifact instance from a set of options (an image).
      */
