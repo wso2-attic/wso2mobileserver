@@ -21,6 +21,9 @@ var registry = registry || {};
         if (resource instanceof Comment) {
             return String(resource.getText());
         }
+		if(resource.content==null){
+			return null;
+		}
         var stream = resource.getContentStream();
         if (stream) {
             return new Stream(stream);

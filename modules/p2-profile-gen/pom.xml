@@ -151,6 +151,9 @@
                                 <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.governance.lifecycle.management.server.feature:${carbon.platform.version}
                                 </featureArtifactDef>
+																<featureArtifactDef>
+                                    org.wso2.carbon:org.wso2.carbon.registry.ui.menu.governance.feature:${carbon.platform.version}
+                                </featureArtifactDef>
 															 <featureArtifactDef>
 															                                    org.wso2.carbon:org.wso2.carbon.user.mgt.feature:${carbon.platform.version}
 															                                </featureArtifactDef>
@@ -261,6 +264,10 @@
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.registry.extensions.feature.group</id>
+                                    <version>${carbon.platform.version}</version>
+                                </feature>
+																<feature>
+                                    <id>org.wso2.carbon.registry.ui.menu.governance.feature.group</id>
                                     <version>${carbon.platform.version}</version>
                                 </feature>
                                 <feature>

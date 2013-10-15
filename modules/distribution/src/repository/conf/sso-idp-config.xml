@@ -36,5 +36,11 @@
             <SignResponse>true</SignResponse>
             <CustomLoginPage>/mdm/login</CustomLoginPage>
         </ServiceProvider>
+				<ServiceProvider>
+            <Issuer>mam</Issuer>
+            <AssertionConsumerService>https://localhost:9443/mam/acs</AssertionConsumerService>
+            <SignResponse>true</SignResponse>
+            <CustomLoginPage>/mam/login</CustomLoginPage>
+        </ServiceProvider>
     </ServiceProviders>
 </SSOIdentityProviderConfig>

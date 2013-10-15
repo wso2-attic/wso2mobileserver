@@ -20,7 +20,7 @@
 		<AddAdmin>true</AddAdmin>
                 <AdminRole>admin</AdminRole>
                 <AdminUser>
-                     <UserName>admin</UserName>
+                     <UserName>admin@admin.com</UserName>
                      <Password>admin</Password>
                 </AdminUser>
             <EveryOneRoleName>everyone</EveryOneRoleName> <!-- By default users in this role sees the registry root -->

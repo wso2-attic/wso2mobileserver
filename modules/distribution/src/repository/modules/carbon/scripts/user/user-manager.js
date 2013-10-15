@@ -31,7 +31,9 @@
         }
         return new user.User(this, username);
     };
-
+    UserManager.prototype.getRoleListOfUser = function (username) {
+	        return this.manager.getRoleListOfUser(username);
+	    };
     UserManager.prototype.addUser = function (username, password, roles, claims, profile) {
         this.manager.addUser(username, password, roles || [], claims || null, profile);
     };
@@ -84,6 +86,7 @@
 	UserManager.prototype.getUserListOfRole = function (role) {
         return this.manager.getUserListOfRole(role);
     };
+
     /**
      * um.authorizeRole('store-admin', '/permissions/mypermission', 'ui-execute');
      *
