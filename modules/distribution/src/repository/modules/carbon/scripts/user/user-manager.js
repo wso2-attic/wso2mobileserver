@@ -65,6 +65,12 @@
     UserManager.prototype.isAuthorized = function (role, permission, action) {
         return this.authorizer.isRoleAuthorized(role, permission, action);
     };
+ 	UserManager.prototype.updateRoleListOfUser = function(name, deletedRoles, newRoles){
+    return this.manager.updateRoleListOfUser(name, deletedRoles, newRoles);
+    };
+    UserManager.prototype.updateUserListOfRole = function(name, deletedUsers, newUsers){
+    return this.manager.updateUserListOfRole(name, deletedUsers, newUsers);
+    };
 
     UserManager.prototype.addRole = function (role, users, permissions) {
         var perms = [],

@@ -18,7 +18,7 @@ var entitlement = entitlement || {};
 	var remoteServiceUrl = "https://localhost:9443/admin/services/";
 		
     	policy.init = function() {
-		var remoteServiceUserName = "admin";
+		var remoteServiceUserName = "admin@admin.com";
 		var remoteServicePassword = "admin";		 
 		var client = "basicAuth";
 
@@ -72,14 +72,14 @@ var entitlement = entitlement || {};
 	var PolicyDTO = Packages.org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
 	var BACKEND_SERVER_URL = "https://localhost:9443/admin/services/";
 	var keyStorePath = "/home/gayan/software/pre-M5/wso2is-4.5.0-pre-M5-SNAPSHOT/repository/resources/security/" +"wso2carbon.jks";
-	var remoteIP = "10.200.1.142";
+	var remoteIP = "10.100.5.3";
 
 	entitlement.login = function (){
 		java.lang.System.setProperty("javax.net.ssl.trustStore", keyStorePath);
 	    	java.lang.System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
 		configCtx = ConfigurationContextFactory.createConfigurationContextFromFileSystem(null, null);
 		var authorized = false;
-	    if (authenticate("admin", "admin", remoteIP)) {
+	    if (authenticate("admin@admin.com", "admin", remoteIP)) {
 	    	java.lang.System.out.println("user logged in.");
 	        authorized = true;
 	    }else {

@@ -230,3 +230,4 @@ modules/components/org.wso2.carbon.databridge.datasink.cassandra/target
 modules/components/social/target
 modules/components/sso-common/target
 modules/components/store-admin/target
+/deployer.sh
