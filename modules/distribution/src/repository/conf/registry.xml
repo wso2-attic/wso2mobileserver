@@ -76,6 +76,12 @@
     <filter class="org.wso2.jaggery.scxml.registry.filters.JaggeryExecutorFilter">
     </filter>
 </handler>
+<handler class="org.wso2.carbon.
+identity.entitlement.policy.finder.registry.RegistryPolicyHandler">
+<filter class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyMediaTypeMatcher">
+<property name="mediaType">application/xacml-policy+xml</property>
+</filter>
+</handler>
 
     <!--<aspect name="SampleLifeCycle" class="org.wso2.carbon.governance.registry.extensions.aspects.ChecklistLifeCycle">
         <configuration type="literal">
