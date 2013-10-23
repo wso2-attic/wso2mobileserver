@@ -38,6 +38,7 @@
                 <exclude>**/pom.xml</exclude>
                 <exclude>**/version.txt</exclude>
                 <exclude>**/carbon.xml</exclude>
+								<exclude>**/user-mgt.xml</exclude>
                 <exclude>**/registry.xml</exclude>
                 <exclude>**/axis2/axis2.xml</exclude>
                 <!--exclude>**/ciphertool.bat</exclude-->
@@ -159,8 +160,6 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf</outputDirectory>
             <includes>
                 <include>**/api-manager.xml</include>
-								<include>**/user-mgt.xml</include>
-								<include>**/carbon.xml</include>
 							  <include>**/sso-idp-config.xml</include>
 								<include>**/mdm-config.xml</include>
             </includes>
