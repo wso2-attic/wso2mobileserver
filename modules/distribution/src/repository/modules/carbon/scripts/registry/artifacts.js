@@ -7,15 +7,17 @@
     var ByteArrayInputStream = Packages.java.io.ByteArrayInputStream;
     var QName = Packages.javax.xml.namespace.QName;
     var IOUtils = Packages.org.apache.commons.io.IOUtils;
-    var PrivilegedCarbonContext = Packages.org.wso2.carbon.context.PrivilegedCarbonContext;
+    var PrivilegedCarbonContext = Packages.org.wso2.carbon.context.PrivilegedCarbonContext; //Used regard tenant details
+    var CarbonContext = Packages.org.wso2.carbon.context.CarbonContext;
+    var MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
     var List = java.util.List;
-	var Map = java.util.Map;
-	var ArrayList = java.util.ArrayList;
-	var HashMap = java.util.HashMap;
-	
+    var Map = java.util.Map;
+    var ArrayList = java.util.ArrayList;
+    var HashMap = java.util.HashMap;
+
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;//Used to obtain Asset Types
     var DEFAULT_MEDIA_TYPE = 'application/vnd.wso2.registry-ext-type+xml';//Used to obtain Asset types
-	var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;//Used for pagination on register
+    var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;//Used for pagination on register
 
     var REGISTRY_ABSOLUTE_PATH = "/_system/governance";
 
@@ -25,7 +27,7 @@
     var HISTORY_PATH = '/_system/governance/_system/governance/repository/components/org.wso2.carbon.governance/lifecycles/history/';
 
 
-    var buildArtifact = function (manager, artifact) {    	
+    var buildArtifact = function (manager, artifact) {
         return {
             id: String(artifact.id),
             type: String(manager.type),
@@ -40,7 +42,16 @@
                     attributes = {};
                 for (i = 0; i < length; i++) {
                     name = names[i];
-                    attributes[name] = String(artifact.getAttribute(name));
+
+                    var data = artifact.getAttributes(name);
+
+                    //Check if there is only one element
+                    if (data.length == 1) {
+                        attributes[name] = String(artifact.getAttribute(name));
+                    }
+                    else {
+                        attributes[name] = data;
+                    }
                 }
                 return attributes;
             }()),
@@ -95,104 +106,93 @@
     };
     registry.ArtifactManager = ArtifactManager;
 
-ArtifactManager.prototype.find = function (fn, paging) {
-        var i, length, artifacts,pagi = paging;
-            
-		var artifactz = [];
-		if(paging != null) {
-		var pagination = generatePaginationForm(paging);
-		}
-		try {
-			
-			if(paging != null) {
-				
-				PaginationContext.init(pagination.start, pagination.count, pagination.sortOrder, pagination.sortBy, pagination.paginationLimit);
-
-			}
-
-		} catch(error) {
-			//Handle errors here
-			log.info('Pagination problem occurs '+error);
-		} finally {
-			// Final-block
-			artifacts = this.manager.findGenericArtifacts(new GenericArtifactFilter({
-				matches : function(artifact) {
-					return fn(buildArtifact(this, artifact));
-				}
-			}));
-			length = artifacts.length;
-			
-			for( i = 0 ; i < length; i++) {				
-				artifactz.push(buildArtifact(this, artifacts[i]));
-				}
-
-			if(paging != null) {
-				PaginationContext.destroy();
-			}
-		}
-
+    ArtifactManager.prototype.find = function (fn, paging) {
+        var i, length, artifacts,
+            artifactz = [];
+        artifacts = this.manager.findGenericArtifacts(new GenericArtifactFilter({
+            matches: function (artifact) {
+                return fn(buildArtifact(this, artifact));
+            }
+        }));
+        length = artifacts.length;
+        for (i = 0; i < length; i++) {
+            artifactz.push(buildArtifact(this, artifacts[i]));
+        }
         return artifactz;
     };
 
-ArtifactManager.prototype.search = function (query, paging) {
-        var i, length, artifacts,pagi = paging;            
-		var artifactz = [];
-		if(paging != null) {
-		var pagination = generatePaginationForm(paging);
-		}
-		try {
-			
-			if(paging != null) {
-				
-				PaginationContext.init(pagination.start, pagination.count, pagination.sortOrder, pagination.sortBy, pagination.paginationLimit);
 
-			}
+    /*
+     * this funtion is used ArtifactManager find with map for query for solr basicly
+     * query - for maping attribute of resource
+     * pagin - pagination details
+     * return - list of artifacts under the seach request
+     *
+     */
+    ArtifactManager.prototype.search = function (query, paging) {
 
-		} catch(error) {
-			//Handle errors here
-			log.info('Pagination problem occurs '+error);
-		} finally {
-			
-			var us = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
-			//To-Do meeting for idea
-			PrivilegedCarbonContext.getThreadLocalCarbonContext().setUsername(this.registry.username);
-			
-			var map = HashMap();
-			var list  = new ArrayList();
-			//case senstive search
-			//To-Do for all attribute 
-			list.add(query+'*');
-			map.put('overview_name',list);			
-			artifacts = this.manager.findGenericArtifacts(map);
-			length = artifacts.length;			
-			for( i = 0 ; i < length; i++) {				
-				artifactz.push(buildArtifact(this, artifacts[i]));
-				}
-
-			if(paging != null) {
-				PaginationContext.destroy();
-			}
-		}
-
+        var list, map, key, artifacts, pagination, value, that,
+            artifactz = [];
+        pagination = generatePaginationForm(paging);
+        try {
+            PaginationContext.init(pagination.start, pagination.count, pagination.sortOrder,
+                pagination.sortBy, pagination.paginationLimit);
+            map = HashMap();
+            //case senstive search as it using greg with solr 1.4.1
+            if (!query) {
+                //listing for sorting
+                map = java.util.Collections.emptyMap();
+            } else if (query instanceof String || typeof query === 'string') {
+                list = new ArrayList();
+                list.add('*' + query + '*');
+                map.put('overview_name', list);
+            } else {
+                //support for only on name of attribut -
+                for (key in query) {
+                    // if attribute is string values
+                    if (query.hasOwnProperty(key)) {
+                        value = query[key];
+                        list = new ArrayList();
+                        if (value instanceof Array) {
+                            value.forEach(function (val) {
+                                //solr config update need have '*' as first char in below line
+                                //check life_cycle state
+                                list.add(key == 'lcState' ? val : '*' + val + '*');
+                            });
+                        } else {
+                            //solr config update need have '*' as first char in below line
+                            list.add(key == 'lcState' ? value : '*' + value + '*');
+                        }
+                        map.put(key, list);
+                    }
+                }//end of attribut looping (all attributes)
+            }
+            artifacts = this.manager.findGenericArtifacts(map);
+            that = this;
+            artifacts.forEach(function (artifact) {
+                artifactz.push(buildArtifact(that, artifact));
+            });
+        } finally {
+            PaginationContext.destroy();
+        }
         return artifactz;
     };
+
     ArtifactManager.prototype.get = function (id) {
-        return buildArtifact(this, this.manager.getGenericArtifact(id));
+        return buildArtifact(this, this.manager.getGenericArtifact(id))
     };
 
     ArtifactManager.prototype.count = function () {
         return this.manager.getAllGenericArtifactIds().length;
     };
 
+    /**
+     * @deprecated Please use search method instead
+     * @param paging
+     * @return {*}
+     */
     ArtifactManager.prototype.list = function (paging) {
-        var i,
-            artifactz = [],
-            artifacts = this.manager.getAllGenericArtifacts(),
-            length = artifacts.length;
-        for (i = 0; i < length; i++) {
-            artifactz.push(buildArtifact(this, artifacts[i]));
-        }
-        return artifactz;
+        return this.search(null, paging);
     };
 
     /*
@@ -250,12 +250,11 @@ ArtifactManager.prototype.search = function (query, paging) {
      @options: The artifact to which the life cycle must be attached.
      */
     ArtifactManager.prototype.attachLifecycle = function (lifecycleName, options) {
-
         var artifact = getArtifactFromImage(this.manager, options);
-
+        if (!artifact) {
+            throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
+        }
         artifact.attachLifecycle(lifecycleName);
-
-        //this.manager.updateGenericArtifact(artifact);
     };
 
     /*
@@ -263,9 +262,10 @@ ArtifactManager.prototype.search = function (query, paging) {
      @options: The artifact from which the life cycle must be removed
      */
     ArtifactManager.prototype.detachLifecycle = function (options) {
-
         var artifact = getArtifactFromImage(this.manager, options);
-
+        if (!artifact) {
+            throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
+        }
         artifact.detachLifecycle();
     };
 
@@ -274,28 +274,12 @@ ArtifactManager.prototype.search = function (query, paging) {
      @options: An artifact image (Not a real artifact)
      */
     ArtifactManager.prototype.promoteLifecycleState = function (state, options) {
-        var artifact = getArtifactFromImage(this.manager, options);
-
-        var checkListItems = [];
-        //We enable all checklists
-        try {
-            checkListItems = artifact.getAllCheckListItemNames();
+        var checkListItems,
+            artifact = getArtifactFromImage(this.manager, options);
+        if (!artifact) {
+            throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
         }
-        catch (e) {
-            log.debug('No checklist defined');
-            checkListItems = [];
-        }
-
-        //Check if all of the check list items have been enabled
-
-        //If any of the items is not defined, throw an exception
-
-        //Invoke the action
-
-        /*for(var index in checkListItems){
-         artifact.checkLCItem(index);
-         }*/
-
+        //checkListItems = artifact.getAllCheckListItemNames();
         artifact.invokeAction(state);
     };
 
@@ -306,10 +290,10 @@ ArtifactManager.prototype.search = function (query, paging) {
      */
     ArtifactManager.prototype.getLifecycleState = function (options) {
         var artifact = getArtifactFromImage(this.manager, options);
-
-        var state = artifact.getLifecycleState();
-        return state;
-        //return artifact.getLcState();
+        if (!artifact) {
+            throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
+        }
+        return artifact.getLifecycleState();
     };
 
     /*
@@ -342,6 +326,7 @@ ArtifactManager.prototype.search = function (query, paging) {
      @throws Exception: If the index is not within 0 and the max check list item or if there is an issue ticking the item
      */
     ArtifactManager.prototype.isItemChecked = function (index, options) {
+
         var artifact = getArtifactFromImage(this.manager, options);
 
         var checkListItems = artifact.getAllCheckListItemNames();
@@ -356,7 +341,6 @@ ArtifactManager.prototype.search = function (query, paging) {
 
         return result;
     };
-
 
     /*
      The method enables the check list item and the given index
@@ -388,6 +372,7 @@ ArtifactManager.prototype.search = function (query, paging) {
      @throws Exception: If the index is not within 0 and max check list item or if there is an issue ticking the item
      */
     ArtifactManager.prototype.uncheckItem = function (index, options) {
+
         var artifact = getArtifactFromImage(this.manager, options);
 
         var checkListItems = artifact.getAllCheckListItemNames();
@@ -408,8 +393,10 @@ ArtifactManager.prototype.search = function (query, paging) {
      */
     ArtifactManager.prototype.availableActions = function (options) {
         var artifact = getArtifactFromImage(this.manager, options);
-        var availableActions = artifact.getAllLifecycleActions() || [];
-        return availableActions;
+        if (!artifact) {
+            throw new Error('Specified artifact cannot be found : ' + JSON.stringify(options));
+        }
+        return artifact.getAllLifecycleActions() || [];
     };
 
     /*
@@ -419,7 +406,18 @@ ArtifactManager.prototype.search = function (query, paging) {
      @return: A string path of the life-cycle history.
      */
     ArtifactManager.prototype.getLifecycleHistoryPath = function (options) {
+
         return getHistoryPath(options.path);
+    };
+
+    /*
+    The function obtains the lifecycle history for the provided asset
+    @options: An asset with a valid path.(A path which exists in the registry
+    @return: A resource object containing the history as an xml
+     */
+    ArtifactManager.prototype.getLifecycleHistory=function(options){
+        var historyPath=getHistoryPath(options.path);
+        return this.registry.get(historyPath);
     };
 
     /*
@@ -429,6 +427,7 @@ ArtifactManager.prototype.search = function (query, paging) {
      have a life-cycle then an empty string is returned.
      */
     ArtifactManager.prototype.getLifeCycleName = function (options) {
+
         var artifact = getArtifactFromImage(this.manager, options);
 
         var lifecycleName = '';
@@ -441,59 +440,59 @@ ArtifactManager.prototype.search = function (query, paging) {
     };
 
     /*
-    The function returns all versions of the provided artifact 
-    @options: The artifact to be checked
-    @return: A list of all the different versions of the provided asset
-    */
-    ArtifactManager.prototype.getAllAssetVersions=function(assetName){
+     The function returns all versions of the provided artifact
+     @options: The artifact to be checked
+     @return: A list of all the different versions of the provided asset
+     */
+    ArtifactManager.prototype.getAllAssetVersions = function (assetName) {
 
-	var matchingArtifacts=[];
+        var matchingArtifacts = [];
 
-	var pred={
-		overview_name:assetName||''
-	};
+        var pred = {
+            overview_name: assetName || ''
+        };
 
-	this.find(function(artifact){
-		
-		//Add to the matches if the artifact exists
-		if(assert(artifact.attributes,pred)){
+        this.find(function (artifact) {
 
-			//We only need the id and version
-			matchingArtifacts.push({id:artifact.id,version:artifact.attributes.overview_version});
-		}
+            //Add to the matches if the artifact exists
+            if (assert(artifact.attributes, pred)) {
+
+                //We only need the id and version
+                matchingArtifacts.push({id: artifact.id, version: artifact.attributes.overview_version});
+            }
         });
 
-	return matchingArtifacts;
+        return matchingArtifacts;
     };
 
     /*
-    The function checks if the two objects a and b are equal.If a property in b is not
-    in a, then both objects are assumed to be different.
-    @a: The object to be compared
-    @b: The object containing properties that must match in a
-    @return: True if the objects are equal,else false.
-    */
-    var assert=function(a,b){
-	
-	//Assume the objects will be same
-	var equal=true;
+     The function checks if the two objects a and b are equal.If a property in b is not
+     in a, then both objects are assumed to be different.
+     @a: The object to be compared
+     @b: The object containing properties that must match in a
+     @return: True if the objects are equal,else false.
+     */
+    var assert = function (a, b) {
 
-	for(var key in b){
-	
-		
-		if(a.hasOwnProperty(key)){
+        //Assume the objects will be same
+        var equal = true;
 
-		   //If the two keys are not equal
-		   if(a[key]!=b[key]){
-			return false;
-		   }
-		}
-		else{
-			return false;
-		}	
-	}
+        for (var key in b) {
 
-	return equal;
+
+            if (a.hasOwnProperty(key)) {
+
+                //If the two keys are not equal
+                if (a[key] != b[key]) {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+
+        return equal;
     };
 
     /*
@@ -513,60 +512,45 @@ ArtifactManager.prototype.search = function (query, paging) {
     };
 
     /*
-     generatePaginationForm will genrate json for registry pagination context
+     generatePaginationForm will genrate json for registry pagination context, (pagination consistent handling)
      @pagin:The pagination details from UI
      @
      */
     var generatePaginationForm = function (pagin) {
 
-		//pagination context for default
-		var paginationLimit = 300;
-		var paginationForm = {
-			'start' : 0,
-			'count' : 12,
-			'sortOrder' : 'ASC',
-			'sortBy' : 'overview_name',
-			'paginationLimit' : 500
-		};
-		// switch sortOrder from ES to pagination Context
+        //pagination context for default
+        var paginationLimit = 300;
+        var paginationForm = {
+            'start': 0,
+            'count': 12,
+            'sortOrder': 'ASC',
+            'sortBy': 'overview_name',
+            'paginationLimit': 2147483647
+        };
 
-		switch (pagin.sort) {
-			case 'recent':
-				paginationForm.sortOrder = 'ASC'
-				break;
-			case 'older':
-				paginationForm.sortOrder = 'DES'
-				break;
-			case 'popular':
-				// no regsiter pagination support, socail feature need to check
-				break;
-			case 'unpopular':
-				// no regsiter pagination support, socail feature need to check
-				break;
-			case 'az':
-				paginationForm.sortOrder = 'ASC'
-				break;
-			case 'za':
-				paginationForm.sortOrder = 'DES'
-				break;
-			default:
-				paginationForm.sortOrder = 'ASC'
-		}
-		//sortBy only have overview_name name still for assert type attributes
-		if(pagin.count != null) {
-			paginationForm.count = pagin.count;
-		}
-		if(pagin.start != null) {
-			paginationForm.start = pagin.start;
-		}
-		if(pagin.paginationLimit != null) {
-			paginationForm.paginationLimit = pagin.paginationLimit;
-		}
-		return paginationForm;
+        if (!pagin) {
+            return paginationForm;
+        }
 
-
+        if (pagin.count != null) {
+            paginationForm.count = pagin.count;
+        }
+        if (pagin.start != null) {
+            paginationForm.start = pagin.start;
+        }
+        if (pagin.paginationLimit != null) {
+            paginationForm.paginationLimit = pagin.paginationLimit;
+        }
+        if (pagin.sortBy != null) {
+            paginationForm.sortBy = pagin.sortBy;
+        }
+        if (paginationForm.sortOrder != null) {
+            paginationForm.sortOrder = pagin.sortOrder;
+        }
+        return paginationForm;
 
     };
+
     /*
      Helper function to create an artifact instance from a set of options (an image).
      */

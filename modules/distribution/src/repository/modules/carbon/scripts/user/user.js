@@ -23,6 +23,7 @@ var user = {};
  	User.prototype.getClaimsForSet = function (claims,profile) {
         return this.um.getClaimsForSet(this.username, claims, profile);
     };
+
     User.prototype.setClaims = function (claims, profile) {
         this.um.setClaims(this.username, claims, profile);
     };

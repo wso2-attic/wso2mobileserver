@@ -56,12 +56,18 @@
 	UserManager.prototype.getClaimsForSet = function (username,claims, profile) {
         return this.manager.getUserClaimValues(username,claims, profile);
     };
+    UserManager.prototype.getClaim = function (username, claim, profile) {
+        return this.manager.getUserClaimValue(username, claim, profile);
+    };
+
     UserManager.prototype.setClaims = function (username, claims, profile) {
         return this.manager.setUserClaimValues(username, claims, profile);
     };
-	UserManager.prototype.listUsers = function () {
-        return this.manager.listUsers("*", -1);
+
+    UserManager.prototype.setClaim = function (username, claim, value, profile) {
+        return this.manager.setUserClaimValue(username, claim, value, profile);
     };
+
     UserManager.prototype.isAuthorized = function (role, permission, action) {
         return this.authorizer.isRoleAuthorized(role, permission, action);
     };
@@ -71,7 +77,9 @@
     UserManager.prototype.updateUserListOfRole = function(name, deletedUsers, newUsers){
     return this.manager.updateUserListOfRole(name, deletedUsers, newUsers);
     };
-
+	UserManager.prototype.listUsers = function () {
+        return this.manager.listUsers("*", -1);
+    };
     UserManager.prototype.addRole = function (role, users, permissions) {
         var perms = [],
             Permission = Packages.org.wso2.carbon.user.api.Permission;
@@ -115,7 +123,7 @@
             processPerms(permission, function (id, action) {
                 if (!that.isAuthorized(role, id, action)) {
                     that.authorizer.authorizeRole(role, id, action);
-                    if(log.isDebugEnabled()) {
+                    if (log.isDebugEnabled()) {
                         log.debug('permission added(role:permission:action) - ' + role + ':' + id + ':' + action);
                     }
                 }

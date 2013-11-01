@@ -21,9 +21,6 @@ var registry = registry || {};
         if (resource instanceof Comment) {
             return String(resource.getText());
         }
-		if(resource.content==null){
-			return null;
-		}
         var stream = resource.getContentStream();
         if (stream) {
             return new Stream(stream);
@@ -315,7 +312,7 @@ var registry = registry || {};
     Registry.prototype.associations = function (path, type) {
         var i, asso,
             assos = type ? this.registry.getAssociations(path, type) : this.registry.getAllAssociations(path),
-            length = assos.length(),
+            length = assos.length,
             associations = [];
         for (i = 0; i < length; i++) {
             asso = assos[i];

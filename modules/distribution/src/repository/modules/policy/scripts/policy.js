@@ -31,7 +31,7 @@ var entitlement = entitlement || {};
         	clientConfigMap.put("password", remoteServicePassword);
 	     
         	appToPDPClientConfigMap.put("EntitlementMediator", clientConfigMap);
-        	var config = new PEPProxyConfig(appToPDPClientConfigMap,"EntitlementMediator", "simple", 100000, 1000);
+        	var config = new PEPProxyConfig(appToPDPClientConfigMap,"EntitlementMediator", null, 100000, 1000);
 
 		pepProxy = new PEPProxy(config);
         	
@@ -71,8 +71,8 @@ var entitlement = entitlement || {};
 	var HTTPConstants = Packages.org.apache.axis2.transport.http.HTTPConstants;
 	var PolicyDTO = Packages.org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
 	var BACKEND_SERVER_URL = "https://localhost:9443/admin/services/";
-	var keyStorePath = "/home/gayan/software/pre-M5/wso2is-4.5.0-pre-M5-SNAPSHOT/repository/resources/security/" +"wso2carbon.jks";
-	var remoteIP = "10.100.5.3";
+	var keyStorePath = "/Users/dulitharasangawijewantha/Development/WSO2/Products/wso2mobileserver-1.0.0/repository/resources/security/" +"wso2carbon.jks";
+	var remoteIP = "192.168.1.248";
 
 	entitlement.login = function (){
 		java.lang.System.setProperty("javax.net.ssl.trustStore", keyStorePath);
@@ -144,10 +144,10 @@ var entitlement = entitlement || {};
 	entitlement.readExistingPolicy = function(entitlementPolicyAdminServiceStub, policyId) {
 		log.info("Policy Id"+policyId);
         	var policy = null;
-        	var policyDTO = entitlementPolicyAdminServiceStub.getPolicy(policyId);
+        	var policyDTO = entitlementPolicyAdminServiceStub.getPolicy(policyId,true);
 		log.info(policyDTO);
         	policy = policyDTO.getPolicy();
-        	System.out.println("Read Policy:" + policy);
+        	java.lang.System.out.println("Read Policy:" + policy);
 		return policy;
        }
 	entitlement.evaluatePolicy = function (requestString, entitlementServiceStub) {

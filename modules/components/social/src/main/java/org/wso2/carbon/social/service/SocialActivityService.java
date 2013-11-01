@@ -6,7 +6,11 @@ import org.mozilla.javascript.NativeObject;
 import java.util.List;
 
 public interface SocialActivityService {
-    void publish(NativeObject activity);
+    String publish(NativeObject activity);
 
-    String[] listActivities(String targetId);
+    String[] listActivities(String contextId);
+
+    double getRating(String targetId, String tenant);
+
+    String getSocialObjectJson(String targetId, String sortOrder, String tenant);
 }
