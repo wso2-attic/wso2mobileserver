@@ -53,6 +53,11 @@
             <artifactId>org.wso2.carbon.databridge.datasink.cassandra</artifactId>
             <version>4.2.0</version>
         </dependency>
+				<dependency>
+				            <groupId>org.wso2.store</groupId>
+				            <artifactId>org.wso2.carbon.social</artifactId>
+				            <version>1.0.0</version>
+				        </dependency>
     </dependencies>
 
     <build>
@@ -84,7 +89,7 @@
                                 <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.hostobjects.sso</bundleDef>-->
                                 <bundleDef>org.wso2.store:org.wso2.store.sso.common</bundleDef>
                                 <bundleDef>org.wso2.store:org.wso2.store.admin.styles</bundleDef>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.social:4.2.0</bundleDef>
+                                <bundleDef>org.wso2.store:org.wso2.carbon.social:1.0.0</bundleDef>
                                 <bundleDef>org.wso2.carbon:org.wso2.carbon.databridge.datasink.cassandra</bundleDef>
 				<bundleDef>org.wso2.jaggery.scxml:jaggery-scxml-executors:1.0-SNAPSHOT</bundleDef>
                             </bundles>

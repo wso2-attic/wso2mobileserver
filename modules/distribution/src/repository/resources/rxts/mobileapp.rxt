@@ -39,7 +39,7 @@
             <field type="options">
                 <name label="Status">Status</name>
             </field>
-						<field type="text" required="true">
+						<field type="text">
                 <name>PackageName</name>
             </field>
 						<field type="options">
@@ -54,15 +54,15 @@
 				For uninstallation in iOS we require the App ID which is separate from 
 				package name
 			-->
-						<field type="text" required="true">
+						<field type="text">
 			               <name>AppID</name>
 			      </field>
-						<field type="text" required="true">
+						<field type="text">
 			               <name>BundleVersion</name>
 			      </field>
 			<!-- For Android this would be the link to the Android APK file. 
 			For iOS however this would be the name of the plist file -->
-						<field type="text" required="true">
+						<field type="text">
 			          <name>URL</name>
 			       </field>
 						 <field type="text" required="true">

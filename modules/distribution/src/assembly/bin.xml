@@ -169,7 +169,8 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/security/</outputDirectory>
             <includes>
                 <include>**/application-authenticators.xml</include>
-								<include>**/entitlement.properties</include>
+			    			<include>**/entitlement.properties</include>
+                
             </includes>
         </fileSet>
         <fileSet>
@@ -298,6 +299,11 @@
         <file>
             <source>src/repository/conf/registry.xml</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+				<file>
+            <source>src/repository/conf/wso2mobilemdm.jks</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security</outputDirectory>
             <filtered>true</filtered>
         </file>
         <file>
