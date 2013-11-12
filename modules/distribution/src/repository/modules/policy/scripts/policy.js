@@ -71,11 +71,18 @@ var entitlement = entitlement || {};
 	var HTTPConstants = Packages.org.apache.axis2.transport.http.HTTPConstants;
 	var PolicyDTO = Packages.org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
 	var BACKEND_SERVER_URL = "https://localhost:9443/admin/services/";
-	var keyStorePath = "/Users/dulitharasangawijewantha/Development/WSO2/Products/wso2mobileserver-1.0.0/repository/resources/security/" +"wso2carbon.jks";
-	var remoteIP = "192.168.1.248";
-
-	entitlement.login = function (){
-		java.lang.System.setProperty("javax.net.ssl.trustStore", keyStorePath);
+	//var keyStorePath = "/home/gayan/Desktop/temp/wso2mobileserver-1.0.0/wso2mobileserver-1.0.0/repository/resources/security/" +"wso2carbon.jks";
+	var keyStorePath = "";
+	var remoteIP = "localhost";
+	
+	/*entitlement.setKeyStorePath = function(){
+		var process = require('process');
+		keyStorePath = process.getProperty('carbon.home')+"/repository/resources/security/"+"wso2carbon.jks";	
+		log.info(keyStorePath);
+	}*/
+	var process = require('process');
+	entitlement.login = function (){		
+		java.lang.System.setProperty("javax.net.ssl.trustStore", process.getProperty('carbon.home')+"/repository/resources/security/"+"wso2carbon.jks");
 	    	java.lang.System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
 		configCtx = ConfigurationContextFactory.createConfigurationContextFromFileSystem(null, null);
 		var authorized = false;

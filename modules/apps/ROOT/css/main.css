@@ -447,3 +447,16 @@ textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[ty
 .multiple-selectbox{
 width:600px;
 }
+
+
+
+
+
+.row-fluid .span3-5 {
+    width: 29%;
+}
+
+
+h3 {
+    font-size: 20.5px;
+}
