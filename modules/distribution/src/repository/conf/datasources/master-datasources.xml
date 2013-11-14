@@ -15,7 +15,7 @@
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/mdmdb</url>
                     <username>root</username>
-                    <password>123</password>
+                    <password></password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
                     <maxActive>50</maxActive>
                     <maxWait>60000</maxWait>

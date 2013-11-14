@@ -31,46 +31,46 @@
         <dataSource>jdbc/WSO2CarbonDB</dataSource>
     </dbConfig>
 
-	<!--aspect name="SecondLifeCycle" class="org.wso2.carbon.governance.registry.extensions.aspects.DefaultLifeCycle">
-	    <configuration type="literal">
-		<lifecycle>
-		    <scxml xmlns="http://www.w3.org/2005/07/scxml"
-		           version="1.0"
-		           initialstate="Development">
-		        <state id="Development">
-		            <datamodel>
-		                <data name="checkItems">
-		                    <item name="Code Completed" forEvent="">
-		                    </item>
-		                    <item name="WSDL, Schema Created" forEvent="">
-		                    </item>
-		                    <item name="QoS Created" forEvent="">
-		                    </item>
-		                </data>
-		            </datamodel>
-		            <transition event="Promote" target="Tested"/>
-		        </state>
-		        <state id="Published">
-		            <datamodel>
-		                <data name="checkItems">
-		                    <item name="Effective Inspection Completed" forEvent="">
-		                    </item>
-		                    <item name="Test Cases Passed" forEvent="">
-		                    </item>
-		                    <item name="Smoke Test Passed" forEvent="">
-		                    </item>
-		                </data>
-		            </datamodel>
-		            <transition event="Promote" target="Production"/>
-		            <transition event="Demote" target="Development"/>
-		        </state>
-		        <state id="Deprecated">
-		            <transition event="Demote" target="Tested"/>
-		        </state>
-		    </scxml>
-		</lifecycle>
-	    </configuration>
-	</aspect-->
+    <!--aspect name="SecondLifeCycle" class="org.wso2.carbon.governance.registry.extensions.aspects.DefaultLifeCycle">
+        <configuration type="literal">
+        <lifecycle>
+            <scxml xmlns="http://www.w3.org/2005/07/scxml"
+                   version="1.0"
+                   initialstate="Development">
+                <state id="Development">
+                    <datamodel>
+                        <data name="checkItems">
+                            <item name="Code Completed" forEvent="">
+                            </item>
+                            <item name="WSDL, Schema Created" forEvent="">
+                            </item>
+                            <item name="QoS Created" forEvent="">
+                            </item>
+                        </data>
+                    </datamodel>
+                    <transition event="Promote" target="Tested"/>
+                </state>
+                <state id="Published">
+                    <datamodel>
+                        <data name="checkItems">
+                            <item name="Effective Inspection Completed" forEvent="">
+                            </item>
+                            <item name="Test Cases Passed" forEvent="">
+                            </item>
+                            <item name="Smoke Test Passed" forEvent="">
+                            </item>
+                        </data>
+                    </datamodel>
+                    <transition event="Promote" target="Production"/>
+                    <transition event="Demote" target="Development"/>
+                </state>
+                <state id="Deprecated">
+                    <transition event="Demote" target="Tested"/>
+                </state>
+            </scxml>
+        </lifecycle>
+        </configuration>
+    </aspect-->
 
 <handler class="org.wso2.jaggery.scxml.registry.handlers.JaggeryExecutorHandler" methods="PUT">
     <filter class="org.wso2.jaggery.scxml.registry.filters.JaggeryExecutorFilter">
@@ -151,7 +151,7 @@
     </mount-->
 
     <!-- This defines index cofiguration which is used in meta data search feature of the registry -->
-    <indexingConfiguration>
+        <indexingConfiguration>
         <startingDelayInSeconds>30</startingDelayInSeconds>
         <indexingFrequencyInSeconds>5</indexingFrequencyInSeconds>
         <!--number of resources submit for given indexing thread -->
@@ -162,10 +162,18 @@
         <lastAccessTimeLocation>/_system/local/repository/components/org.wso2.carbon.registry/indexing/lastaccesstime</lastAccessTimeLocation>
         <!-- the indexers that implement the indexer interface for a relevant media type/(s) -->
         <indexers>
-            
-			<indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.wso2-ebook\+xml" profiles ="default"/>
-			<indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.wso2-gadget\+xml" profiles ="default"/>
-			<indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.wso2-site\+xml" profiles ="default"/>
+            <!--indexer class="org.wso2.carbon.registry.indexing.indexer.MSExcelIndexer" mediaTypeRegEx="application/vnd.ms-excel"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.MSPowerpointIndexer" mediaTypeRegEx="application/vnd.ms-powerpoint"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.MSWordIndexer" mediaTypeRegEx="application/msword"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.PDFIndexer" mediaTypeRegEx="application/pdf"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/xml"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.XMLIndexer" mediaTypeRegEx="application/(.)+\+xml"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="text/(.)+"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/x-javascript"/>
+            <indexer class="org.wso2.carbon.registry.indexing.indexer.PlainTextIndexer" mediaTypeRegEx="application/json"/>
+            <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.wso2-ebook\+xml" profiles ="default"/>
+            <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.wso2-gadget\+xml" profiles ="default"/>
+            <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.wso2-site\+xml" profiles ="default"/-->
             <indexer class="org.wso2.carbon.governance.registry.extensions.indexers.RXTIndexer" mediaTypeRegEx="application/vnd.(.)+\+xml" profiles ="default"/>
         
         </indexers>
@@ -174,7 +182,6 @@
             <exclusion pathRegEx="/_system/local/repository/components/org[.]wso2[.]carbon[.]registry/mount/.*"/>
         </exclusions>
     </indexingConfiguration>
-
     <versionResourcesOnChange>true</versionResourcesOnChange>
 
     <!-- NOTE: You can edit the options under "StaticConfiguration" only before the

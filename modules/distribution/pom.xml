@@ -183,7 +183,7 @@
 															<copy todir="target/wso2carbon-core-${carbon.kernal.version}/repository/deployment/server/jaggeryapps"
                                     overwrite="true">
                                   <fileset
-                                          dir="../apps/">
+                                          dir="../../products/mdm/modules/jaggery-apps">
                                   </fileset>
                               </copy>
 															<copy todir="target/wso2carbon-core-${carbon.kernal.version}/repository/components/plugins"
