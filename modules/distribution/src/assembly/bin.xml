@@ -376,6 +376,11 @@
             <fileMode>644</fileMode>
         </file>
         <file>
+            <source>src/repository/dbscripts/mdmdb.sql</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/database</outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+        <file>
             <source>src/repository/dbscripts/oracle.sql</source>
             <outputDirectory>wso2mobileserver-${pom.version}/dbscripts/identity</outputDirectory>
             <fileMode>644</fileMode>

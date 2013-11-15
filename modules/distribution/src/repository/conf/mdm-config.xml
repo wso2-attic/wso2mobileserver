@@ -21,24 +21,24 @@
 
 	<ios-mdm-conf>
 		<!-- iOS mdm endpoint urls -->
-		<ios-enroll-url>https://192.168.1.157:9443/mdm/scep</ios-enroll-url>
-		<ios-profile-url>https://192.168.1.157:9443/mdm/profile</ios-profile-url>
-		<ios-checkin-url>https://192.168.1.157:9443/mdm/checkin</ios-checkin-url>
-		<ios-server-url>https://192.168.1.157:9443/mdm/server</ios-server-url>
+		<ios-enroll-url>https://host:9443/mdm/scep</ios-enroll-url>
+		<ios-profile-url>https://host:9443/mdm/profile</ios-profile-url>
+		<ios-checkin-url>https://host:9443/mdm/checkin</ios-checkin-url>
+		<ios-server-url>https://host:9443/mdm/server</ios-server-url>
 		
 		<!-- iOS mdm APNS configurations -->
-		<ios-apns-cert-path>E:/Mobile/ios-mdm-setup-resources/keys/PlainCert.pfx</ios-apns-cert-path>
-		<ios-apns-cert-password>shan130474</ios-apns-cert-password>
+		<ios-apns-cert-path>path to /PlainCert.pfx</ios-apns-cert-path>
+		<ios-apns-cert-password>pass</ios-apns-cert-password>
 		
 		<!-- iOS mdm topic id -->
 		<ios-mdm-topic-id>com.apple.mgmt.External.becee161-1896-423e-ad81-76a5d8fb44d9</ios-mdm-topic-id>
 		
 		<!-- device property post url -->
-		<ios-device-property-post-url>http://192.168.1.157:9763/mdm/api/devices/register</ios-device-property-post-url>
+		<ios-device-property-post-url>http://host:9763/mdm/api/devices/register</ios-device-property-post-url>
 		
 		<keystore>
             <!-- Keystore file location-->
-            <keystore-location>E:/wso2mobile/alpha3_mdm_server_final/wso2mobileserver-1.0.0/repository/resources/security/wso2carbon.jks</keystore-location>
+            <keystore-location>path to /wso2carbon.jks</keystore-location>
             <!-- Keystore type (JKS/PKCS12 etc.)-->
             <keystore-type>JKS</keystore-type>
             <!-- Keystore password-->
@@ -49,7 +49,7 @@
             <keystore-key-password>wso2carbon</keystore-key-password>	
 			
 			<!-- MDM Keystore file location-->
-            <mdm-keystore-location>E:/wso2mobile/alpha3_mdm_server_final/wso2mobileserver-1.0.0/repository/resources/security/wso2mobilemdm.jks</mdm-keystore-location>
+            <mdm-keystore-location>path to /wso2mobilemdm.jks</mdm-keystore-location>
             <!-- MDM Keystore type (JKS/PKCS12 etc.)-->
             <mdm-keystore-type>JKS</mdm-keystore-type>
             <!-- MDM Keystore password-->
