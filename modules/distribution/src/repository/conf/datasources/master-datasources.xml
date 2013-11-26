@@ -6,7 +6,7 @@
 
     <datasources>
 	<datasource>
-            <name>MDM_DB</name>
+            <name>EMM_DB</name>
             <description>The datasource used for mdm</description>
             <jndiConfig>
                 <name>jdbc/mdmdb</name>
