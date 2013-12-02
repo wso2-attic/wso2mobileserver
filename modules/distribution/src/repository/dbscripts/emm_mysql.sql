@@ -37,7 +37,7 @@ CREATE TABLE `devices` (
   `vendor` varchar(11) DEFAULT NULL,
   `udid` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1$$
+) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1
 --
 -- Dumping data for table `devices`
 --
@@ -57,7 +57,7 @@ CREATE TABLE `device_pending` (
   PRIMARY KEY (`id`),
   KEY `UDID` (`udid`(767)),
   KEY `TOKEN` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1$$
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1
 
 
 
