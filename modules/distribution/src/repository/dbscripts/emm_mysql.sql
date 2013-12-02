@@ -37,31 +37,7 @@ CREATE TABLE `devices` (
   `vendor` varchar(11) DEFAULT NULL,
   `udid` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1
---
--- Dumping data for table `devices`
---
-DROP TABLE IF EXISTS `device_pending`;
-CREATE TABLE `device_pending` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tenant_id` int(11) DEFAULT NULL,
-  `user_id` varchar(255) DEFAULT NULL,
-  `platform_id` int(11) DEFAULT NULL,
-  `properties` text,
-  `created_date` datetime DEFAULT NULL,
-  `status` varchar(10) DEFAULT NULL,
-  `byod` smallint(6) DEFAULT '1',
-  `vendor` varchar(11) DEFAULT NULL,
-  `udid` varchar(4096) DEFAULT NULL,
-  `token` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `UDID` (`udid`(767)),
-  KEY `TOKEN` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1
-
-
-
-
+) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1;
 
 LOCK TABLES `devices` WRITE;
 /*!40000 ALTER TABLE `devices` DISABLE KEYS */;
@@ -395,8 +371,10 @@ CREATE  TABLE `EMM_DB`.`device_pending` (
   `byod` SMALLINT NULL DEFAULT 1 ,
   `vendor` VARCHAR(11) NULL DEFAULT NULL ,
   `udid` VARCHAR(4096) NULL DEFAULT NULL ,
+  `token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`) ,
-  INDEX `UDID` (`udid` ASC) );
+  INDEX `UDID` (`udid` ASC),
+  INDEX `TOKEN` (`token` ASC) );
 
 
 
