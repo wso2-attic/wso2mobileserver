@@ -384,8 +384,8 @@
             <fileMode>644</fileMode>
         </file>
         <file>
-            <source>src/repository/dbscripts/mdmdb.sql</source>
-            <outputDirectory>wso2mobileserver-${pom.version}/repository/database</outputDirectory>
+            <source>src/repository/dbscripts/emm_mysql.sql</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/dbscripts</outputDirectory>
             <fileMode>644</fileMode>
         </file>
         <file>
