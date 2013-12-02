@@ -307,6 +307,13 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security</outputDirectory>
             <filtered>true</filtered>
         </file>
+<!--copy default xacml policy to repository/resources/security --> 
+	<file>
+            <source>src/repository/resources/policies/xacml/default/admin.xml</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security/policies/xacml/default</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+
         <file>
             <source>src/repository/conf/log4j.properties</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/</outputDirectory>
