@@ -13,7 +13,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://localhost:3306/mdmdb</url>
+                    <url>jdbc:mysql://localhost:3306/EMM_DB</url>
                     <username>root</username>
                     <password></password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
