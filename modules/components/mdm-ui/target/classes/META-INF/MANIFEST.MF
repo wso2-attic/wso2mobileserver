@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1385640316639
+Build-Jdk: 1.7.0_07
+Built-By: dulitharasangawijewantha
+Bundle-Activator: org.wso2mobile.platform.admin.styles.internal.Activato
+ r
+Bundle-Description: WSO2Mobile Enterprise Mobile Platform
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.wso2mobile.platform.admin.styles
+Bundle-SymbolicName: org.wso2mobile.platform.admin.styles
+Bundle-Version: 1.0.0
+Carbon-Component: UIBundle
+Created-By: Apache Maven Bundle Plugin
+Fragment-Host: org.wso2.carbon.ui
+Import-Package: org.wso2mobile.platform.admin.styles.internal;resolution
+ :=optional,org.osgi.service.http,org.osgi.framework,org.wso2.carbon.ui
+Tool: Bnd-2.1.0.20130426-122213

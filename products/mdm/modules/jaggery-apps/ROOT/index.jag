@@ -36,7 +36,9 @@
 
 						<div class="span4 block" style="height: 480px" >
 							<div class="block-header text-center">
-								<h3>Mobile Device Management</h3>
+								<a class="heading-title" href="/mam">
+									<h3>Mobile Device Management</h3>
+								</a>
 							</div>
 							<div id="newest-app-list" class="container-fluid raw-fluid" style="text-align:center">							
 								
@@ -58,7 +60,9 @@
 							
 							<div class="span3-5 block" style="margin-left:25px" >
 								<div class="block-header">
-									<div class="block-header-title">App Management Console</div>
+									<a class="heading-title" href="/mam">
+										<div class="block-header-title">App Management Console</div>
+									</a>
 								</div>
 								<div id="newest-app-list" class="container-fluid raw-fluid" style="text-align:center">							
 									
@@ -72,7 +76,9 @@
 							
 							<div class="span3-5 block" >
 								<div class="block-header">
+									<a class="heading-title" href="/store">
 									<div class="block-header-title">Mobile App  <br> Store</div>
+									</a>
 								</div>
 								<div id="newest-app-list" class="container-fluid raw-fluid" style="text-align:center">							
 									
@@ -86,7 +92,9 @@
 							
 							<div class="span3-5 block">
 								<div class="block-header">
+									<a class="heading-title" href="/publisher">
 									<div class="block-header-title">Mobile App <br> Publisher<br></div>
+									</a>								
 								</div>
 								<div id="newest-app-list" class="container-fluid raw-fluid" style="text-align:center">							
 									

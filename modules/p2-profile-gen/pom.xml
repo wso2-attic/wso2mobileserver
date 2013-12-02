@@ -181,6 +181,10 @@
                                 <featureArtifactDef>
                                     org.wso2.store:org.wso2.store.feature:${project.version}
                                 </featureArtifactDef>
+                                <!-- MDM -->
+                                <featureArtifactDef>
+                                    org.wso2mobile.platform:org.wso2mobile.platform.feature:${project.version}
+                                </featureArtifactDef>
 																<!-- BAM Features -->
 																<featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.cassandra.explorer.feature:${carbon.platform.version}
@@ -189,7 +193,8 @@
                                     org.wso2.carbon:org.wso2.carbon.cassandra.feature:${carbon.platform.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon:org.wso2.carbon.cassandra-jdbc-1.2.5.server.feature:4.2.0
+                                    org.wso2.carbon:org.wso2.carbon.cassandra-jdbc-1.1.1.server.feature:4.0.1
+
                                 </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.databridge.datapublisher.feature:4.2.1
@@ -369,9 +374,10 @@
                                     <id>org.wso2.carbon.cassandra.feature.group</id>
                                     <version>${carbon.platform.version}</version>
                                 </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.cassandra-jdbc-1.2.5.server.feature.group</id>
-                                    <version>4.2.0</version>
+                                <feature>        
+                                    <id>org.wso2.carbon.cassandra-jdbc-1.1.1.server.feature.group</id>
+                                    <version>4.0.1</version>
+
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.databridge.datapublisher.feature.group</id>
