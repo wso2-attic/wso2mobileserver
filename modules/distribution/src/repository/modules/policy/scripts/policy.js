@@ -151,7 +151,7 @@ var entitlement = entitlement || {};
 	entitlement.readExistingPolicy = function(entitlementPolicyAdminServiceStub, policyId) {
 		log.info("Policy Id"+policyId);
         	var policy = null;
-        	var policyDTO = entitlementPolicyAdminServiceStub.getPolicy(policyId,true);
+        	var policyDTO = entitlementPolicyAdminServiceStub.getPolicy(policyId,false);
 		log.info(policyDTO);
         	policy = policyDTO.getPolicy();
         	java.lang.System.out.println("Read Policy:" + policy);
