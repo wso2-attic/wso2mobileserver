@@ -378,6 +378,23 @@ CREATE  TABLE `EMM_DB`.`device_pending` (
   INDEX `TOKEN` (`token` ASC) );
 
 
+--
+-- Table structure for table `policy_device_profiles`
+--
+
+DROP TABLE IF EXISTS `policy_device_profiles`;
+CREATE TABLE `policy_device_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `device_id` int(11) DEFAULT NULL,
+  `feature_code` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1;
+
+LOCK TABLES `policy_device_profiles` WRITE;
+/*!40000 ALTER TABLE `policy_device_profiles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `policy_device_profiles` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
