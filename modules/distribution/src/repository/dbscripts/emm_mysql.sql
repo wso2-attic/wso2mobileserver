@@ -35,7 +35,8 @@ CREATE TABLE `devices` (
   `byod` smallint(6) DEFAULT '1',
   `deleted` int(11) DEFAULT '0',
   `vendor` varchar(11) DEFAULT NULL,
-  `udid` longtext,
+  `udid` VARCHAR(4096) NULL DEFAULT NULL,
+  `push_token` VARCHAR(256) NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1;
 
