@@ -37,6 +37,7 @@ CREATE TABLE `devices` (
   `vendor` varchar(11) DEFAULT NULL,
   `udid` VARCHAR(4096) NULL DEFAULT NULL,
   `push_token` VARCHAR(256) NULL DEFAULT NULL,
+  `wifi_mac` varchar(100) NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1022 DEFAULT CHARSET=latin1;
 
