@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1385991380819
-Build-Jdk: 1.6.0_27
-Built-By: gayan
+Bnd-LastModified: 1386750814853
+Build-Jdk: 1.7.0_07
+Built-By: dulitharasangawijewantha
 Bundle-Activator: org.wso2mobile.platform.admin.styles.internal.Activato
  r
 Bundle-Description: WSO2Mobile Enterprise Mobile Platform
@@ -13,6 +13,6 @@ Bundle-Version: 1.0.0
 Carbon-Component: UIBundle
 Created-By: Apache Maven Bundle Plugin
 Fragment-Host: org.wso2.carbon.ui
-Import-Package: org.osgi.framework,org.osgi.service.http,org.wso2.carbon
- .ui,org.wso2mobile.platform.admin.styles.internal;resolution:=optional
-Tool: Bnd-1.50.0
+Import-Package: org.wso2mobile.platform.admin.styles.internal;resolution
+ :=optional,org.wso2.carbon.ui,org.osgi.service.http,org.osgi.framework
+Tool: Bnd-2.1.0.20130426-122213
