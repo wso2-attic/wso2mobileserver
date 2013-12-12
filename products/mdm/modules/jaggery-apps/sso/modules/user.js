@@ -6,7 +6,7 @@ var USER_OPTIONS = 'server.user.options';
 
 var USER_SPACE = 'server.user.space';
 
-var USER_ROLE_PREFIX = 'private_';
+var USER_ROLE_PREFIX = 'Internal/private_';
 
 /**
  * Initializes the user environment for the specified tenant. If it is already initialized, then will be skipped.
@@ -125,7 +125,7 @@ var permitted = function (username, session) {
     }
 
     opts = options(usr.tenantId);
-    //log.info(usr.tenantId);
+    //log.debug(usr.tenantId);
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
     perms = opts.permissions.login;

@@ -1,4 +1,4 @@
-var configs = require('/sso.js').config();
+var configs = require('/config/sso.js').config();
 
 var server = require('/modules/server.js');
 server.init(configs);
@@ -56,12 +56,12 @@ event.on('tenantLoad', function (tenantId) {
 
 /*
 var log = new Log();
-log.info('XXXXXXXXXXXXXXXXXXXXXXX');
+log.debug('XXXXXXXXXXXXXXXXXXXXXXX');
 
 event.on('tenantLoad', function (tenantId) {
 
     var log = new Log();
-    log.info('======================================================================================');
+    log.debug('======================================================================================');
     event.emit('tenantCreate', tenantId);
     var server = require('/modules/server.js');
     var user = require('/modules/user.js');
