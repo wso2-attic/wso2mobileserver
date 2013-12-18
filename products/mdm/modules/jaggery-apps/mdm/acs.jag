@@ -1,0 +1,114 @@
+<%
+(function () {
+    var log = new Log(),
+            configs = require('config/mdm.js').config(),
+            samlResponse = request.getParameter('SAMLResponse'),
+			process = require('process');
+            sessionId = session.getId(),
+            samlRequest = request.getParameter('SAMLRequest'),
+            relayState = request.getParameter('RelayState'),
+            sso = require('sso'),
+            keyStoreProps = {
+                KEY_STORE_NAME: process.getProperty('carbon.home') + configs.ssoConfiguration.keyStoreName,
+                KEY_STORE_PASSWORD: configs.ssoConfiguration.keyStorePassword,
+                IDP_ALIAS: configs.ssoConfiguration.identityAlias
+            },
+            sso_sessions = application.get('sso_sessions');
+			var samlRespObj;
+    if (!sso_sessions) {
+        application.put('sso_sessions', {});
+        sso_sessions = application.get('sso_sessions');
+    }
+
+    if (samlResponse != null) {
+		log.info("sfsdf");
+        samlRespObj = sso.client.getSamlObject(samlResponse);
+        if (!sso.client.isLogoutResponse(samlRespObj)) {
+
+            // validating the signature
+            if (configs.ssoConfiguration.responseSigningEnabled) {
+
+                if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
+                    var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
+
+                    if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+                        session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
+                        session.put("Loged", "true");
+
+                        sso_sessions[sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId] = sessionObj.sessionIndex;
+
+                            log.info('user is set :::' + sessionObj.loggedInUser);
+	                        session.put("Loged", "true");
+							log.info(">> Logged");
+	                        sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId;
+						    var username = sessionObj.loggedInUser;
+					        var userModule = require('/modules/user.js').user;
+							var db = application.get('db');
+							var user = new userModule(db);
+							var objUser = user.getUser({'userid': username});
+							log.info("OBJECT U >>>>"+objUser);
+							if(objUser != null){
+								var userFeed = {};
+								log.info(typeof userFeed);
+								userFeed.tenantId = stringify(objUser["tenantId"]);
+								log.info("TenantID-"+userFeed.tenantId);
+								userFeed.username = objUser["username"];
+								userFeed.email = objUser["email"];
+								userFeed.firstName = objUser["firstName"];
+								userFeed.lastName = objUser["lastName"];
+								userFeed.mobile = objUser["mobile"];
+	                            log.info("TestTTTTTTTTTT"+objUser["roles"]);
+								var parsedRoles = parse(objUser["roles"]);
+								userFeed.roles = parsedRoles;
+								var isMDMAdmin = false;
+								var isAdmin = false;
+								for (var i = 0; i < parsedRoles.length; i++) {
+									if(parsedRoles[i] == 'mdmadmin') {
+										isMDMAdmin = true;
+										break;
+									}
+									if(parsedRoles[i] == 'admin') {
+										isAdmin = true;
+										isMDMAdmin = true;
+										break;
+									}
+								}	
+								userFeed.isMDMAdmin = isMDMAdmin;
+								userFeed.isAdmin = isAdmin;
+								session.put("mdmConsoleUserLogin", "true");
+								session.put("mdmConsoleUser", userFeed);
+
+								var appController =require('/controller/app.js');
+								if(isAdmin){
+									response.sendRedirect('console/dashboard');
+								}else{
+									response.sendRedirect(appController.appInfo().server_url + 'users/devices?user=' + userFeed.username);
+								}
+                        }
+
+                    }
+                }
+            }
+
+        } else {
+            session.invalidate();
+            response.sendRedirect('/mdm');
+        }
+    }
+
+    // if saml request is a log out request, then invalidate session.
+    if (samlRequest != null) {
+        var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
+        log.info('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+
+        var jSessionId = application.get('sso_sessions')[index];
+
+        delete application.get('sso_sessions')[index];
+
+
+        log.info('store Session Id :::' + jSessionId);
+
+        session.invalidate();
+    }
+}());
+%>

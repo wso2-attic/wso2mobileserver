@@ -1,0 +1,246 @@
+<%
+var Handle = require("/modules/handlebars.js").Handlebars;
+var current_user = session.get('mamConsoleUser');
+var current_user_roles =undefined;
+if(current_user!=undefined){
+	current_user_roles = current_user.roles;
+}
+
+var goose = require('modules/goose.js').goose;
+var router = new goose({
+	CONTEXT: "/mam/api/",
+	AUTH_SUPPORT: true, 
+	AUTH_USER_ROLES: current_user_roles
+});
+//Setting up the authorization roles
+router.setupRules(require('/config/route.json'));
+
+var configs = require('config/mam.js').config();
+//For VPP
+var vppManagerModule = require('modules/vppManager.js').vppManager;
+var vppManager = new vppManagerModule(db);
+
+var storeModule = require('/modules/store.js').store;
+var store = new storeModule(db);
+
+var getApp = function(id){
+	var app =  store.getAppFromStore(id);
+	return app;
+}
+var buildInstallParam = function(ctx){
+	var installParam = configs.archieve_location+ctx.url;
+	if (ctx.platform.toUpperCase() == 'IOS'){
+		installParam = configs.archieve_location+"/mam/api/apps/install/ios/"+ctx.id;
+	}
+	if(ctx.type == "Market" || ctx.type == "VPP"){
+		if(ctx.platform.toUpperCase() == 'IOS'){
+			installParam = getApp(ctx.id).attributes.overview_appid;
+		}else{
+			installParam = ctx.packageid;
+		}
+	}
+	return installParam;
+}
+//Inserts a VPP code into the payload if the app type is VPP
+var injectVPPCode = function(appid, installData){
+	if(installData.type=="VPP"){
+		installData.coupon = vppManager.getCoupon(appid, installData.deviceid, current_user.username);
+	}
+	return installData;
+}
+
+var compileTemplate = function(templatePath, context){
+	var template = Handle.compile(getResource(templatePath));
+	return template(context);
+}
+function getResource(name){
+	var f = new File(name);
+	f.open("r");
+	var cont = f.readAll();
+	f.close();
+	return cont;
+}
+
+router.get('apps', function(ctx){
+	var result = store.getAppsFromStore(ctx.paging);
+	response.content = result;
+});
+/* 
+ Sample call - https://localhost:9443/mam/api/apps/roles/installed?platform=iOS&packageid=com.naveenium.foursquare
+*/
+router.get('apps/roles/installed', function(ctx){
+	var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
+	response.content = result;
+});
+/* 
+ Sample call - https://localhost:9443/mam/api/apps/roles/not-installed?platform=iOS&packageid=com.naveenium.foursquare
+*/
+router.get('apps/roles/not-installed', function(ctx){
+	var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
+	response.content = result;
+});
+/* 
+ Sample call - https://localhost:9443/mam/api/apps/roles/installed?platform=iOS&packageid=com.naveenium.foursquare
+*/
+router.get('apps/users/installed', function(ctx){
+	var result = store.getUsersForAppInstalled(ctx.packageid, ctx.platform);
+	response.content = result;
+});
+/* 
+ Sample call - https://localhost:9443/mam/api/apps/roles/not-installed?platform=iOS&packageid=com.naveenium.foursquare
+*/
+router.get('apps/users/not-installed', function(ctx){
+	var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+	response.content = result;
+});
+
+
+
+router.post('apps/roles/uninstall', function(ctx){
+	var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
+	var roles = ctx.roles;
+	var uninstallPayload = [];
+	for (var i = roles.length - 1; i >= 0; i--){
+		var role = roles[i];
+		var row  = result[role];
+		if(row!=undefined){
+			for (var j = row.devices.length - 1; j >= 0; j--){
+				var device = row.devices[j];
+				uninstallPayload.push({
+					deviceid : device,
+					identity : ctx.packageid,
+					platform_id: ctx.platform,
+					type: ctx.type
+				});
+				
+			}
+		}
+	};
+	store.uninstallApp(uninstallPayload);
+	response.status=200;
+});
+router.post('apps/roles/install', function(ctx){
+	var installParam = buildInstallParam(ctx);
+	var installPayload = [];
+	var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
+	for (var i = ctx.roles.length - 1; i >= 0; i--){
+		var role = ctx.roles[i];
+		var row  = result[role];
+		if(row!=undefined){
+			for (var j = row.devices.length - 1; j >= 0; j--){
+				var device = row.devices[j];
+				try{
+					log.info('))))');
+					log.info(stringify(installParam));
+					installPayload.push(injectVPPCode(ctx.id, {
+						deviceid : device,
+						identity : installParam,
+						platform_id: ctx.platform,
+						type: ctx.type
+					}));
+				}catch(e){
+					log.error(e);
+				}
+			};
+		}
+	};
+	store.installApp(installPayload);
+	response.status=200;
+});
+router.post('apps/users/uninstall', function(ctx){
+	var result = store.getUsersForAppInstalled(ctx.packageid, ctx.platform);
+	var uninstallPayload = [];
+	for (var i =  ctx.users - 1; i >= 0; i--){
+		var user = ctx.users[i];
+		var row  = result[user];
+		if(row!=undefined){
+			for (var j = row.devices.length - 1; j >= 0; j--){
+				var device = row.devices[j];
+				uninstallPayload.push({
+					deviceid : device,
+					platform_id: ctx.platform,
+					identity : ctx.packageid,
+					type: ctx.type
+				});
+			};
+		}
+	};
+	store.uninstallApp(uninstallPayload);
+	response.status=200;
+});
+router.post('apps/users/install', function(ctx){
+	var installParam = buildInstallParam(ctx);
+	var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+	var installPayload = [];
+	for (var i = ctx.users.length - 1; i >= 0; i--){
+		var user = ctx.users[i];
+		var row  = result[user];
+		if(row!=undefined){
+			for (var j = row.devices.length - 1; j >= 0; j--){
+				var device = row.devices[j];
+				try{
+					installPayload.push(injectVPPCode(ctx.id, {
+						deviceid : device,
+						identity : installParam,
+						platform_id: ctx.platform,
+						type: ctx.type
+					}));
+				}catch(e){
+					log.error(e);
+				}
+			};
+		}
+	};
+	store.installApp(installPayload,ctx.platform);
+	response.status=200;
+});
+router.post("apps/install", function(ctx){
+	var installParam = buildInstallParam(ctx);
+	var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+});
+router.post("apps/vpp/callback", function(ctx){
+	try{
+		vppManager.installCallback(ctx);
+	}catch(error){
+		print(error);
+		response.sendError(500);
+	}
+});
+router.post("vpp", function(ctx){
+	var csv =ctx.csv;
+	var csvReader = require('modules/csv.js').CSV;
+	csv = csvReader.parse(csv);
+	vppManager.addCoupons();
+	return csv; 
+});
+router.get("apps/install/ios/{id}", function(ctx){
+	var app = getApp(ctx.id);
+	var iosManifest = compileTemplate("/template.hbs", {url:configs.archieve_location+""+app.attributes.overview_url, bundleid: app.attributes.overview_packagename, bundleversion: app.attributes.overview_bundleversion,  appname:app.attributes.overview_name});
+	log.info(iosManifest);
+	response.contentType = "application/xml";
+	print(iosManifest);
+});
+
+router.get('test', function(){
+	var result = store.getUsersForAppInstalled({packageid:'com.naveenium.foursquare', platform:1});
+	response.content = result;
+});
+
+var userRouter = require('api/userRouter.js').user;
+var userRouterInstance = new userRouter(db,router);
+
+var groupRouter = require('api/groupRouter.js').group;
+var groupRouterInstance = new groupRouter(db,router);
+
+
+
+var absolute = require ('modules/absolute.js').mvc;
+var mvc = new absolute({
+	SERVER_URL:"/mam/",
+	IGNORE:["acs.jag", "login.jag", "logout.jag"],
+	API:"api",
+	ROUTER: router
+});
+require('helpers.js');
+mvc.route(request);
+%>
