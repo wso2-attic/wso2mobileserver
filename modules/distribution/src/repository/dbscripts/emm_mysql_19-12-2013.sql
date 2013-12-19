@@ -172,7 +172,6 @@ CREATE TABLE `notifications` (
   `received_data` longtext CHARACTER SET utf8,
   `feature_code` varchar(45) DEFAULT NULL,
   `feature_description` varchar(200) DEFAULT NULL,
-  `tenant_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2972 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -280,7 +279,6 @@ CREATE TABLE `policies` (
   `content` text,
   `type` tinyint(4) DEFAULT NULL,
   `category` tinyint(4) DEFAULT NULL,
-  `tenant_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
