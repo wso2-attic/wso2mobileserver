@@ -376,6 +376,7 @@ CREATE  TABLE `EMM_DB`.`device_pending` (
   `vendor` VARCHAR(11) NULL DEFAULT NULL ,
   `udid` VARCHAR(4096) NULL DEFAULT NULL ,
   `token` varchar(255) DEFAULT NULL,
+  `request_status` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`id`) ,
   INDEX `UDID` (`udid` ASC),
   INDEX `TOKEN` (`token` ASC) );
