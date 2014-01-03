@@ -68,6 +68,7 @@ var entitlement = entitlement || {};
 	var ConfigurationContextFactory = Packages.org.apache.axis2.context.ConfigurationContextFactory;
 	var AuthenticationAdminStub = Packages.org.wso2.carbon.authenticator.stub.AuthenticationAdminStub;
 	var EntitlementPolicyAdminServiceStub = Packages.org.wso2.carbon.identity.entitlement.stub.EntitlementPolicyAdminServiceStub;
+	var EntitlementServiceStub = Packages.org.wso2.carbon.identity.entitlement.stub.EntitlementServiceStub;
 	var HTTPConstants = Packages.org.apache.axis2.transport.http.HTTPConstants;
 	var PolicyDTO = Packages.org.wso2.carbon.identity.entitlement.stub.dto.PolicyDTO;
 	var BACKEND_SERVER_URL = "https://localhost:9443/admin/services/";
@@ -112,8 +113,16 @@ var entitlement = entitlement || {};
 	        isAuthenticated = authenticationAdminStub.login(userName, password, remoteIp);
 	     
 	        authCookie = authenticationAdminStub._getServiceClient().getServiceContext().getProperty(HTTPConstants.COOKIE_STRING);
+		log.info("Cookiii"+authCookie);
 	        return isAuthenticated;
 	}
+
+	entitlement.setAuthCookie = function(cookie){
+		authCookie = cookie;
+		java.lang.System.setProperty("javax.net.ssl.trustStore", process.getProperty('carbon.home')+"/repository/resources/security/"+"wso2carbon.jks");
+	    	java.lang.System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
+		configCtx = ConfigurationContextFactory.createConfigurationContextFromFileSystem(null, null);
+        }
 
 	entitlement.setEntitlementPolicyAdminServiceParameters = function() {
 	        var serviceURL = null;
@@ -132,7 +141,21 @@ var entitlement = entitlement || {};
 	        option.setProperty(HTTPConstants.COOKIE_STRING,authCookie);
 	        return entitlementPolicyAdminServiceStub;
 	}
-	
+	entitlement.setEntitlementServiceParameters = function(){
+		var serviceURL = null;
+		var client = null;
+		var option = null;
+		var entitlementServiceStub = null;
+		serviceURL = BACKEND_SERVER_URL + "EntitlementService";
+		entitlementServiceStub = new EntitlementServiceStub(configCtx, serviceURL);
+		client = entitlementServiceStub._getServiceClient();
+		option = client.getOptions();
+		option.setManageSession(true);
+		option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,authCookie);
+		log.info("A K :"+authCookie);
+		log.info("Stub :"+entitlementServiceStub);
+		return entitlementServiceStub;
+	}
 	entitlement.addPolicy = function(policyString, entitlementPolicyAdminServiceStub, policyId) {
 		var policyDTO = new PolicyDTO(); 
 	    	policyDTO.setActive(true);
