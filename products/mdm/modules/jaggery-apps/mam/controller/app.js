@@ -57,7 +57,7 @@ var navigation = function(role) {
                 {name : "Roles", link: app_info.MAM_UI_URI + "roles/configuration", displayPage: "roles", icon:"icon-group"},
                 {name : "Policies", link: app_info.MAM_UI_URI + "policies/configuration", displayPage: "policies", icon:"icon-lock"},
             ];
-        }else if(role == 'mdmadmin'){
+        }else if(role == 'Internal/mdmadmin'){
             topNavigation = [
                 {name : "Configurations", link: app_info.MAM_UI_URI + "users/configuration", displayPage: "configuration", icon:"icon-wrench"},
                 {name : "Management"	, link: app_info.MAM_UI_URI + "devices/management", displayPage: "management", icon:"icon-briefcase"},
@@ -97,7 +97,7 @@ var context = function() {
            }else if(currentUser.isMAMAdmin){
                contextData.user = {
                    name : "MAM Admin",
-                   role : "mamadmin"
+                   role : "Internal/mamadmin"
                };
            }else{
                contextData.user = {

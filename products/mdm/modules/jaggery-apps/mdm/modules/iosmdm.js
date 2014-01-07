@@ -7,9 +7,11 @@ var iosmdm = (function() {
 	var common = require("/modules/common.js");
 	var notificationModule = require('/modules/notification.js').notification;
 	var notification = new notificationModule(db);
+    var userModule = require('user.js').user;
+    var user = '';
 
 	var module = function() {
-
+        user = new userModule(db);
 	};
 
 	function mergeRecursive(obj1, obj2) {
@@ -45,8 +47,12 @@ var iosmdm = (function() {
 		},
 		generateMobileConfigurations : function(token) {
 			try {
+
+                //Get Tenant from the Token (which is the username)
+                var tenantName = user.getTenantNameByUser(token);
+
 				var plistGenerator = new Packages.com.wso2mobile.ios.mdm.plist.PlistGenerator();
-				var result = plistGenerator.generateMobileConfigurations(token);
+                var result = plistGenerator.generateMobileConfigurations(token, tenantName);
 				var data = result.getBytes();
 
 				var pkcsSigner = new Packages.com.wso2mobile.ios.mdm.impl.PKCSSigner();
@@ -62,8 +68,22 @@ var iosmdm = (function() {
 		handleProfileRequest : function(inputStream) {
 
 			try {
+
+                var commonUtil =  new Packages.com.wso2mobile.ios.mdm.util.CommonUtil();
+                var profileResponse = commonUtil.copyInputStream(inputStream);
+                log.debug("profileResponse.udid >>>>>>>>>> " + profileResponse.udid);
+                log.debug("profileResponse.challengeToken >>>>>>>>>> " + profileResponse.challengeToken);
+
+                if (profileResponse.challengeToken != null) {
+                    db.query("UPDATE device_pending SET udid = ? WHERE token = ?", profileResponse.udid, profileResponse.challengeToken);
+                }
+                var devices = db.query("SELECT tenant_id FROM device_pending WHERE udid = ?", profileResponse.udid);
+                log.debug("device.tenant_id >>>>>>>>>> " + devices[0].tenant_id);
+
+                var tenantName = user.getTenantNameFromID(devices[0].tenant_id);
+
 				var requestHandler = new Packages.com.wso2mobile.ios.mdm.impl.RequestHandler();
-				var signedData = requestHandler.handleProfileRequest(inputStream);
+				var signedData = requestHandler.handleProfileRequest(profileResponse.inputStream, tenantName);
 
 				return signedData;
 			} catch (e) {
@@ -130,6 +150,8 @@ var iosmdm = (function() {
 
 					device.updateiOSTokens(tokenProperties);
 				}
+				
+				return checkinMessageType.getMessageType();
 
 			} catch (e) {
 				log.error(e);
@@ -148,8 +170,6 @@ var iosmdm = (function() {
 				var apnsStatus = plistExtractor.extractAPNSResponse(contentString);
 
 				var commandUUID = apnsStatus.getCommandUUID();
-
-                log.debug("APNSTATUS >>>>> " + apnsStatus.getStatus());
 
 				if (("Acknowledged").equals(apnsStatus.getStatus())) {
 					log.error("Acknowledged >>>>>>>>>>>>>>>>" + apnsStatus.getOperation());
@@ -225,7 +245,6 @@ var iosmdm = (function() {
 
                 //End of all Notifications pending for the device
                 var datetime =  common.getCurrentDateTime();
-                log.debug("UPDATE device_awake status >>>>>>>> ");
                 db.query("UPDATE device_awake JOIN devices ON devices.id = device_awake.device_id SET device_awake.status = 'P', device_awake.processed_date = ? WHERE devices.udid = ? AND device_awake.status = 'S'", datetime, apnsStatus.getUdid());
 
                 return null;

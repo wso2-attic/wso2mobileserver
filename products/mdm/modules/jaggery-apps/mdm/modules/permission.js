@@ -117,20 +117,16 @@ var permission = (function () {
 
             file.close();
 
-            var policy = require('policy');
+            var entitlement = session.get("entitlement");
+            var entitlementPolicyAdminService = entitlement.setEntitlementPolicyAdminServiceParameters();
 
-        //    policy.entitlement.setKeyStorePath();
-
-            policy.entitlement.login();
-
-            var entitlementPolicyAdminService = policy.entitlement.setEntitlementPolicyAdminServiceParameters();
             try{
-                policy.entitlement.removePolicy(group,entitlementPolicyAdminService);
+                entitlement.removePolicy(group,entitlementPolicyAdminService);
             }catch(e){
                 log.info(e);
             }
 
-            policy.entitlement.addPolicy(xacmlFile,entitlementPolicyAdminService,group);
+            entitlement.addPolicy(xacmlFile,entitlementPolicyAdminService,group);
 
             return "success";
         },

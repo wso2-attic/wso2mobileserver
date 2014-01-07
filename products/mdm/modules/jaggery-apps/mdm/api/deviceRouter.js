@@ -23,15 +23,20 @@ var device = (function () {
 
 
 		router.get('device_enroll', function(ctx){
-		    var userAgent= request.getHeader("User-Agent");
+            var userAgent= request.getHeader("User-Agent");
 
-		    var android = userAgent.indexOf("Android");
-
-		    if(android>0){
-		        response.sendRedirect(configs.HTTP_URL+configs.device.android_location);
-		    }else{
-		        response.sendRedirect(configs.device.ios_location);
-		    }
+            if (userAgent.indexOf("Android") > 0) {
+                response.sendRedirect(configs.device.android_location);
+            } else if (userAgent.indexOf("iPhone") > 0) {
+                response.sendRedirect(configs.device.ios_location);
+            } else if (userAgent.indexOf("iPad") > 0){
+                response.sendRedirect(configs.device.ios_location);
+            } else if (userAgent.indexOf("iPod") > 0){
+                response.sendRedirect(configs.device.ios_location);
+            } else {
+                response.sendRedirect("../invaliddevice");
+                //response.sendRedirect(configs.device.ios_location);
+            }
 
 		});
 
@@ -40,7 +45,7 @@ var device = (function () {
 		    var android = userAgent.indexOf("Android");
 
 		    if(android > 0){
-		        device.register(ctx);
+		        device.registerAndroid(ctx);
                 	response.status = 201;
                 	response.content = "registered"
 		    }else{
@@ -50,7 +55,7 @@ var device = (function () {
 		});
 
 		router.post('devices/unregister', function(ctx){
-		    var result = device.unRegister(ctx);
+		    var result = device.unRegisterAndroid(ctx);
 		});
 		
 		router.post('devices/unregisterios', function(ctx){
@@ -152,9 +157,10 @@ var device = (function () {
 		});
 
         router.get('devices/license', function(ctx){
-            var result = device.getLicenseAgreement(ctx);
-           	print(result);
-            response.status = 200;
+            var result = device.testingService();
+//            var result = device.getLicenseAgreement(ctx);
+//           	print(result);
+//            response.status = 200;
         });
 
         router.get('devices/sender_id', function(ctx){

@@ -145,7 +145,7 @@ var group = (function () {
             var roles = this.getAllGroups({});
             for(var i=0;i<roles.length;i++){
                     var obj = {};
-                    if(roles[i] == 'admin'||roles[i] == 'mamadmin'||roles[i] == 'mdmadmin'){
+                    if(roles[i] == 'admin'||roles[i] == 'Internal/mamadmin'||roles[i] == 'Internal/mdmadmin'){
                         obj.name = roles[i];
                         obj.type = 'administrator';
                         if(type == 'admin'){
