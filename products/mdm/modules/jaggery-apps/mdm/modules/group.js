@@ -119,7 +119,6 @@ var group = (function () {
 		getAllGroups: function(ctx){
             var type = ctx.type;
 			var um = userManager(common.getTenantID());
-            log.info("Test all roles >>>>>>>>>"+stringify(um.allRoles()));
             var allRoles = common.removePrivateRole(um.allRoles());
             var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer");
             var roles = common.removeNecessaryElements(allRoles, removeRoles);
@@ -133,6 +132,10 @@ var group = (function () {
             }else{
                 return false;
             }
+        },roleExists:function(ctx){
+            var um = userManager(common.getTenantID());
+            var result = um.roleExists(ctx.groupid);
+            return result;
         },
 
         /*end of Group CRUD Operations (Create, Retrieve, Update, Delete)*/
@@ -145,7 +148,7 @@ var group = (function () {
             var roles = this.getAllGroups({});
             for(var i=0;i<roles.length;i++){
                     var obj = {};
-                    if(roles[i] == 'admin'||roles[i] == 'mdmadmin'){
+                    if(roles[i] == 'admin'||roles[i] == 'Internal/mdmadmin'){
                         obj.name = roles[i];
                         obj.type = 'administrator';
                         if(type == 'admin'){

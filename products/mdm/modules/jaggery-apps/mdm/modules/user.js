@@ -59,7 +59,16 @@ var user = (function () {
 			um.addRole("Internal/private_"+indexUser, [username], arrPermission);
 		}
 	}			
-	
+	var getUserType = function(user_roles){
+        for (var i = user_roles.length - 1; i >= 0; i--) {
+            var role = user_roles[i];
+            if(role=='admin'|| role=='Internal/mdmadmin'|| role=='mamadmin'){
+                return "Administrator";
+            }else{
+                return "User";
+            }
+        };
+    }
     function mergeRecursive(obj1, obj2) {
         for (var p in obj2) {
             try {
@@ -113,7 +122,7 @@ var user = (function () {
                         if(ctx.type == 'user'){
                             um.addUser(ctx.username, generated_password,ctx.groups, claimMap, null);
                         }else if(ctx.type == 'administrator'){
-                            um.addUser(ctx.username, generated_password,new Array('mdmadmin'), claimMap, null);
+                            um.addUser(ctx.username, generated_password,new Array('Internal/mdmadmin'), claimMap, null);
                         }
                         createPrivateRolePerUser(ctx.username);
                         proxy_user.status = "SUCCESSFULL";
@@ -137,6 +146,7 @@ var user = (function () {
                 var tenantUser = carbon.server.tenantUser(ctx.userid);
                 var um = userManager(tenantUser.tenantId);
                 var user = um.getUser(tenantUser.username);
+                var user_roles = user.getRoles();
                 var claims = [claimEmail, claimFirstName, claimLastName];
                 var claimResult = user.getClaimsForSet(claims,null);
                 proxy_user.email = claimResult.get(claimEmail);
@@ -145,7 +155,8 @@ var user = (function () {
                 proxy_user.mobile = claimResult.get(claimMobile);
                 proxy_user.username = tenantUser.username;
                 proxy_user.tenantId = tenantUser.tenantId;
-                proxy_user.roles = stringify(user.getRoles());
+                proxy_user.roles = stringify(user_roles);
+                proxy_user.user_type = getUserType(user_roles);
                 return proxy_user;
             } catch(e) {
                 log.error(e);
@@ -153,6 +164,7 @@ var user = (function () {
                 return error;
             }
         },
+        //Deprecated
         getAllUsers: function(ctx){
             var tenantId = common.getTenantID();
             var users_list = Array();
@@ -167,19 +179,32 @@ var user = (function () {
                     var claimResult = user.getClaimsForSet(claims,null);
                     var proxy_user = {};
                     proxy_user.username = users[i];
-                    proxy_user.email = claimResult.get(claimEmail);
+                    proxy_user.email = proxy_user.username;
                     proxy_user.firstName = claimResult.get(claimFirstName);
                     proxy_user.lastName = claimResult.get(claimLastName);
                     proxy_user.mobile = claimResult.get(claimMobile);
                     proxy_user.tenantId = tenantId;
                     proxy_user.roles = stringify(user.getRoles());
                     users_list.push(proxy_user);
-
                 }
             }else{
                 print('Error in getting the tenantId from session');
             }
             log.info("LLLLLLLLLLLLLLLLLLLL"+stringify(users_list));
+            return users_list;
+        },
+        getAllUserNames: function(){
+            var tenantId = common.getTenantID();
+            var users_list = [];
+            if(tenantId){
+                var um = userManager(common.getTenantID());
+                var allUsers = um.listUsers();
+                var removeUsers = new Array("wso2.anonymous.user","admin","admin@admin.com");
+                var users = common.removeNecessaryElements(allUsers,removeUsers);
+                users_list = users;
+            }else{
+                print('Error in getting the tenantId from session');
+            }
             return users_list;
         },
         deleteUser: function(ctx){
@@ -203,7 +228,8 @@ var user = (function () {
         /*Get list of roles belongs to particular user*/
         getUserRoles: function(ctx){
             log.info("User Name >>>>>>>>>"+ctx.username);
-            var um = userManager(common.getTenantID());
+            var tenantUser = carbon.server.tenantUser(ctx.username);
+            var um = userManager(tenantUser.tenantId);
             var roles = um.getRoleListOfUser(ctx.username);
             var roleList = common.removePrivateRole(roles);
             return roleList;
@@ -254,7 +280,7 @@ var user = (function () {
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
                     log.info("Test iteration2"+roles[j]);
-                    if(roles[j]=='admin'||roles[j]=='mdmadmin'||roles[j]=='mamadmin'){
+                    if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'||roles[j]=='mamadmin'){
                         flag = 1;
                         break;
                     }else if(roles[j]==' Internal/publisher'||roles[j]=='Internal/reviewer'||roles[j]=='Internal/store'){
@@ -330,9 +356,43 @@ var user = (function () {
 
         /*Get all devices belongs to particular user*/
 		getDevices: function(obj){
+            log.info("begin");
+            log.info(String(obj.userid));
+            log.info(common.getTenantID());
+            log.info("end");
 			var devices = db.query("SELECT * FROM devices WHERE user_id= ? AND tenant_id = ?", String(obj.userid), common.getTenantID());
 			return devices;
-		}
+		},
+
+        //To get the tenant name using the tenant domain
+        getTenantNameByUser: function() {
+            var carbon = require('carbon');
+            log.debug("Username >>>>> " + arguments[0]);
+            var tenantUser = carbon.server.tenantUser(arguments[0]);
+            var tenantDomain = tenantUser.domain;
+            log.debug("Domain >>>>>>> " + tenantDomain);
+
+            return this.getTenantName(tenantDomain);
+        },
+
+        getTenantNameFromID: function (){
+            var ctx = {};
+            ctx.tenantId = arguments[0];
+            var tenantDomain = carbon.server.tenantDomain(ctx);
+            log.debug("Domain >>>>>>> " + tenantDomain);
+
+            return this.getTenantName(tenantDomain);
+        },
+
+        getTenantName: function() {
+            try {
+                var tenantConfig = require('/config/tenants/' + arguments[0] + '/config.json');
+                return tenantConfig.name;
+            } catch(e) {
+                var tenantConfig = require('/config/tenants/default/config.json');
+                return tenantConfig.name;;
+            }
+        }
 
 
     };

@@ -61,7 +61,7 @@
 										userFeed.isAdmin = true;
 										break;
 									}
-									if(parsedRoles[i] == 'mamadmin') {
+									if(parsedRoles[i] == 'Internal/mamadmin') {
 										userFeed.isMAMAdmin = true;
 										break;
 									}

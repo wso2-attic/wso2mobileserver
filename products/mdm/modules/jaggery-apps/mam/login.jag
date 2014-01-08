@@ -6,11 +6,15 @@
             sessionId = session.getId(),
             requestURI,
             requestedPage = request.getParameter("requestedPage"),
+            host = process.getProperty('server.host'),
             relayState = '/mam',
             encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.ssoConfiguration.issuer),
             log = new Log();
-            postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-
+      if(host=="localhost"){
+        var postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
+      }else{
+        var postUrl = "https://" + host;
+      }
     if (!session.get("mamConsoleUserLogin")) {
         %>
 

@@ -1,1 +1,107 @@
-{}
+{
+    "apiRoutes": {
+        "/mdm/api/users/{userid}/sendmail": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/{userid}": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/unauthenicate/": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/{userid}": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/{+userid}": {
+            'DELETE': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/{+username}/groups/": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/{+username}/groups/": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/{userid}/devices": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/users/invite": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/invite": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/{groupid}": {
+            'DELETE': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/{groupid}/users/device_count": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/{groupid}/users": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/{groupid}/users": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups": {
+            'POST': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/{groupid}": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mdm/api/groups/{groupid}/operations/{operation}": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        }
+    },
+    "pageRoutes": {
+    	
+    }
+}

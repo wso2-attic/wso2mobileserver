@@ -12,8 +12,7 @@ var router = new goose({
 	AUTH_SUPPORT: true, 
 	AUTH_USER_ROLES: current_user_roles
 });
-//Setting up the authorization roles
-router.setupRules(require('/config/route.json'));
+
 
 var configs = require('config/mam.js').config();
 //For VPP
@@ -69,134 +68,170 @@ router.get('apps', function(ctx){
  Sample call - https://localhost:9443/mam/api/apps/roles/installed?platform=iOS&packageid=com.naveenium.foursquare
 */
 router.get('apps/roles/installed', function(ctx){
-	var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
-	response.content = result;
+	if(ctx.packageid){
+		var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
+		response.content = result;
+	}else{
+		response.status=400;
+	}
 });
 /* 
  Sample call - https://localhost:9443/mam/api/apps/roles/not-installed?platform=iOS&packageid=com.naveenium.foursquare
 */
 router.get('apps/roles/not-installed', function(ctx){
-	var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
-	response.content = result;
+	if(ctx.packageid){
+		var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
+		response.content = result;
+	}else{
+		response.status=400;
+	}
 });
 /* 
  Sample call - https://localhost:9443/mam/api/apps/roles/installed?platform=iOS&packageid=com.naveenium.foursquare
 */
 router.get('apps/users/installed', function(ctx){
-	var result = store.getUsersForAppInstalled(ctx.packageid, ctx.platform);
-	response.content = result;
+	if(ctx.packageid){
+		var result = store.getUsersForAppInstalled(ctx.packageid, ctx.platform);
+		response.content = result;
+	}else{
+		response.status=400;
+	}
 });
 /* 
  Sample call - https://localhost:9443/mam/api/apps/roles/not-installed?platform=iOS&packageid=com.naveenium.foursquare
 */
 router.get('apps/users/not-installed', function(ctx){
-	var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
-	response.content = result;
+	if(ctx.packageid){
+		var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+		response.content = result;
+	}else{
+		response.status=400;
+	}
 });
 
 
 
 router.post('apps/roles/uninstall', function(ctx){
-	var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
-	var roles = ctx.roles;
-	var uninstallPayload = [];
-	for (var i = roles.length - 1; i >= 0; i--){
-		var role = roles[i];
-		var row  = result[role];
-		if(row!=undefined){
-			for (var j = row.devices.length - 1; j >= 0; j--){
-				var device = row.devices[j];
-				uninstallPayload.push({
-					deviceid : device,
-					identity : ctx.packageid,
-					platform_id: ctx.platform,
-					type: ctx.type
-				});
-				
+	if(ctx.packageid){
+		var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
+		var roles = ctx.roles;
+		var uninstallPayload = [];
+		for (var i = roles.length - 1; i >= 0; i--){
+			var role = roles[i];
+			var row  = result[role];
+			if(row!=undefined){
+				for (var j = row.devices.length - 1; j >= 0; j--){
+					var device = row.devices[j];
+					uninstallPayload.push({
+						deviceid : device,
+						identity : ctx.packageid,
+						platform_id: ctx.platform,
+						type: ctx.type
+					});
+					
+				}
 			}
-		}
-	};
-	store.uninstallApp(uninstallPayload);
-	response.status=200;
+		};
+		store.uninstallApp(uninstallPayload);
+		response.status=200;
+	}else{
+		response.status=400;
+	}
 });
 router.post('apps/roles/install', function(ctx){
-	var installParam = buildInstallParam(ctx);
-	var installPayload = [];
-	var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
-	for (var i = ctx.roles.length - 1; i >= 0; i--){
-		var role = ctx.roles[i];
-		var row  = result[role];
-		if(row!=undefined){
-			for (var j = row.devices.length - 1; j >= 0; j--){
-				var device = row.devices[j];
-				try{
-					log.info('))))');
-					log.info(stringify(installParam));
-					installPayload.push(injectVPPCode(ctx.id, {
-						deviceid : device,
-						identity : installParam,
-						platform_id: ctx.platform,
-						type: ctx.type
-					}));
-				}catch(e){
-					log.error(e);
-				}
-			};
-		}
-	};
-	store.installApp(installPayload);
-	response.status=200;
+	if(ctx.packageid){
+		var installParam = buildInstallParam(ctx);
+		var installPayload = [];
+		var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
+		for (var i = ctx.roles.length - 1; i >= 0; i--){
+			var role = ctx.roles[i];
+			var row  = result[role];
+			if(row!=undefined){
+				for (var j = row.devices.length - 1; j >= 0; j--){
+					var device = row.devices[j];
+					try{
+						log.info('))))');
+						log.info(stringify(installParam));
+						installPayload.push(injectVPPCode(ctx.id, {
+							deviceid : device,
+							identity : installParam,
+							platform_id: ctx.platform,
+							type: ctx.type
+						}));
+					}catch(e){
+						log.error(e);
+					}
+				};
+			}
+		};
+		store.installApp(installPayload);
+		response.status=200;
+	}else{
+		response.status=400;
+	}
 });
 router.post('apps/users/uninstall', function(ctx){
-	var result = store.getUsersForAppInstalled(ctx.packageid, ctx.platform);
-	var uninstallPayload = [];
-	for (var i =  ctx.users - 1; i >= 0; i--){
-		var user = ctx.users[i];
-		var row  = result[user];
-		if(row!=undefined){
-			for (var j = row.devices.length - 1; j >= 0; j--){
-				var device = row.devices[j];
-				uninstallPayload.push({
-					deviceid : device,
-					platform_id: ctx.platform,
-					identity : ctx.packageid,
-					type: ctx.type
-				});
-			};
-		}
-	};
-	store.uninstallApp(uninstallPayload);
-	response.status=200;
+	if(ctx.packageid){
+		var result = store.getUsersForAppInstalled(ctx.packageid, ctx.platform);
+		var uninstallPayload = [];
+		for (var i =  ctx.users.length - 1; i >= 0; i--){
+			var user = ctx.users[i];
+			var row  = result[user];
+			if(row!=undefined){
+				for (var j = row.devices.length - 1; j >= 0; j--){
+					var device = row.devices[j];
+					uninstallPayload.push({
+						deviceid : device,
+						platform_id: ctx.platform,
+						identity : ctx.packageid,
+						type: ctx.type
+					});
+				};
+			}
+		};
+		store.uninstallApp(uninstallPayload);
+		response.status=200;
+	}else{
+		response.status=400;
+	}
 });
 router.post('apps/users/install', function(ctx){
-	var installParam = buildInstallParam(ctx);
-	var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
-	var installPayload = [];
-	for (var i = ctx.users.length - 1; i >= 0; i--){
-		var user = ctx.users[i];
-		var row  = result[user];
-		if(row!=undefined){
-			for (var j = row.devices.length - 1; j >= 0; j--){
-				var device = row.devices[j];
-				try{
-					installPayload.push(injectVPPCode(ctx.id, {
-						deviceid : device,
-						identity : installParam,
-						platform_id: ctx.platform,
-						type: ctx.type
-					}));
-				}catch(e){
-					log.error(e);
-				}
-			};
-		}
-	};
-	store.installApp(installPayload,ctx.platform);
-	response.status=200;
+	if(ctx.packageid){
+		var installParam = buildInstallParam(ctx);
+		var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+		var installPayload = [];
+		for (var i = ctx.users.length - 1; i >= 0; i--){
+			var user = ctx.users[i];
+			var row  = result[user];
+			if(row!=undefined){
+				for (var j = row.devices.length - 1; j >= 0; j--){
+					var device = row.devices[j];
+					try{
+						installPayload.push(injectVPPCode(ctx.id, {
+							deviceid : device,
+							identity : installParam,
+							platform_id: ctx.platform,
+							type: ctx.type
+						}));
+					}catch(e){
+						log.error(e);
+					}
+				};
+			}
+		};
+		store.installApp(installPayload,ctx.platform);
+		response.status=200;
+	}else{
+		response.status=400;
+	}
 });
 router.post("apps/install", function(ctx){
-	var installParam = buildInstallParam(ctx);
-	var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+	if(ctx.packageid){
+		var installParam = buildInstallParam(ctx);
+		var result = store.getUsersForAppNotInstalled(ctx.packageid, ctx.platform);
+	}else{
+		response.status=400;
+	}
 });
 router.post("apps/vpp/callback", function(ctx){
 	try{
@@ -239,8 +274,13 @@ var mvc = new absolute({
 	SERVER_URL:"/mam/",
 	IGNORE:["acs.jag", "login.jag", "logout.jag"],
 	API:"api",
-	ROUTER: router
+	ROUTER: router,
+    AUTH_USER_ROLES: current_user_roles
 });
+//Setting up the authorization roles
+router.setupRules(require('/config/route.json').apiRoutes);
+mvc.setupRules(require('/config/route.json').pageRoutes);
+
 require('helpers.js');
 mvc.route(request);
 %>

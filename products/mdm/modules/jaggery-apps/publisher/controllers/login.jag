@@ -7,10 +7,14 @@
             requestURI,
             requestedPage = request.getParameter("requestedPage"),
             relayState = '/publisher',
+            host = process.getProperty('server.host'),
             encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.ssoConfiguration.issuer),
-            log = new Log(),
-            postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-
+            log = new Log();
+      if(host=="localhost"){
+        var postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
+      }else{
+        var postUrl = "https://" + host;
+      }
 
     if (!session.get("Loged")) {
         %>

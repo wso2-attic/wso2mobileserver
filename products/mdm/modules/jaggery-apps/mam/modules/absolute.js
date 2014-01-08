@@ -1,10 +1,13 @@
 var Handle = require("/modules/handlebars.js").Handlebars;
+var appRedirect = "App Redirected";
 var mvc = (function () {
 	var configs= {
 		SERVER_URL: "/",
-		ENGINE: "hbs"
+		ENGINE: "hbs",
+		CLIENT_JS_FOLDER: ["client", "assets"]
 	};
 	var log;
+	var rules;
 	var module = function (cf) {
 		mergeRecursive(configs,cf);
 		log= new Log();
@@ -58,21 +61,46 @@ var mvc = (function () {
 				return true;
 	    }
 	}
+	function isDenied(resourceURL){
+		var allowFlag = true;
+		for (var i = configs.CLIENT_JS_FOLDER.length - 1; i >= 0; i--) {
+			var loc = configs.CLIENT_JS_FOLDER[i];
+			log.info(resourceURL +"  "+ loc);
+			if(resourceURL.indexOf(loc) == 0){
+				allowFlag = false;
+			}
+		};
+		return allowFlag;
+	}
 	function routeAsset(resourceURL){
 		//log.info("Resource URL"+resourceURL);
+		if(!isExists(resourceURL)){
+			response.sendError(404);
+			return;
+		}
 		var m = mime(resourceURL);
-		response.addHeader('Content-Type', m);
-		if(isBinaryResource(m)){
-			try{
-				var f = new File(resourceURL);
-				f.open('r');
-			    print(f.getStream());
-				f.close();
-			}catch(e){
-				request.sendError(404);
+		if(m!=undefined){
+			if(m=='application/javascript'){
+				if(isDenied(resourceURL)){
+					response.sendError(403);
+					return;
+				}
+			}
+			response.addHeader('Content-Type', m);
+			if(isBinaryResource(m)){
+				try{
+					var f = new File(resourceURL);
+					f.open('r');
+				    print(f.getStream());
+					f.close();
+				}catch(e){
+					response.sendError(404);
+				}
+			}else{
+				print(getResource(resourceURL));
 			}
 		}else{
-			print(getResource(resourceURL));
+			response.sendError(403);
 		}
 	}
 	//Register all the partials in the views/partial directory
@@ -120,8 +148,14 @@ var mvc = (function () {
 	            return 'application/octet-stream';    
 	        case 'ttf':
 	            return 'application/octet-stream'; 
-			default:
-				return 'text/plain';
+	        case 'txt':
+	        	return 'text/plain';
+	        case 'json':
+	        	return 'application/json';
+        	case 'hbs':
+	            return 'text/x-handlebars-template'; 
+	        default:
+	        	return undefined;
 	    }
 	}
 	//Call
@@ -168,7 +202,19 @@ var mvc = (function () {
 			
 			log.debug("Request url: "+reqURL);
 			log.debug("Page url: "+pageURL);
-			
+			if(configs.AUTH_SUPPORT){
+				if(rules[pageURL] && configs.AUTH_USER_ROLES){
+					if(rules[pageURL]!=undefined && rules[pageURL].length>0){
+						var authState = isArrayOverlap(configs.AUTH_USER_ROLES, rules[pageURL]);
+						if(!authState){
+							 log.debug("--------Absolute Auth Error (User roles doesn't match with route roles)--------");
+							 response.sendError(403);
+							 return;
+						}
+					}
+				}
+			}
+
 			var pageParams = pageURL.split('/');
 			
 			if(isAPI(pageParams)){
@@ -193,60 +239,62 @@ var mvc = (function () {
 			
 			//App controller
 			var appController;
-			if(isExists('/controller/app.js')){
-				appController =require('/controller/app.js');
-			}
-			
-			//Extracting the template from the view
-			var template;
-			var templateURI = '/views/'+controller+"/"+view;
-			if(isExists(templateURI)){
-				template = Handle.compile(getResource(templateURI));
-			}
-			
-			var context;
-			//If controller is empty the request is for the app index page
-			if(controller==''){
-				if(appController.index!=undefined){
-					context = appController.index();	
+			//Try catch is used if an exception is thrown my appcontroller 
+			try{
+				if(isExists('/controller/app.js')){
+					appController =require('/controller/app.js');
 				}
-			}
-			if(isExists('/controller/'+controller+".js") && require('/controller/'+controller+".js")[viewName] !=undefined){
-				context = require('/controller/'+controller+".js")[viewName](appController);
-				log.debug("Current context "+context);
-			}		
-			//Extracting the layout from the controller
-			var layout;
-			if(context!=undefined && context.layout!=undefined){
-				if(configs.AUTH_SUPPORT){
-					if(context.auth_roles!=undefined && context.auth_roles.length>0){
-						var authState = isArrayOverlap(configs.AUTH_USER_ROLES, context.auth_roles);
-						if(!authState){
-							 log.debug("--------Goose Auth Error (User roles doesn't match with route roles)--------");
-							 response.sendError(403);
-							 return;
-						}
+				//Extracting the template from the view
+				var template;
+				var templateURI = '/views/'+controller+"/"+view;
+				if(isExists(templateURI)){
+					template = Handle.compile(getResource(templateURI));
+				}
+				
+				var context;
+				//If controller is empty the request is for the app index page
+				if(controller==''){
+					if(appController.index!=undefined){
+						context = appController.index();	
 					}
 				}
-				layout = Handle.compile(getResource("/pages/"+context.layout+".hbs"));
-			}
-			//If we can't find a controller as well as a view we are sending a 404 error
-			if(template==undefined && context==undefined){
-				try{
-					response.sendError(404);
-				}catch (e) {
-					new Log().debug(e);
+
+				if(isExists('/controller/'+controller+".js") && require('/controller/'+controller+".js")[viewName] !=undefined){
+					context = require('/controller/'+controller+".js")[viewName](appController);
+					log.debug("Current context "+context);
+				}		
+				//Extracting the layout from the controller
+				var layout;
+				if(context!=undefined && context.layout!=undefined){
+					layout = Handle.compile(getResource("/pages/"+context.layout+".hbs"));
 				}
-			}else{
-				if(template!=undefined){
-						var b = template(context);
-						if(layout==undefined){
-							//If the controller hasn't specified a layout
-							print(b);
-						}else{
-							//Now mixing the controller context with generated body template
-							print(layout(mergeRecursive({body:b}, context)));
-						}
+				//If we can't find a controller as well as a view we are sending a 404 error
+				if(template==undefined && context==undefined){
+					try{
+						response.sendError(404);
+					}catch (e) {
+						new Log().debug(e);
+					}
+				}else{
+					if(template!=undefined){
+							var b = template(context);
+							if(layout==undefined){
+								//If the controller hasn't specified a layout
+								print(b);
+							}else{
+								//Now mixing the controller context with generated body template
+								print(layout(mergeRecursive({body:b}, context)));
+							}
+					}
+				}
+			}
+			catch(e){
+				log.info(e);
+				// log.info(e);
+				if(e==appRedirect){
+					log.error("User redirected");
+				}else{
+					//log.error(e);
 				}
 			}
         },
@@ -259,6 +307,9 @@ var mvc = (function () {
 		compileTemplate: function(templatePath, context){
 			var template = Handle.compile(getResource(templatePath));
 			return template(context);
+		},
+		setupRules: function(jsonFile){
+			rules = jsonFile;
 		}
     };
 // return module
