@@ -148,6 +148,7 @@
                                 </featureArtifactDef>
                                 
 																<!-- Identity features -->
+				<featureArtifactDef>org.wso2.carbon:org.wso2.carbon.security.mgt.feature:4.2.4</featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.identity.application.authenticator.basicauth.server.feature:${carbon.platform.version}
                                 </featureArtifactDef>
@@ -322,6 +323,10 @@
 
                                 
 																<!-- Identity feature -->
+ 				<feature>
+                                    <id>org.wso2.carbon.security.mgt.server.feature.group</id>
+                                    <version>4.2.4</version>
+                                </feature>
 																<feature>
                                     <id>org.wso2.carbon.identity.application.authenticator.basicauth.server.feature.group</id>
                                     <version>${carbon.platform.version}</version>
