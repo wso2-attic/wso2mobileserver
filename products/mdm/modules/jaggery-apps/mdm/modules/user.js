@@ -315,7 +315,12 @@ var user = (function () {
         authenticate: function(ctx){
 			ctx.username = ctx.username;
 			log.info("username "+ctx.username);
-			var authStatus = server().authenticate(ctx.username, ctx.password);
+            try {
+                var authStatus = server().authenticate(ctx.username, ctx.password);
+            } catch (e){
+                return null;
+            }
+
 			log.info(">>auth "+authStatus);
 			if(!authStatus) {
 				return null;
@@ -372,10 +377,18 @@ var user = (function () {
             var tenantDomain = tenantUser.domain;
             log.debug("Domain >>>>>>> " + tenantDomain);
 
+            if (tenantDomain == "carbon.super") {
+                return this.getTenantName("default");
+            }
+
             return this.getTenantName(tenantDomain);
         },
 
         getTenantNameFromID: function (){
+            if (arguments[0] == "-1234") {
+                return this.getTenantName("default");
+            }
+
             var ctx = {};
             ctx.tenantId = arguments[0];
             var tenantDomain = carbon.server.tenantDomain(ctx);
@@ -392,9 +405,38 @@ var user = (function () {
                 var tenantConfig = require('/config/tenants/default/config.json');
                 return tenantConfig.name;;
             }
+        },
+
+        getLicenseByDomain: function() {
+            var message = "";
+            if (arguments[0].trim() == "") {
+                var file = new File("/config/tenants/default/license.txt");
+                file.open("r");
+                message = file.readAll();
+                file.close();
+            } else {
+                var file = new File("/config/tenants/" + arguments[0] + '/license.txt');
+                if (file.isExists()){
+                    file.open("r");
+                    message = file.readAll();
+                    file.close();
+                } else {
+                    message = "400";
+                }
+            }
+            return message;
+        },
+        
+        getTenantDomainFromID: function() {
+        	if (arguments[0] == "-1234") {
+        		return "default";
+        	}
+        	var carbon = require('carbon');
+            var ctx = {};
+            ctx.tenantId = arguments[0];
+            var tenantDomain = carbon.server.tenantDomain(ctx);
+            return tenantDomain;
         }
-
-
     };
     return module;
 })();

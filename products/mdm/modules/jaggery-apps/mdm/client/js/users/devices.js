@@ -9,11 +9,27 @@ var selectedDevice = null;
 
 
 $(document).ready(function() {
-	var tabId = $('#device-tab-heading-0').data("tabId");
-	var deviceId = $('#device-tab-heading-0').data("deviceId");
+	
+	
+	
+	
+	
+	
+	
 	
 	var selDevice = window.location.hash;
 	selDevice = selDevice.replace("#device-tab-",""); 
+	
+	
+	$("#devicesTab li").each(function(idx, li) {
+    	
+    	if($(this).children( "a" ).data('deviceId') == selDevice){
+    		var selTab = $(this).children( "a" ).data('tabId');
+    		tabId = $('#device-tab-heading-' + selTab).data("tabId");
+			deviceId = $('#device-tab-heading-' + selTab).data("deviceId");
+    	}
+	});
+	
 	
 	if(selDevice){
 		deviceId = selDevice;

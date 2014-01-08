@@ -1,8 +1,25 @@
-var ui = require('../config/ui.json');
+var ui = require('../config/tenants/default/ui.json');
 var config = require('/config/mdm.js').config();
 
 var configApis = require('../config/apis.json');
 var log = new Log();
+
+
+
+if(session.get("mdmConsoleUserLogin") != null){
+	var userSession = session.get("mdmConsoleUser");
+	var tenatDomain = userSession.tenantDomain;
+	ui = require('../config/tenants/' + tenatDomain + '/ui.json');
+}
+
+
+if(session.get("mdmConsoleUserLogin") != null){
+	var userSession = session.get("mdmConsoleUser");
+	var tenatDomain = userSession.tenantDomain;
+	ui = require('../config/tenants/' + tenatDomain + '/ui.json');
+}
+
+
 
 /*
 	Basic Application Info
@@ -100,7 +117,8 @@ navigation = function(role) {
             topNavigation = [
                 {name : "Dashboard"	, link: appInfo().server_url + "console/dashboard", displayPage: "dashboard", icon: "icon-th-large"},
                 {name : "Configurations", link: appInfo().server_url + "users/configuration", displayPage: "configuration", icon:"icon-wrench"},
-                {name : "Management"	, link: appInfo().server_url + "devices/management", displayPage: "management", icon:"icon-briefcase"}               
+                {name : "Management"	, link: appInfo().server_url + "devices/management", displayPage: "management", icon:"icon-briefcase"},
+                 {name : "Reports"	, link: appInfo().server_url + "reports/", displayPage: "reports", icon:"icon-bar-chart"}               
             ];
             var configNavigation =	[
                 {name : "Users", link: appInfo().server_url + "users/configuration", displayPage: "users", icon:"icon-user"},
@@ -112,6 +130,7 @@ navigation = function(role) {
                 {name : "Dashboard"	, link: appInfo().server_url + "console/dashboard", displayPage: "dashboard", icon: "icon-th-large"},
                 {name : "Configurations", link: appInfo().server_url + "users/configuration", displayPage: "configuration", icon:"icon-wrench"},
                 {name : "Management"	, link: appInfo().server_url + "devices/management", displayPage: "management", icon:"icon-briefcase"},
+                 {name : "Reports"	, link: appInfo().server_url + "reports/", displayPage: "reports", icon:"icon-bar-chart"}
             ];
             var configNavigation =	[
                 {name : "Users", link: appInfo().server_url + "users/configuration", displayPage: "users", icon:"icon-user"},
