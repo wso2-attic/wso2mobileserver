@@ -29,9 +29,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -41,6 +44,7 @@ public class DeviceInfo{
     int sdkVersion = 0;    
     String device = null;   
     String imsi = null; 
+    String mac = null;
     String deviceId = null;
     String manufacturer = null;
     String networkOperatorName = "No Sim";
@@ -138,7 +142,13 @@ public class DeviceInfo{
 	*/
 	public String getDeviceId() {
 		final TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+		try{
 		deviceId = tm.getDeviceId();
+		if (deviceId == null || deviceId .length() == 0)
+			deviceId = Secure.getString(context.getContentResolver(),Secure.ANDROID_ID);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 		return deviceId;
 	}
 	/**
@@ -148,6 +158,15 @@ public class DeviceInfo{
 		final TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		imsi = tm.getSubscriberId();
 		return imsi;
+	}
+	/**
+	*Returns the device WiFi MAC
+	*/
+	public String getMACAddress() {
+		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wInfo = wifiManager.getConnectionInfo();
+		mac = wInfo.getMacAddress(); 
+		return mac;
 	}
 	/**
 	*Returns the Email address of the device owner
