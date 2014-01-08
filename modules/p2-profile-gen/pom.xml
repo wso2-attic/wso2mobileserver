@@ -155,19 +155,19 @@
                                     org.wso2.carbon:org.wso2.carbon.identity.application.authentication.framework.server.feature:${patch.version.421}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon:org.wso2.carbon.identity.authenticator.saml2.sso.server.feature:${carbon.platform.version}
+                                    org.wso2.carbon:org.wso2.carbon.identity.authenticator.saml2.sso.server.feature:4.2.1
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon:org.wso2.carbon.identity.authenticator.saml2.sso.feature:${patch.version.421}
+                                    org.wso2.carbon:org.wso2.carbon.identity.authenticator.saml2.sso.feature:4.2.2
                                 </featureArtifactDef>
                                 <feaureArtifactDef>
-                                    org.wso2.carbon:org.wso2.carbon.identity.sso.saml.feature:${patch.version.421}
+                                    org.wso2.carbon:org.wso2.carbon.identity.sso.saml.feature:4.2.2
                                 </feaureArtifactDef>
                                 <feaureArtifactDef>
                                     org.wso2.carbon:org.wso2.stratos.identity.saml2.sso.mgt.feature:${stratos.version}
                                 </feaureArtifactDef>
                                 <feaureArtifactDef>
-                                    org.wso2.carbon:org.wso2.carbon.identity.core.feature:${patch.version.421}
+                                     org.wso2.carbon:org.wso2.carbon.identity.core.feature:4.2.2
                                 </feaureArtifactDef>
 																<featureArtifactDef>
 																	org.wso2.carbon:org.wso2.carbon.claim.mgt.feature:${carbon.platform.version}
@@ -332,11 +332,11 @@
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.identity.authenticator.saml2.sso.server.feature.group</id>
-                                    <version>${carbon.platform.version}</version>
+                                    <version>4.2.1</version>
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.identity.authenticator.saml2.sso.feature.group</id>
-                                    <version>${patch.version.421}</version>
+                                    <version>4.2.2</version>
                                 </feature>
                                 <feature>
                                     <id>org.wso2.stratos.identity.saml2.sso.mgt.feature.group</id>
@@ -344,11 +344,11 @@
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.identity.sso.saml.feature.group</id>
-                                    <version>${patch.version.421}</version>
+                                    <version>4.2.2</version>
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.identity.core.feature.group</id>
-                                    <version>${patch.version.421}</version>
+                                    <version>4.2.2</version>
                                 </feature>
                                 <!-- XACML features -->
 																<feature>
