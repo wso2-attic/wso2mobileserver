@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1389183567719
+Bnd-LastModified: 1389185998519
 Build-Jdk: 1.6.0_27
 Built-By: gayan
 Bundle-Activator: org.wso2mobile.platform.admin.styles.internal.Activato
@@ -14,5 +14,5 @@ Carbon-Component: UIBundle
 Created-By: Apache Maven Bundle Plugin
 Fragment-Host: org.wso2.carbon.ui
 Import-Package: org.wso2mobile.platform.admin.styles.internal;resolution
- :=optional,org.osgi.service.http,org.osgi.framework,org.wso2.carbon.ui
+ :=optional,org.wso2.carbon.ui,org.osgi.service.http,org.osgi.framework
 Tool: Bnd-2.1.0.20130426-122213

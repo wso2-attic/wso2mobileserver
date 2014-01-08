@@ -261,8 +261,8 @@
                                 <feature>
                                     <id>org.wso2.carbon.jaxws.webapp.mgt.feature.group</id>
                                     <version>${carbon.platform.version}</version>
-                             <!--   </feature>
-																<feature>
+                               </feature>
+			        <!--<feature>
                                     <id>org.wso2.carbon.security.mgt.feature.group</id>
                                     <version>${patch.version.421}</version>
                                 </feature> -->
