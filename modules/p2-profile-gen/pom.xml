@@ -102,8 +102,8 @@
 	                              </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.module.mgt.server.feature:${carbon.platform.version}
-                               <!-- </featureArtifactDef>
-																<featureArtifactDef>
+                                </featureArtifactDef>
+				<!--<featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.security.mgt.feature:${patch.version.421}
                                 </featureArtifactDef> -->
 																<featureArtifactDef>
