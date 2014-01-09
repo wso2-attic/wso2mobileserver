@@ -207,27 +207,13 @@ var iosmdm = (function() {
 					ctx.id = commandUUID;
 					notification.discardOldNotifications(ctx);
 
-//                    if (pendingExist != true) {
-//                        log.debug("Pending Exist >>>>>>> FALSE");
-//                        return;
-//                    }
-//                    log.debug("Pending Exist >>>>>>> TRUE");
-
 				} else if (("Error").equals(apnsStatus.getStatus())) {
 					log.error("Error " + apnsStatus.getError());
-
 					var ctx = {};
 					ctx.error = "Error";
 					ctx.data = apnsStatus.getError();
 					ctx.msgID = commandUUID;
-
                     var pendingExist = notification.addIosNotification(ctx);
-
-//                    if (pendingExist != true) {
-//                        log.debug("Pending Exist >>>>>>> FALSE");
-//                        return;
-//                    }
-//                    log.debug("Pending Exist >>>>>>> TRUE");
 				}
 
 				var ctx = {};
@@ -245,6 +231,7 @@ var iosmdm = (function() {
 
                 //End of all Notifications pending for the device
                 var datetime =  common.getCurrentDateTime();
+                log.debug("Device wakeup complete!")
                 db.query("UPDATE device_awake JOIN devices ON devices.id = device_awake.device_id SET device_awake.status = 'P', device_awake.processed_date = ? WHERE devices.udid = ? AND device_awake.status = 'S'", datetime, apnsStatus.getUdid());
 
                 return null;

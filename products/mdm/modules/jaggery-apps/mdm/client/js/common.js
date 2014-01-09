@@ -1,14 +1,24 @@
 var appConfig = getAppConfig();
 var apiConfig = getApiConfig();
-var uiConfig = getUIConfig();
+
+var uiConfig = getUIConfig('default');
+
+$.get('/mdm/console/info').done(function(data) {
+			tenantDomain = JSON.parse(data).tenantDomain;
+			var uiConfig = getUIConfig('default');
+		}).fail(function() {
+
+});
+
+
 
 function getAppConfig(){
 	var appConfig = loadTextFileAjaxSync("/mdm/config/config.json", "application/json");	
 	return JSON.parse(appConfig);
 }
 
-function getUIConfig(){
-	var uiConfig = loadTextFileAjaxSync("/mdm/config/ui.json", "application/json");	
+function getUIConfig(tenantDomain){
+	var uiConfig = loadTextFileAjaxSync("/mdm/config/tenants/" + tenantDomain +  "/ui.json", "application/json");	
 	return JSON.parse(uiConfig);
 }
 
@@ -24,9 +34,9 @@ context = function() {
 		resourcePath: uiConfig.MDM_UI_URI + "themes/" + uiConfig.MDM_THEME + "/img/",
 		serverURL: uiConfig.MDM_API_URI,
 		appsImageService: uiConfig.APPS_IMAGE_SERVICE
-	}
+	};
 	return appDefault;
-}
+};
 
 
 
@@ -58,6 +68,7 @@ getServiceURLs = function(item){
 	var tenantId = null;
 	$.get('/mdm/console/info').done(function(data) {
 			tenantId = JSON.parse(data).tenantId;
+			
 		}).fail(function() {
 
 	});
@@ -71,7 +82,7 @@ getServiceURLs = function(item){
 		return serverURL + String.format.apply(this, arguments);
 	}	
 
-}
+};
 
 
 
@@ -86,6 +97,9 @@ String.format = function() {
 }
 
 
+$('.datepicker').datepickerbt({
+				format: 'yyyy-mm-dd'
+			});
 
 
 $.noty.defaults = {
