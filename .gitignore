@@ -239,3 +239,4 @@ modules/components/social/target/timestamp
 modules/components/org.wso2.carbon.databridge.datasink.cassandra/target/timestamp
 .idea
 wso2mobileserver-parent.iml
+modules/components/mdm-ui/target
