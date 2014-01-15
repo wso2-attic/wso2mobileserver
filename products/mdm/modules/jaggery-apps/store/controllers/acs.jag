@@ -14,14 +14,13 @@
                 IDP_ALIAS: configs.ssoConfiguration.identityAlias
             },
             sso_sessions = application.get('sso_sessions');
-
     if (!sso_sessions) {
         application.put('sso_sessions', {});
         sso_sessions = application.get('sso_sessions');
     }
-
     if (samlResponse != null) {
         samlRespObj = sso.client.getSamlObject(samlResponse);
+
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
             // validating the signature
@@ -31,13 +30,13 @@
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
                     if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
 
                         sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
 
                         var user = require('store').user;
-
                         if (user.loginWithSAML(sessionObj.loggedInUser)) {
                             log.debug('user is set :::' + sessionObj.loggedInUser);
                             response.sendRedirect(relayState);

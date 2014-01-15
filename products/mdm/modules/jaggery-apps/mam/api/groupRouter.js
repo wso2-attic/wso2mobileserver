@@ -15,20 +15,19 @@ var group = (function () {
 		        response.status = 404;
 		    }
 		});
-        router.get('groups/invite', function(ctx){
-            var groups= group.getGroups(ctx);
-            if(groups[0]!=null){
-                response.content = groups;
-                response.status = 200;
-            }else{
-                response.status = 404;
-            }
+        router.put('groups/invite', function(ctx){
+            var users= group.getUsersOfGroup(ctx);
+            for (var i = users.length - 1; i >= 0; i--){
+                user.sendEmail(user.getUser({userid: users[i].username}));
+            };
+            response.status = 200;
         });
 		router.delete('groups/{groupid}', function(ctx){
             log.info("Test Delete Router");
 			group.deleteGroup(ctx);
 		    response.status = 201;
 		});
+
 		router.get('groups/{groupid}/users/device_count', function(ctx){
 			var users = group.getUsers(ctx);
 		    response.content =  users;
@@ -65,11 +64,15 @@ var group = (function () {
                 response.status = 400;
             }
 		});
+        router.put('groups/{groupid}', function(ctx){
+            var result = group.editGroup(ctx.groupid, ctx.name);
+            response.content = result;
+            response.status = 200;
+        });
 		router.post('groups/{groupid}/operations/{operation}', function(ctx){
-                response.status = 200;
-                response.content = "success";
-                var result = group.sendMsgToGroupDevices(ctx);
-
+            response.status = 200;
+            response.content = "success";
+            var result = group.sendMsgToGroupDevices(ctx);
 		});
 		
     };

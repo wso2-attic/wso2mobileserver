@@ -1,5 +1,7 @@
 {
     "tenanted": true,
+    "HTTPS_URL": "%https.ip%",
+    "HTTP_URL": "%http.ip%",
     "ssoConfiguration": {
         "enabled": true,
         "issuer": "mam",

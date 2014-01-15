@@ -15,9 +15,7 @@
     };
 
     var getBackendCookie = function (samlToken) {
-        log.info("SAML token :"+samlToken);
         var token = getToken();
-        log.info(token);
         var token = null;
         var encodedToken = token && token.replace(/>/g, '&gt;').replace(/</g,'&lt;');
         var xhr = new XMLHttpRequest();
@@ -50,9 +48,7 @@
         application.put('sso_sessions', {});
         sso_sessions = application.get('sso_sessions');
     }
-
     if (samlResponse != null) {
-		log.info("sfsdf");
         samlRespObj = sso.client.getSamlObject(samlResponse);
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
@@ -76,20 +72,16 @@
 					        var userModule = require('/modules/user.js').user;
 							var db = application.get('db');
 							var user = new userModule(db);
-							var objUser = user.getUser({'userid': username});
-							log.info("OBJECT U >>>>"+objUser);
+							var objUser = user.getUser({'userid': username, login: true});
 							if(objUser != null){
 								var userFeed = {};
-								log.info(typeof userFeed);
 								userFeed.tenantId = stringify(objUser["tenantId"]);
-								log.info("TenantID-"+userFeed.tenantId);
 								userFeed.username = objUser["username"];
 								userFeed.email = objUser["email"];
 								userFeed.firstName = objUser["firstName"];
 								userFeed.lastName = objUser["lastName"];
 								userFeed.mobile = objUser["mobile"];
 								userFeed.tenantDomain = user.getTenantDomainFromID(stringify(objUser["tenantId"]));
-	                            log.info("TestTTTTTTTTTT"+objUser["roles"]);
 								var parsedRoles = parse(objUser["roles"]);
 								userFeed.roles = parsedRoles;
 								var isMDMAdmin = false;
@@ -112,11 +104,10 @@
 
                                 var entitlement = require('policy').entitlement;
                                 var backEndCookie = getBackendCookie(samlResponse);
-                                 log.info("BackEnd Cookie :"+backEndCookie);
                                 entitlement.setAuthCookie(backEndCookie);
 
                                 session.put("entitlement",entitlement);
-                              //  session.put("epas_stub",entitlementPolicyAdminService);
+                                 //  session.put("epas_stub",entitlementPolicyAdminService);
 
                                 var groupModule = require('/modules/group.js').group;
                                 var group = new groupModule(db);
@@ -124,6 +115,12 @@
                                     var userList = new Array();
                                     group.addGroup({'name':'Internal/mdmadmin','users':userList});
                                 }
+
+                                //Making default policy
+                                var policyModule = require('/modules/policy.js').policy;
+                                var policy = new policyModule(db);
+
+                                policy.addDefaultPolicy();
 
 								var appController =require('/controller/app.js');
 								if(isAdmin){

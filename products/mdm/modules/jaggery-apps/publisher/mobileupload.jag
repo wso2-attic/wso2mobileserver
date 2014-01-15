@@ -80,13 +80,12 @@
 			}catch(e){
 				log.info(e);
 				log.debug("Uploaded file is corrupted");
-		        response.sendError(500, 'Application meta data was not found');
+				print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Application meta data was not found"]}})
 			}
 			log.info("Successfully discovered");
 			print(meta);
 		}else{
-			log.info("Uploaded file is not an archive");
-	        response.sendError(500, 'Invalid Filetype');
+			print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Invalid Filetype - Uploaded file is not an archive"]}})
 			return;
 		}	
 	}

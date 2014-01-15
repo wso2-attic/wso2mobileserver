@@ -115,7 +115,7 @@ var policy = (function () {
             return result;
         },
         getAllPoliciesForMAM:function(ctx){
-            var result = db.query("SELECT * FROM policies where category = 2");
+            var result = db.query("SELECT * FROM policies where category = 1 and tenant_id=?", common.getTenantID());
             return result;
         },
         getPolicy:function(ctx){
@@ -126,6 +126,12 @@ var policy = (function () {
             var result = db.query("DELETE FROM policies where id = ?",ctx.policyid);
             db.query("DELETE FROM group_policy_mapping where policy_id = ?",ctx.policyid);
             return result;
+        },
+        addDefaultPolicy: function(ctx){
+            var existingPolicies =  db.query("SELECT * from  policies WHERE name = ? AND tenant_id = ?", 'default', common.getTenantID());
+            if(existingPolicies.length<=0){
+                db.query("insert into policies (name,content,type,category, tenant_id) values (?,'[]', 1, 1,?)", 'default', common.getTenantID());
+            }
         },
         assignGroupsToPolicy:function(ctx){
             this.assignUsersToPolicy(ctx);

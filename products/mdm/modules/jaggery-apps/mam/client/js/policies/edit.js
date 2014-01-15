@@ -87,7 +87,7 @@ $("#btn-add").click(function() {
 	
 	var installedAppData = new Array(); 
 	$('#inputInstallApps :selected').each(function(i, selected){ 
- 		installedAppData.push({identity: $(selected).val(), os: $(selected).data('os'), type: $(selected).data('type')});
+ 		installedAppData.push({identity: $(selected).val(), os: $(selected).data('os'), type: $(selected).data('type'), name: $(selected).data('name')});
 	});
 	
 	if(installedAppData.length > 0){
@@ -97,7 +97,7 @@ $("#btn-add").click(function() {
 		
 	jQuery.ajax({
 		url : getServiceURLs("policiesCRUD", ""),
-		type : "POST",
+		type : "PUT",
 		async : "false",
 		data: JSON.stringify({policyData: policyData, policyName: policyName, policyType: policyType, category: "2"}),		
 		contentType : "application/json",

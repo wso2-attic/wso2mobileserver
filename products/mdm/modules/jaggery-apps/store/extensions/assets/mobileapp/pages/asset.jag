@@ -36,7 +36,7 @@ require('/modules/store.js').exec(function (ctx) {
         var mdm = require('/modules/mdm.js').mdm;
         var mdmServer = new mdm();
         try{
-            var result = mdmServer.getDevices(user.username);
+            var result = mdmServer.getDevices(user.username+"@"+user.tenantDomain);
             devices = parse(result);
         }catch(e){
             log.info(e);

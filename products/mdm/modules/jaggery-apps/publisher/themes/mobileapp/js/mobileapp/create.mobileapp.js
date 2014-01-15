@@ -156,7 +156,7 @@ $(document).ready(function(){
 	$('#txtAppUpload').fileuploadFile({
         dataType: 'json',
        	add: function (e, data) {
-		           $('#btn-app-upload').click(function () {
+		        $('#btn-app-upload').click(function () {
 		                    //data.context = $('<p/>').text('Uploading...').replaceAll($(this));
 		                    $("#modal-upload-data").css("display", "none");
 		                     $("#modal-upload-progress").css("display", "block");
@@ -165,10 +165,31 @@ $(document).ready(function(){
 		                });
 		        },
 		        done: function (e, data) {
-		        	appMetaData = data._response.result;
-					$('#appmeta').val(JSON.stringify(data._response.result));
-					$("#app-upload-progress-done").css("display", "block");
-					$('#modal-upload-app').modal('hide');
+		        	var data = data._response.result;
+		        	if(data.ok == false){
+               			var validationErrors = "";
+	               		for (var key in data.report) {
+						  if (data.report.hasOwnProperty(key)) {					   
+						    if(key != "failed"){
+						    	validationErrors += data.report[key] + "<br>";
+						    }
+						    
+						  }
+						}
+	               		noty({               		 	
+						    text: '<strong>Validation Failed!</strong> <br />' + validationErrors,
+						    template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+						    layout: "center",
+						    timeout: 2000,
+						    type: "error"
+				   
+					 	});
+	               	}else{
+	               		$('#appmeta').val(JSON.stringify(data._response.result));
+						$("#app-upload-progress-done").css("display", "block");
+						$('#modal-upload-app').modal('hide');
+	               	}
+					
 		        	//$('#txtWebapp').val(data._response.result[0]);
 		            //alert();
 		            //$("#app-upload-progress").css("display", "none");
