@@ -132,6 +132,7 @@ $(document).ready(function(){
 					    
 					  }
 					}
+               		//window.location.replace("/publisher/assets/mobileapp/");
                		
                		 noty({               		 	
 					    text: '<strong>Validation Failed!</strong> <br />' + validationErrors,
@@ -176,16 +177,41 @@ $(document).ready(function(){
 						    
 						  }
 						}
-	               		noty({               		 	
-						    text: '<strong>Validation Failed!</strong> <br />' + validationErrors,
+						 $("#modal-upload-progress").css("display", "none");
+	               		
+	               		
+					 	//window.location.replace("/publisher/assets/mobileapp/");
+					 	
+					 	
+				noty({
+					 		text: '<strong>Validation Failed!</strong> <br />' + validationErrors,
 						    template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
 						    layout: "center",
+						    modal: true,
 						    timeout: 2000,
-						    type: "error"
-				   
-					 	});
+						    type: "error",
+					buttons : [{
+						
+						addClass : 'btn',
+						text : 'Ok',
+						onClick : function($noty) {
+							location.reload(); 
+							
+						}
+						
+					}]
+				});
+					 	
+					 	
+					 	
+					 	
+					 	
+					 	
+					 	
+					 	
+					 	
 	               	}else{
-	               		$('#appmeta').val(JSON.stringify(data._response.result));
+	               		$('#appmeta').val(JSON.stringify(data));
 						$("#app-upload-progress-done").css("display", "block");
 						$('#modal-upload-app').modal('hide');
 	               	}
