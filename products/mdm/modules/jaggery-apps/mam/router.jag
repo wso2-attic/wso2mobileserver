@@ -25,6 +25,8 @@ var store = new storeModule(db);
 var webconsoleModule = require('modules/webconsole.js').webconsole;
 var webconsole = new webconsoleModule(db);
 
+
+
 var getApp = function(id){
 	var app =  store.getAppFromStore(id);
 	return app;
@@ -274,7 +276,8 @@ var userRouterInstance = new userRouter(db,router);
 var groupRouter = require('api/groupRouter.js').group;
 var groupRouterInstance = new groupRouter(db,router);
 
-
+var policyRouter = require('api/policyRouter.js').policy;
+var policyRouterInstance = new policyRouter(db,router);
 
 var absolute = require ('modules/absolute.js').mvc;
 var mvc = new absolute({

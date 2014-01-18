@@ -67,7 +67,12 @@ var webconsole = (function () {
             var type = ctx.type;
             var paging = ctx.iDisplayStart||0;
             var pageSize = 10;
-            var all_users = user.getAllUserNames();
+            var all_users;
+            if(ctx.groupid != null || ctx.groupid != undefined) {
+                all_users = user.getAllUserNamesByRole(ctx);
+            } else {
+                all_users = user.getAllUserNames();
+            }
             var totalRecords = all_users.length;
             var upperBound = (paging+1)*pageSize;
             var lowerBound =  upperBound - pageSize;
@@ -79,17 +84,17 @@ var webconsole = (function () {
             for (var i = paginated_users.length - 1; i >= 0; i--) {
                 var username = paginated_users[i];
                 var userObj = user.getUser({"userid": username});
-                var proxyObj = [userObj.email, userObj.firstName, userObj.lastName];
+                var proxyObj = [username, userObj.firstName, userObj.lastName];
 
                 var roles = userObj.roles;
                 roles = parse(roles);
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
                     log.info("Test iteration2"+roles[j]);
-                    if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'||roles[j]=='mamadmin'){
+                    if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'){
                         flag = 1;
                         break;
-                    }else if(roles[j]==' Internal/publisher'||roles[j]=='Internal/reviewer'||roles[j]=='Internal/store'){
+                    }else if(roles[j]=='Internal/publisher'||roles[j]=='Internal/reviewer'||roles[j]=='Internal/store'||roles[j]=='mamadmin'){
                         flag = 2;
                         break;
                     }else{

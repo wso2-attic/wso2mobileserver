@@ -146,13 +146,13 @@ var group = (function () {
             var roles = this.getAllGroups({});
             for(var i=0;i<roles.length;i++){
                     var obj = {};
-                    if(roles[i] == 'admin'||roles[i] == 'Internal/mamadmin'||roles[i] == 'Internal/mdmadmin'){
+                    if(roles[i] == 'admin'||roles[i] == 'Internal/mdmadmin'){
                         obj.name = roles[i];
                         obj.type = 'administrator';
                         if(type == 'admin'){
                             newRoles.push(obj);
                         }
-                    }else if(roles[i]== 'Internal/publisher'||roles[i]=='Internal/reviewer'||roles[i]=='Internal/store'){
+                    }else if(roles[i]== 'Internal/publisher'||roles[i]=='Internal/reviewer'||roles[i]=='Internal/store'||roles[i]=='Internal/mamadmin'){
                         obj.name = roles[i];
                         obj.type = 'mam';
                         newRoles.push(obj);

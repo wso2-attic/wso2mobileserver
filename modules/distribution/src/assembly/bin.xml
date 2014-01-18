@@ -51,6 +51,7 @@
                 <exclude>**/oracle.sql</exclude>
             </excludes>
         </fileSet>
+        
         <!--Multitenancy related file -->
         <fileSet>
             <directory>
@@ -61,7 +62,7 @@
         </fileSet>
 
         <fileSet>
-            <directory>../styles/service/src/main/resources/web/styles/css</directory>
+            <directory>src/repository/resources/styles/css</directory>
             <outputDirectory>wso2mobileserver-${pom.version}/resources/allthemes/Default/admin</outputDirectory>
             <includes>
                 <include>**/**.css</include>

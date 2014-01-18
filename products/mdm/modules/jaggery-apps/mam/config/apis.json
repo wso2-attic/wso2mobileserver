@@ -17,7 +17,7 @@
 		"dashboardMethods" : "/mam/api/dashboard/{0}",
 		"userGroups": "/mam/api/users/{0}/groups",
 		"permissionsCRUD": "/mam/api/permissions",
-		"policiesCRUD": "/mdm/api/policies/{0}",
+		"policiesCRUD": "/mam/api/policies/{0}",
 		"permissionFeatures": "/mam/api/features",
 		"getMAMApps": "mam/policy/installapps",
 		"usersInvite": "/mam/api/users/invite",
