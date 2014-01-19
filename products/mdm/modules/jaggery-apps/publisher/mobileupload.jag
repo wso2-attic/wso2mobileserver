@@ -80,7 +80,7 @@
 			}catch(e){
 				log.info(e);
 				log.debug("Uploaded file is corrupted");
-				print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Application meta data was not found"]}})
+				print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Uploaded file is corrupted"]}})
 			}
 			log.info("Successfully discovered");
 			print(meta);

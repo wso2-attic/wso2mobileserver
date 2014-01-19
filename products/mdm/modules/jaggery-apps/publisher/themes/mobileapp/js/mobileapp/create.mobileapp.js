@@ -32,7 +32,7 @@ $('#txtOS').on("change",function() {
 	   }else if($('#txtOS').val() == 'ios'){
 	   		$('#txtNameLabel').text('App Identifier');
 	   		$('#file-upload-text').html('<i class="icon-plus-sign"></i> SELECT .IPA FILE');
-	   		$('#txtMarket').children('option[value="VPP"]').css('display','block');   		
+	   		//$('#txtMarket').children('option[value="VPP"]').css('display','block');   		
 	   }
 	  
 	  
@@ -103,6 +103,12 @@ $('#modal-upload-app').on('shown', function() {
         $(".dropdownimage").msDropDown();
 });
 
+$('#upload-app-again').click(function(e) {
+       
+         $("#modal-upload-data").css("display", "block");
+		  $("#modal-upload-progress").css("display", "none");
+});
+
 
 
 $(document).ready(function(){
@@ -119,6 +125,8 @@ $(document).ready(function(){
             		window.location.replace("/publisher/assets/mobileapp/");
                		return;
             	}
+            	
+            	
                
                	if(data.ok == false){
                		
@@ -167,6 +175,10 @@ $(document).ready(function(){
 		        },
 		        done: function (e, data) {
 		        	var data = data._response.result;
+		        	$('#txtVersion').val(data.version);
+		        	
+		        	
+		        	
 		        	if(data.ok == false){
                			var validationErrors = "";
 	               		for (var key in data.report) {
@@ -181,7 +193,7 @@ $(document).ready(function(){
 	               		
 	               		
 					 	//window.location.replace("/publisher/assets/mobileapp/");
-					 	
+				
 					 	
 				noty({
 					 		text: '<strong>Validation Failed!</strong> <br />' + validationErrors,
@@ -232,7 +244,12 @@ $('#btn-app-upload').click(function () {
 		          if(appMetaData == null){
 		          	  $("#modal-upload-data").css("display", "none");
 		              $('#modal-upload-app').modal('hide');
-		          }		                  
+		          }	
+		          
+		       
+				   if($('#txtMarket').val() == 'Enterprise' && $("#txtOS").val() != 'webapp' ){
+				   	$("#txtVersion").attr("disabled", "disabled");
+				   }	                  
 		                                      
 });
 
@@ -252,6 +269,13 @@ jQuery("#form-asset-create").submit(function(e) {
 	
 	if($("#txtWebapp").val() != ''){
 		$('#appmeta').val(JSON.stringify({weburl: $("#txtWebapp").val()}));
+	   
+	}
+	
+	
+	if($("#txtOS").val() == 'webapp'){
+		 $('#txtMarket').val("Web App");
+		 $("#txtMarketHidden").val("Web App");
 	}
 	
 	if($('#appmeta').val() == null || $('#appmeta').val() == ""){

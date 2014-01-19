@@ -19,12 +19,10 @@ configuration = function(appController){
 	try{
 		var groups = group.getGroupsByType({type:context.contextData.user.role});		
 	}catch(e){
-		
+		log.info(e)
 		var groups = [];
 	}
-	
-	
-	
+	log.info(groups);
 	context.title = context.title + " | Configuration";
 	context.page = "configuration";
 	context.jsFile= "roles/configuration.js";

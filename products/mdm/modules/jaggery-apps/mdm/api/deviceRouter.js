@@ -1,12 +1,14 @@
 
 var device = (function () {
+    var sqlscripts = require('/sqlscripts/mysql.js');
     var userModule = require('user.js').user;
+    var common = require("/modules/common.js");
 	    var user;
     var module = function (db,router) {
 		var deviceModule = require('modules/device.js').device;
 		var device = new deviceModule(db);
 		user = new userModule(db);
-
+        var Handle = require("/modules/handlebars.js").Handlebars;
 
         var validateDevice = function() {
 
@@ -58,6 +60,49 @@ var device = (function () {
             }
         }
 
+        var isAdmin = function(userid){
+            var roleList = user.getUserRoles({username:userid});
+            for(var i=0; i<roleList.length;i++){
+                if(roleList[i]=='admin'||roleList[i]=='mdmadmin'){
+                    return true;
+                }
+            }
+	        return false;
+        }
+
+       function getResource(name){
+            var f = new File(name);
+            f.open("r");
+            var cont = f.readAll();
+            f.close();
+            return cont;
+        }
+
+        var compileTemplate = function(templatePath, context){
+            var template = Handle.compile(getResource(templatePath));
+            return template(context);
+        }
+
+        var checkOwnership = function(deviceID,username){
+            log.info("Device ID :"+deviceID);
+            var result =  db.query(sqlscripts.devices.select1,deviceID);
+            log.info("Result :"+stringify(result));
+            if(typeof result != 'undefined' && result!= null && typeof result[0] != 'undefined' && result[0]!= null && result[0].user_id == username ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        router.get('devices/ios/download', function(ctx) {
+            log.debug(">>>>>>>>>");
+            config = require('/config/config.json');
+            var iosManifest = compileTemplate("/ios_utils/plisttemplate.hbs", {url:config.device.ios.location, bundleid: config.device.ios.bundleid, bundleversion: config.device.ios.version,  appname: config.device.ios.appname});
+            //log.info(iosManifest);
+            response.contentType = "application/xml";
+            print(iosManifest);
+        });
+
 		router.post('devices/isregistered', function(ctx){
 		    var result = device.isRegistered(ctx);
             log.info(result);
@@ -74,22 +119,7 @@ var device = (function () {
 
 
 		router.get('device_enroll', function(ctx){
-            var userAgent= request.getHeader("User-Agent");
-
-            if (validateDevice(userAgent) == false) {
-                response.sendRedirect("../invaliddevice");
-            } else if (userAgent.indexOf("Android") > 0) {
-                response.sendRedirect("/mdm/androidapk");
-            } else if (userAgent.indexOf("iPhone") > 0) {
-                response.sendRedirect(configs.device.ios_location);
-            } else if (userAgent.indexOf("iPad") > 0){
-                response.sendRedirect(configs.device.ios_location);
-            } else if (userAgent.indexOf("iPod") > 0){
-                response.sendRedirect(configs.device.ios_location);
-            } else {
-                response.sendRedirect("../invaliddevice");
-            }
-
+            response.sendRedirect("/mdm/downloadapp");
 		});
 
 		router.post('devices/register', function(ctx){
@@ -104,13 +134,26 @@ var device = (function () {
                 	var content = device.registerIOS(ctx);
 		    }
 		});
+		
+		router.post('devices/pushtoken', function(ctx){
+		    var result = device.saveiOSPushToken(ctx);
+		});
+		
+		router.post('devices/location', function(ctx){
+		    var result = device.updateLocation(ctx);
+		});
 
 		router.post('devices/unregister', function(ctx){
 		    var result = device.unRegisterAndroid(ctx);
 		});
 		
 		router.post('devices/unregisterios', function(ctx){
-		    var result = device.unRegisterIOS(ctx);
+            var devices = db.query(sqlscripts.devices.select20, ctx.udid);
+            if (devices != null || devices != undefined) {
+                if (devices[0].id != null) {
+                    var result = device.sendMessageToIOSDevice({"data" : null, "operation" : "ENTERPRISEWIPE", "deviceid" : devices[0].id});
+                }
+            }
 		});
 
 		router.post('devices/AppInstall', function(ctx){
@@ -132,18 +175,32 @@ var device = (function () {
 		});
 
 		router.post('devices/{deviceid}/operations/{operation}', function(ctx){
-            if(ctx.operation == "INSTALLAPP" || ctx.operation == "UNINSTALLAPP"){
-                var state = device.getCurrentDeviceState();
-                if(state == "A"){
-                    device.sendToDevice(ctx);
-                    response.status = 200;
-                    response.content = "success";
-                }
-            }else{
-                device.sendToDevice(ctx);
-                response.status = 200;
-                response.content = "success";
-            }
+            		log.info("Device IDDDDD"+ctx.deviceid);
+            		var username = common.getCurrentLoginUser();
+            		log.info("Router 1 :"+username);
+            		if(username==null){
+                		response.status = 404;
+                		response.content = "Please Login Again";
+            		}
+            		log.info(isAdmin(username));
+            		log.info(checkOwnership(ctx.deviceid,username));
+            		if(isAdmin(username)||checkOwnership(ctx.deviceid,username)){
+                		if(ctx.operation == "INSTALLAPP" || ctx.operation == "UNINSTALLAPP"){
+                    			var state = device.getCurrentDeviceState();
+                    			if(state == "A"){
+                        			device.sendToDevice(ctx);
+                        			response.status = 200;
+                        			response.content = "success";
+                   			 }
+                		}else{
+                    			device.sendToDevice(ctx);
+                    			response.status = 200;
+                    			response.content = "success";
+                		}
+            		}else{
+                		print("You are not Authorized to Perform Operations for Others Devices");
+            		}
+
 		});
 
         router.post('devices/operations/{operation}', function(ctx){
@@ -187,7 +244,6 @@ var device = (function () {
             print(result);
             response.status = 200;
         });
-
 
 		router.get('pending/devices/{udid}/operations', function(ctx){
 		    var result = device.getPendingOperationsFromDevice(ctx);

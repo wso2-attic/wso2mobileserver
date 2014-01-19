@@ -15,6 +15,7 @@
             },
             sso_sessions = application.get('sso_sessions');
 			var samlRespObj;
+    var common = require('/modules/common.js');
     if (!sso_sessions) {
         application.put('sso_sessions', {});
         sso_sessions = application.get('sso_sessions');
@@ -70,17 +71,14 @@
                                     session.put("mamConsoleUserLogin", "true");
                                     session.put("mamConsoleUser", userFeed);
 
+                                    var db = common.getDatabase();
+
                                     var groupModule = require('/modules/group.js').group;
                                     var group = new groupModule(db);
                                     if(!group.roleExists("Internal/mamadmin")){
                                         var userList = new Array();
                                         group.addGroup({'name':'Internal/mamadmin','users':userList});
                                     }
-                                     //Making default policy
-                                    var policyModule = require('modules/policy.js').policy;
-                                    var policy = new policyModule(db);
-
-                                    policy.addDefaultPolicy();
 
                                     var appController =require('/controller/app.js');
                                     response.sendRedirect('console/management');

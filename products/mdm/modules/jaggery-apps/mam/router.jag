@@ -13,7 +13,9 @@ var router = new goose({
 	AUTH_USER_ROLES: current_user_roles
 });
 
+var common = require('/modules/common.js');
 
+var db = common.getDatabase();
 var configs = require('config/mam.js').config();
 //For VPP
 var vppManagerModule = require('modules/vppManager.js').vppManager;
