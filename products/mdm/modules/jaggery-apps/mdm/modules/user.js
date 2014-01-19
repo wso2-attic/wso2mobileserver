@@ -7,6 +7,7 @@ var user = (function () {
 	var log = new Log();
 	var db;
 	var common = require("/modules/common.js");
+    var sqlscripts = require('/sqlscripts/mysql.js');
 	var carbon = require('carbon');
 	var server = function(){
 		return application.get("SERVER");
@@ -62,7 +63,7 @@ var user = (function () {
 	var getUserType = function(user_roles){
         for (var i = user_roles.length - 1; i >= 0; i--) {
             var role = user_roles[i];
-            if(role=='admin'|| role=='Internal/mdmadmin'|| role=='mamadmin'){
+            if(role=='admin'|| role=='Internal/mdmadmin'|| role=='Internal/mamadmin'){
                 return "Administrator";
             }else{
                 return "User";
@@ -141,10 +142,15 @@ var user = (function () {
             return proxy_user;
         },
         getUser: function(ctx){
+            log.info("Get User :"+stringify(ctx));
             try {
                 var proxy_user = {};
                 var tenantUser = carbon.server.tenantUser(ctx.userid);
-                var um = userManager(tenantUser.tenantId);
+                if(ctx.login){
+                    var um = userManager(tenantUser.tenantId);
+                }else{
+                    var um = userManager(common.getTenantID());
+                }
                 var user = um.getUser(tenantUser.username);
                 var user_roles = user.getRoles();
                 var claims = [claimEmail, claimFirstName, claimLastName];
@@ -156,6 +162,7 @@ var user = (function () {
                 proxy_user.username = tenantUser.username;
                 proxy_user.tenantId = tenantUser.tenantId;
                 proxy_user.roles = stringify(user_roles);
+            //    proxy_user.roles = String(user_roles);
                 proxy_user.user_type = getUserType(user_roles);
                 return proxy_user;
             } catch(e) {
@@ -208,7 +215,7 @@ var user = (function () {
             return users_list;
         },
         deleteUser: function(ctx){
-            var result = db.query("select * from devices where user_id = ?",ctx.userid);
+            var result = db.query(sqlscripts.devices.select36, ctx.userid);
             log.info("Result :"+result);
             if(result != undefined && result != null && result != '' && result[0].length != undefined && result[0].length != null && result[0].length > 0){
                 return 404;
@@ -229,8 +236,8 @@ var user = (function () {
         getUserRoles: function(ctx){
             log.info("User Name >>>>>>>>>"+ctx.username);
             var tenantUser = carbon.server.tenantUser(ctx.username);
-            var um = userManager(tenantUser.tenantId);
-            var roles = um.getRoleListOfUser(ctx.username);
+            var um = userManager(common.getTenantID());
+            var roles = um.getRoleListOfUser(tenantUser.username);
             var roleList = common.removePrivateRole(roles);
             return roleList;
         },
@@ -326,10 +333,12 @@ var user = (function () {
 				return null;
 			}
 			var user =  this.getUser({'userid': ctx.username});
-			var result = db.query("SELECT COUNT(id) AS record_count FROM tenantplatformfeatures WHERE tenant_id = ?",  stringify(user.tenantId));
-			if(result[0].record_count == 0) {
+
+            var result = db.query(sqlscripts.tenantplatformfeatures.select1,  stringify(user.tenantId));
+            if(result[0].record_count == 0) {
 				for(var i = 1; i < 13; i++) {
-					var result = db.query("INSERT INTO tenantplatformfeatures (tenant_id, platformFeature_Id) VALUES (?, ?)", stringify(user.tenantId), i);
+
+                    var result = db.query(sqlscripts.tenantplatformfeatures.select2, stringify(user.tenantId), i);
 				}
 			}
 		    return user;
@@ -345,7 +354,7 @@ var user = (function () {
             subject = "MDM Enrollment";
 
             var email = require('email');
-            var sender = new email.Sender("smtp.gmail.com", "25", config.email.senderAddress, config.email.emailPassword, "tls");
+            var sender = new email.Sender(config.email.smtp, config.email.port, config.email.senderAddress, config.email.emailPassword, "tls");
             sender.from = config.email.senderAddress;
 
             log.info("Email sent to -> "+ctx.username);
@@ -365,8 +374,10 @@ var user = (function () {
             log.info(String(obj.userid));
             log.info(common.getTenantID());
             log.info("end");
-			var devices = db.query("SELECT * FROM devices WHERE user_id= ? AND tenant_id = ?", String(obj.userid), common.getTenantID());
-			return devices;
+
+            var devices = db.query(sqlscripts.devices.select26, String(obj.userid), common.getTenantID());
+
+            return devices;
 		},
 
         //To get the tenant name using the tenant domain
@@ -378,7 +389,7 @@ var user = (function () {
             log.debug("Domain >>>>>>> " + tenantDomain);
 
             if (tenantDomain == "carbon.super") {
-                return this.getTenantName("default");
+                return this.getTenantName("carbon.super");
             }
 
             return this.getTenantName(tenantDomain);
@@ -386,7 +397,7 @@ var user = (function () {
 
         getTenantNameFromID: function (){
             if (arguments[0] == "-1234") {
-                return this.getTenantName("default");
+                return this.getTenantName("carbon.super");
             }
 
             var ctx = {};
@@ -403,39 +414,56 @@ var user = (function () {
                 return tenantConfig.name;
             } catch(e) {
                 var tenantConfig = require('/config/tenants/default/config.json');
-                return tenantConfig.name;;
+                return tenantConfig.name;
             }
         },
 
         getLicenseByDomain: function() {
             var message = "";
+            var domain;
             if (arguments[0].trim() == "") {
-                var file = new File("/config/tenants/default/license.txt");
+                domain = "carbon.super";
+            } else {
+                domain = arguments[0];
+            }
+
+            var file = new File("/config/tenants/" + domain + '/license.txt');
+            if (file.isExists()){
                 file.open("r");
                 message = file.readAll();
                 file.close();
             } else {
-                var file = new File("/config/tenants/" + arguments[0] + '/license.txt');
-                if (file.isExists()){
-                    file.open("r");
-                    message = file.readAll();
-                    file.close();
-                } else {
-                    message = "400";
-                }
+                message = "400";
             }
+
             return message;
         },
         
         getTenantDomainFromID: function() {
         	if (arguments[0] == "-1234") {
-        		return "default";
+        		return "carbon.super";
         	}
         	var carbon = require('carbon');
             var ctx = {};
             ctx.tenantId = arguments[0];
             var tenantDomain = carbon.server.tenantDomain(ctx);
             return tenantDomain;
+        },
+        getTouchDownConfig: function(ctx) {
+            var data = {};
+            var domain = this.getTenantDomainFromID(ctx.tenant_id);
+            try {
+                var tenantConfig = require('/config/tenants/' + domain + '/config.json');
+            } catch(e) {
+                var tenantConfig = require('/config/tenants/default/config.json');
+            }
+
+            data.userid = ctx.user_id;
+            data.domain = tenantConfig.touchdown.domain;
+            data.email = ctx.user_id;
+            data.server = tenantConfig.touchdown.server;
+
+            return data;
         }
     };
     return module;

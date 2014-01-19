@@ -98,18 +98,19 @@ var group = (function () {
             }
             return proxy_role;
         },
-        editGroup: function(ctx){
+        editGroup: function(old_name, new_name){
             var proxy_role = {};
             var tenant_id = common.getTenantID();
             if(tenant_id){
                 var um = userManager(tenant_id);
-                    if(um.roleExists(ctx.name)) {
-                        proxy_role.error = 'Role already exist in the system.';
-                        proxy_role.status = "ALLREADY_EXIST";
-                    }else{
-                        um.updateRole(ctx.name, ctx.new_name);
-                        proxy_role = ctx.new_name;
-                    } 
+                if(um.roleExists(old_name)) {
+                    um.updateRole(old_name, new_name);
+                    proxy_role = new_name;
+
+                }else{
+                    proxy_role.error = 'Role does not exist in the system.';
+                    proxy_role.status = "NOT_EXIST";
+                } 
             }else{
                 proxy_role.status = "SERVER_ERROR";
                 print('Error in getting the tenantId from session');
@@ -145,13 +146,13 @@ var group = (function () {
             var roles = this.getAllGroups({});
             for(var i=0;i<roles.length;i++){
                     var obj = {};
-                    if(roles[i] == 'admin'||roles[i] == 'Internal/mamadmin'||roles[i] == 'Internal/mdmadmin'){
+                    if(roles[i] == 'admin'||roles[i] == 'Internal/mdmadmin'){
                         obj.name = roles[i];
                         obj.type = 'administrator';
                         if(type == 'admin'){
                             newRoles.push(obj);
                         }
-                    }else if(roles[i]== 'Internal/publisher'||roles[i]=='Internal/reviewer'||roles[i]=='Internal/store'){
+                    }else if(roles[i]== 'Internal/publisher'||roles[i]=='Internal/reviewer'||roles[i]=='Internal/store'||roles[i]=='Internal/mamadmin'){
                         obj.name = roles[i];
                         obj.type = 'mam';
                         newRoles.push(obj);
@@ -200,6 +201,11 @@ var group = (function () {
                 print('Error in getting the tenantId from session');
             }
             return users_list;
+        },
+        roleExists:function(ctx){
+            var um = userManager(common.getTenantID());
+            var result = um.roleExists(ctx.groupid);
+            return result;
         },
         updateUserListOfRole: function(ctx){
             var existingUsers = this.getUsersOfGroup(ctx);

@@ -44,7 +44,7 @@
 					        var userModule = require('/modules/user.js').user;
 							var db = application.get('db');
 							var user = new userModule(db);
-							var objUser = user.getUser({'userid': username});
+							var objUser = user.getUser({'userid': username, login: true});
 							if(objUser != null){
 								var userFeed = {};
 								userFeed.tenantId = stringify(objUser["tenantId"]);
@@ -69,6 +69,18 @@
                                 if(userFeed.isAdmin || userFeed.isMAMAdmin){
                                     session.put("mamConsoleUserLogin", "true");
                                     session.put("mamConsoleUser", userFeed);
+
+                                    var groupModule = require('/modules/group.js').group;
+                                    var group = new groupModule(db);
+                                    if(!group.roleExists("Internal/mamadmin")){
+                                        var userList = new Array();
+                                        group.addGroup({'name':'Internal/mamadmin','users':userList});
+                                    }
+                                     //Making default policy
+                                    var policyModule = require('modules/policy.js').policy;
+                                    var policy = new policyModule(db);
+
+                                    policy.addDefaultPolicy();
 
                                     var appController =require('/controller/app.js');
                                     response.sendRedirect('console/management');

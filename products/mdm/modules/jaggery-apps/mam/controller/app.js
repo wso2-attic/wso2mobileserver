@@ -50,6 +50,7 @@ var navigation = function(role) {
             topNavigation = [
                 {name : "Management"	, link: app_info.MAM_UI_URI + "console/management", displayPage: "management", icon:"icon-briefcase"},
                 {name : "Configurations", link: app_info.MAM_UI_URI + "users/configuration", displayPage: "configuration", icon:"icon-wrench"},
+                 {name : "Reports"	, link: app_info.MAM_UI_URI + "reports/", displayPage: "reports", icon:"icon-bar-chart"},
                // {name : "VPP", link: app_info.MAM_UI_URI + "vpp/configuration", displayPage: "vpp", icon:"icon-mobile-phone"}
             ];
             var configNavigation =	[
@@ -61,6 +62,7 @@ var navigation = function(role) {
             topNavigation = [
                 {name : "Configurations", link: app_info.MAM_UI_URI + "users/configuration", displayPage: "configuration", icon:"icon-wrench"},
                 {name : "Management"	, link: app_info.MAM_UI_URI + "devices/management", displayPage: "management", icon:"icon-briefcase"},
+                 {name : "Reports"	, link: app_info.MAM_UI_URI + "reports/", displayPage: "reports", icon:"icon-bar-chart"},
                // {name : "VPP", link: app_info.MAM_UI_URI + "vpp/configuration", displayPage: "vpp", icon:"icon-mobile-phone"}
             ];
             var configNavigation =	[

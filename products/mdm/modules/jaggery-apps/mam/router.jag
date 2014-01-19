@@ -22,6 +22,11 @@ var vppManager = new vppManagerModule(db);
 var storeModule = require('/modules/store.js').store;
 var store = new storeModule(db);
 
+var webconsoleModule = require('modules/webconsole.js').webconsole;
+var webconsole = new webconsoleModule(db);
+
+
+
 var getApp = function(id){
 	var app =  store.getAppFromStore(id);
 	return app;
@@ -59,6 +64,11 @@ function getResource(name){
 	f.close();
 	return cont;
 }
+
+router.get('webconsole/allUsers', function(ctx){
+    var result = webconsole.getAllUsers(ctx);
+    print(result);
+});
 
 router.get('apps', function(ctx){
 	var result = store.getAppsFromStore(ctx.paging);
@@ -150,7 +160,6 @@ router.post('apps/roles/install', function(ctx){
 				for (var j = row.devices.length - 1; j >= 0; j--){
 					var device = row.devices[j];
 					try{
-						log.info('))))');
 						log.info(stringify(installParam));
 						installPayload.push(injectVPPCode(ctx.id, {
 							deviceid : device,
@@ -267,7 +276,8 @@ var userRouterInstance = new userRouter(db,router);
 var groupRouter = require('api/groupRouter.js').group;
 var groupRouterInstance = new groupRouter(db,router);
 
-
+var policyRouter = require('api/policyRouter.js').policy;
+var policyRouterInstance = new policyRouter(db,router);
 
 var absolute = require ('modules/absolute.js').mvc;
 var mvc = new absolute({

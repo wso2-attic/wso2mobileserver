@@ -6,7 +6,7 @@ var group = (function () {
 	var log = new Log();
 	var db;
 
-
+    var sqlscripts = require('/sqlscripts/mysql.js');
 	var common = require('common.js');
     var claimEmail = "http://wso2.org/claims/emailaddress";
     var claimFirstName = "http://wso2.org/claims/givenname";
@@ -98,18 +98,19 @@ var group = (function () {
             }
             return proxy_role;
         },
-		editGroup: function(ctx){
+		editGroup: function(old_name, new_name){
 			var proxy_role = {};
             var tenant_id = common.getTenantID();
             if(tenant_id){
                 var um = userManager(tenant_id);
-                    if(um.roleExists(ctx.name)) {
-                        proxy_role.error = 'Role already exist in the system.';
-                        proxy_role.status = "ALLREADY_EXIST";
-                    }else{
-						um.updateRole(ctx.name, ctx.new_name);
-						proxy_role = ctx.new_name;
-					} 
+                if(um.roleExists(old_name)) {
+                    um.updateRole(old_name, new_name);
+                    proxy_role = new_name;
+
+                }else{
+					proxy_role.error = 'Role does not exist in the system.';
+                    proxy_role.status = "NOT_EXIST";
+				} 
             }else{
                 proxy_role.status = "SERVER_ERROR";
                 print('Error in getting the tenantId from session');
@@ -195,7 +196,7 @@ var group = (function () {
 					proxy_user.mobile = claimResult.get(claimMobile);
 					proxy_user.tenantId = tenantId;
 					proxy_user.roles = user.getRoles();
-					var resultDeviceCount = db.query("SELECT COUNT(id) AS device_count FROM devices WHERE user_id = ? AND tenant_id = ?", users[i], proxy_user.tenantId);
+					var resultDeviceCount = db.query(sqlscripts.devices.select25, users[i], proxy_user.tenantId);
 					proxy_user.no_of_devices = resultDeviceCount[0].device_count;
 					users_list.push(proxy_user);
 				}

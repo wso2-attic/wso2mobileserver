@@ -6,6 +6,7 @@
 					<a href="#" data-status="In-Review"  class="btn tab-button" data-toggle="tab">In-Review</a>
 					<a href="#" data-status="Published" class="btn tab-button" data-toggle="tab">Published</a>
 					<a href="#" data-status="Unpublished" class="btn tab-button" data-toggle="tab">Unpublished</a>
+					<a href="#" data-status="Approved" class="btn tab-button" data-toggle="tab">Approved</a>
 					<a href="#" data-status="Rejected" class="btn tab-button" data-toggle="tab">Rejected</a>					
 		</div>
 	</div>
@@ -42,7 +43,7 @@
                         <img src="{{this.attributes.images_thumbnail}}" class="" />
                         </td>
                         <td class="asset-listing-name">
-                          <!--  <a href='/publisher/asset/operations/edit/mobileapp/{{this.id}}'> -->
+                         <a href='/publisher/asset/operations/edit/mobileapp/{{this.id}}'> 
                             	   <a href='#'>
                                 {{this.attributes.overview_name}}
                             </a>
@@ -81,8 +82,10 @@
                         	{{/compare}}
                         	{{#compare this.lifecycleState "Rejected"}}
                         		<span class="lifecycle-state"><small><i class="icon-circle text-red"></i> {{this.lifecycleState}}</small></span>
-                        	{{/compare}}	
-                        	
+                        	{{/compare}}
+                        	{{#compare this.lifecycleState "Retired"}}	
+                        		<span class="lifecycle-state"><small><i class="icon-circle text-red"></i> {{this.lifecycleState}}</small></span>
+                       		{{/compare}}
                         </td>
                         
                          <td>

@@ -75,13 +75,11 @@ var getBundleID = function(appid){
     }
 }
 
-var validateAppIdentifier = function(type,appid){
+var validateAppIdentifier = function(attributes, display_attribute){
     var artifactManager = rxtManager.getArtifactManager('mobileapp');
 
     var predicate={}
-    predicate['attributes']={};
-
-    predicate['attributes']['overview_'+type]=appid;
+    predicate['attributes']=attributes;
 
     //Perform a search for an asset with the provided name
     var matches=artifactManager.find(function(asset){
@@ -92,7 +90,8 @@ var validateAppIdentifier = function(type,appid){
     },null);
 
     if(matches.length>0){  
-        print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["App with identifer "+appid+" already exists"]}})
+        log.info(attributes);
+        print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["App with identifer "+display_attribute+" and version "+attributes.overview_version+" already exists"]}})
         return true;
     }
 }
@@ -226,31 +225,32 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
                     print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["App ID is invalid"]}})
                     return;
                 }else{
-                    if(validateAppIdentifier("appid", meta.package)){
+                    if(validateAppIdentifier({"overview_appid": meta.package, "overview_version":meta.version},meta.package)){
                         return;
                     }
                     model.set('overview.packagename', bundleId);
                     model.set('overview.appid', meta.package);
                 }
             }else{
-                if(validateAppIdentifier("packagename", meta.package)){
+
+                if(validateAppIdentifier({"overview_packagename": meta.package, "overview_version":meta.version}, meta.package)){
                         return;
                 }
             } 
             if(!meta.weburl){
+                
                 model.set('overview.url', meta.path);
             }else{
-                if(validateAppIdentifier("url", meta.weburl)){
+                if(validateAppIdentifier({"overview_url": meta.weburl, "overview_version":meta.version},meta.weburl)){
                         return;
                 }
                 model.set('overview.url', meta.weburl);
             }
 			
-            model.set('overview_version', meta.version);
+            model.set('overview.version', meta.version);
 			model.set('overview.name',ctx.name);
             model.set('overview.category',ctx.platform);
 			model.set('overview.platform',ctx.platform);
-			model.set('overview.version',ctx.version);
 			model.set('overview.provider', username);
 			model.set('overview.description',ctx.description);
 			model.set('overview.type',ctx.markettype);

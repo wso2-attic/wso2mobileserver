@@ -1,27 +1,49 @@
 var selectedUser = null;
 
+//$.fn.dataTableExt.sErrMode = 'ignore';
+
 $(document).ready(function() {
 	oTable = $('#main-table').dataTable({
 		"sDom" : "<'row-fluid'<'tabel-filter-group span8'T><'span4'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 		"iDisplayLength" : 10,		
 		"bStateSave" : false,
-		 "aoColumnDefs": [
-					  {
-					     bSortable: false,
-					     aTargets: [ -1 ]
-					  }
-		],
-		"oTableTools" : {
-			"aButtons" : ["copy", "print", {
-				"sExtends" : "collection",
-				"sButtonText" : 'Save <span class="caret" />',
-				"aButtons" : ["csv", "xls", "pdf"]
-			}]
-		}
+		
+		  aoColumns: [
+                      
+                      null,
+                      null,
+                      null,
+                      null,
+                      
+                      {                         
+                        "sWidth": "40%",
+                        "fnRender": function (oObj)                              
+                         {                           
+                           if(oObj.aData[3] == 'administrator'){
+                           	 return '<a href="/mam/users/view?user='+ oObj.aData[0] +'" data-item="'+ oObj.aData[0] +'" title="View User"><i class="icon-user"> </i> View User</a>&nbsp;' +
+                                '<a href="/mam/users/assign_groups?user='+ oObj.aData[0] +'" class="btn-assign-roles" data-item="'+ oObj.aData[0] +'" title="Assign Roles"><i class="icon-edit"> </i> Assign Roles</a>&nbsp;'; 
+                               
+                           	
+                           }else{
+                           	 return '<a href="/mam/users/view?user='+ oObj.aData[0] +'" data-item="'+ oObj.aData[0] +'" title="View User"><i class="icon-user"> </i> View User</a>&nbsp;' +
+                                '<a href="/mam/users/assign_groups?user='+ oObj.aData[0] +'" class="btn-assign-roles" data-item="'+ oObj.aData[0] +'" title="Assign Roles"><i class="icon-edit"> </i> Assign Roles</a>&nbsp;' + 
+                                '<a href="#" class="btn-invite" data-item="'+ oObj.aData[0] +'" title="Invite"><i class="icon-envelope"> </i> Invite</a>&nbsp;';
+                           	
+                           }
+                           
+                        }
+                      },
+                       
+
+                   ],	
+		
+		
+		"sAjaxSource" : "/mam/api/webconsole/allUsers",
+		
 	});
 	
 	
-	$(".tabel-filter-group").html("User Type: " + fnCreateSelect( oTable.fnGetColumnData(3)));
+	$(".tabel-filter-group").html("Type: " + fnCreateSelect( oTable.fnGetColumnData(3)));
 	
 	$('.tabel-filter-group select').change( function () {
             oTable.fnFilter( $(this).val(), 3 );
@@ -50,7 +72,8 @@ $(".add-group-link").click(function() {
 
 });
 
-$(".btn-item-remove").click(function() {
+//$(".btn-item-remove").click(function() {
+$( "#main-table" ).on( "click", ".btn-item-remove", function() {
 	var item = $(this).data("item");
 		
 	noty({
@@ -112,8 +135,8 @@ $(".btn-item-remove").click(function() {
 
 
 
-$(".btn-invite").click(function() {
-	
+//$(".btn-invite").click(function() {
+$( "#main-table" ).on( "click", ".btn-invite", function() {
 	var item = $(this).data("item");
 		
 	noty({

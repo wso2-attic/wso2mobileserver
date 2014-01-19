@@ -73,36 +73,14 @@
         background-image: url(../../carbon/tenant-dashboard/images/modules.png);
     }
 </style>
- <h2 class="dashboard-title">WSO2 Application Server quick start dashboard</h2>
+ <h2 class="dashboard-title">WSO2 Enterprise Mobility Server quick start dashboard</h2>
         <table class="tip-table">
             <tr>
                 <td class="tip-top service-hosting"></td>
                 <td class="tip-empty"></td>
-                <td class="tip-top web-applications"></td>
-                <td class="tip-empty "></td>
-                <td class="tip-top service-testing"></td>
-                <td class="tip-empty "></td>
-                <td class="tip-top message-tracing"></td>
             </tr>
             <tr>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                          <%
-							if (hasServiceMgtPermission) {
-						%>
-                        <a class="tip-title" href="../service-mgt/index.jsp?region=region1&item=services_list_menu">Service Hosting</a> <br/>
-						<%
-							} else {
-						%>
-					    <h3>Service Hosting</h3> <br/>
-					    <%
-							}
-						%>
-                        <p>Different types of Web Services such as Axis2 Services, JAXWS Services, Jar Services or Spring Services can be deployed in Application Server. All configurations such as QoS can be easily configured here.</p>
-
-                    </div>
-                </td>
-                <td class="tip-empty"></td>
+                
                 <td class="tip-content">
                     <div class="tip-content-lifter">
                           <%
@@ -121,146 +99,13 @@
                     </div>
                 </td>
                 <td class="tip-empty"></td>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                         <%
-							if (hasServiceMgtPermission) {
-						%>
-                        <a class="tip-title" href="../tryit/index.jsp?region=region5&item=tryit">Service Testing</a> <br/>
-						<%
-							} else {
-						%>
-                       <h3>Service Testing</h3> <br/>
-                        <%
-							}
-						%>
-                        <p>Tryit tool can be used as a simple Web Service client which can be used to try your services within AppServer itself.</p>
-
-                    </div>
-                </td>
-                <td class="tip-empty"></td>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                          <%
-							if (hasServiceMgtPermission) {
-						%>
-                        <a class="tip-title"  href="../tracer/index.jsp?region=region4&item=tracer_menu">Message Tracing</a> <br/>
-						<%
-							} else {
-						%>
-						<h3>Message Tracing</h3> <br/>
-						<%
-							}
-						%>
-                        <p>Trace the request and responses to your service. Message Tracing is a vital debugging tool when you have clients from heterogeneous platforms.</p>
-
-                    </div>
-                </td>
+                
             </tr>
             <tr>
-                <td class="tip-bottom"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-bottom"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-bottom"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-bottom"></td>
             </tr>
         </table>
         <div class="tip-table-div"></div>
-        <table class="tip-table">
-            <tr>
-                <td class="tip-top wsdl2java"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-top java2wsdl"></td>
-                <td class="tip-empty "></td>
-                <td class="tip-top wsdl-validator"></td>
-                <td class="tip-empty "></td>
-                <td class="tip-top modules"></td>
-            </tr>
-            <tr>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                          <%
-							if (hasServiceMgtPermission) {
-						%>
-                        <a class="tip-title" href="../wsdl2code/index.jsp?region=region5&item=wsdl2java_menu">WSDL2Java Tool</a> <br/>
-						<%
-							} else {
-						%>
-						<h3>WSDL2Java Tool</h3> <br/>
-						<%
-							}
-						%>
-                        <p>Use WSDL2Java tool in Web Application Server to convert Web Service WSDL to a set of Java objects.</p>
-
-                    </div>
-                </td>
-                <td class="tip-empty"></td>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                          <%
-							if (hasServiceMgtPermission) {
-						%>
-                        <a class="tip-title" href="../java2wsdl/index.jsp?region=region5&item=java2wsdl_menu">Java2WSDL Tool</a><br />
-						<%
-							} else {
-						%>
-						 <h3>Java2WSDL Tool</h3><br />
-						<%
-							}
-						%>
-                        <p>Use Java2WSDL tool in Web Application Server  make it easy to develop a new web service.</p>
-
-                    </div>
-                </td>
-                <td class="tip-empty"></td>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                      <%
-							if (hasServiceMgtPermission) {
-						%>
-                        <a class="tip-title" href="../wsdl_validator/index.jsp?region=region5&item=wsdl_validator_menu">WSDL Validator</a> <br/>
-						<%
-							} else {
-						%>
-						<h3>WSDL Validator</h3> <br/>
-						<%
-							}
-						%>
-                        <p>Use WSDL Validator tool in Web Application Server to Validate WSDL by directly uploading them or providing a URL.</p>
-
-                    </div>
-                </td>
-                <td class="tip-empty"></td>
-                <td class="tip-content">
-                    <div class="tip-content-lifter">
-                      <%
-							if (hasModMgtPermission) {
-						%>
-                        <a class="tip-title" href="../modulemgt/index.jsp?region=region1&item=modules_list_menu">Modules</a> <br/>
-					    <%
-							} else {
-						%>
-					    <h3>Modules</h3><br/>
-					    <%
-							}
-						%>
-                        <p>The WSO2 SOA platform has the capabilities of Axis2 to add modules to extend its capabilities. The global modules will affect all the services deployed within the server. </p>
-
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="tip-bottom"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-bottom"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-bottom"></td>
-                <td class="tip-empty"></td>
-                <td class="tip-bottom"></td>
-            </tr>
-        </table>
+ 
         
 
 <p>

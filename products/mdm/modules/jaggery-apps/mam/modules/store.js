@@ -274,6 +274,19 @@ var store = (function () {
 			data =parse(data.data);
 			return data;	
 		},
+		// Get the package and application name of the appications in the store.
+        getAppsFromStorePackageAndName: function() {
+            var apps = this.getAppsFromStore();
+            var appsInfo = [];
+            for (var i = apps.length - 1; i >= 0; --i) {
+                var app = apps[i];                
+                var appData = new Object();
+                appData.package = app.attributes.overview_packagename;
+                appData.name = app.attributes.overview_name;
+                appsInfo.push((appData));
+            }
+            return appsInfo;
+        },
 		getUsersForAppInstalled : function(package_identifier, platform){
 			var query = buildDynamicQuery(platform, 1);
 			var package_identifier = manipulatePackageId(package_identifier);

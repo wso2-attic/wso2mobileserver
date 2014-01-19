@@ -8,6 +8,7 @@ var mdm = (function () {
     var module = function (config) {
 		conf= config;
     };
+    var common = require('/modules/common.js');
     function mergeRecursive(obj1, obj2) {
         for (var p in obj2) {
             try {

@@ -13,6 +13,8 @@ var device = new deviceModule(db);
 var notificationModule = require('/modules/notification.js').notification;
 var notification = new notificationModule(db);
 
+var common = require("/modules/common.js");
+
 configuration = function(appController) {
 	context = appController.context();
 	context.title = context.title + " | Configuration";
@@ -88,6 +90,7 @@ view = function(appController) {
 	try {
 		var groups = userG.getRolesOfUserByAssignment({
 			username : userId
+
 		});
 	} catch(e) {       
 		var groups = [];
@@ -210,7 +213,6 @@ assign_groups = function(appController) {
 			username : username
 		});
 	} catch(e) {
-        print(userG.getRolesOfUserByAssignment({username : username}));
 		var groups = [];
 	}
 
