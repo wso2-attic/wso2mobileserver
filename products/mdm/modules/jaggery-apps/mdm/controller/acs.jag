@@ -3,7 +3,7 @@
     var SAML_RESPONSE_TOKEN_SESSION_KEY = "SAML_TOKEN";
     var SAML_ASSERTION_TOKEN_SESSION_KEY = "SAML_ASSERTION_TOKEN";
     var SSO_NAME = "SSORelyingParty.Name";
-
+    var common = require('/modules/common.js');
     var getToken = function (){
         if(session.get(SAML_RESPONSE_TOKEN_SESSION_KEY)){
             return session.get(SAML_RESPONSE_TOKEN_SESSION_KEY);
@@ -107,7 +107,10 @@
                                 entitlement.setAuthCookie(backEndCookie);
 
                                 session.put("entitlement",entitlement);
+                                session.put("samlresponse",samlResponse);
                                  //  session.put("epas_stub",entitlementPolicyAdminService);
+
+                                var db = common.getDatabase();
 
                                 var groupModule = require('/modules/group.js').group;
                                 var group = new groupModule(db);
@@ -115,13 +118,7 @@
                                     var userList = new Array();
                                     group.addGroup({'name':'Internal/mdmadmin','users':userList});
                                 }
-
-                                //Making default policy
-                                var policyModule = require('/modules/policy.js').policy;
-                                var policy = new policyModule(db);
-
-                                policy.addDefaultPolicy();
-
+                                
 								var appController =require('/controller/app.js');
 								if(isAdmin){
 									response.sendRedirect('console/dashboard');

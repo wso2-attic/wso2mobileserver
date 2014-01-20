@@ -1,3 +1,4 @@
+var DB_SESSION = "db";
 var log = new Log();
 var getTenantID = function() {
     if(!(typeof session === "undefined")){
@@ -26,6 +27,21 @@ var removePrivateRole = function(roleList){
         }
     }
     return roles;
+}
+/* 
+	Function that returns a DB object for the caller
+*/
+var getDatabase = function(){
+    var db = application.get(DB_SESSION);
+    if(!db){
+        try{
+            db = new Database("EMM_DB");
+            application.put(DB_SESSION,db);
+        }catch(e){
+            log.error(e);
+        }
+    }
+    return db;
 }
 
 var removeNecessaryElements = function(list,removeList){

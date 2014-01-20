@@ -18,7 +18,7 @@
 	<div class="row-fluid">
 		<form class="form-horizontal" id='form-asset-create' action="/publisher/api/asset/mobileapp" method="post" enctype="multipart/form-data">
 			<div class="well-small offset9">
-			<!--	<a class="btn btn-primary" href="#modal-upload-app" data-toggle="modal">Upload Application</a> -->
+			<a class="btn btn-primary" href="#modal-upload-app" id="upload-app-again" data-toggle="modal">Upload Application</a>
 			</div>
 
 			<input type="hidden" id="appmeta" name="appmeta" value="">
@@ -65,7 +65,13 @@
 			
 
 			
-
+			<div id="control-packagename"	class="control-group">
+									<label class="control-label" for="txtName">Version <span style="color:#FF0000">*</span></label>
+									<div class="controls">
+										<input class="field span6" style="width: 110px" type="text" name="version"
+										id="txtVersion">
+									</div>
+			</div>
 			
 
 			
@@ -270,13 +276,7 @@
 									</div>
 								</div>
 								
-								<div id="control-packagename"	class="control-group">
-									<label class="control-label" for="txtName">Version <span style="color:#FF0000">*</span></label>
-									<div class="controls">
-										<input class="field span6" style="width: 110px" type="text" name="version"
-										id="txtVersion">
-									</div>
-								</div>
+								
 						</div>
 					</div>	
 					
@@ -284,9 +284,11 @@
 					<div id="control-webapp" style="display: none;"
 			class="control-group">
 				<label class="control-label" for="txtName">Web App URL <span style="color:#FF0000">*</span></label>
+				
 				<div class="controls">
 					<input class="field" style="width: 450px" type="text" name="url"
 					id="txtWebapp">
+					<div style="font-size: xx-small">please enter the URL with http:// and www prefixes</div>
 				</div>
 			</div>
 
