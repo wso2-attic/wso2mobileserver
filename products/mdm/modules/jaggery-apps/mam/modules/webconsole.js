@@ -63,9 +63,14 @@ var webconsole = (function () {
     module.prototype = {
         constructor: module,
         getAllUsers: function(ctx){
-            ctx.type = 'admin';
+                       ctx.type = 'admin';
             var type = ctx.type;
-            var paging = ctx.iDisplayStart||0;
+            if(typeof ctx.iDisplayStart == 'undefined'){
+                ctx.iDisplayStart = 0;
+            }
+            if(typeof ctx.sEcho == 'undefined'){
+                ctx.sEcho = 0;
+            }
             var pageSize = 10;
             var all_users;
             if(ctx.groupid != null || ctx.groupid != undefined) {
@@ -73,28 +78,27 @@ var webconsole = (function () {
             } else {
                 all_users = user.getAllUserNames();
             }
+
             var totalRecords = all_users.length;
-            var upperBound = (paging+1)*pageSize;
-            var lowerBound =  upperBound - pageSize;
-            var Paginate = require('/modules/paginate.js').Paginate;
-            var pager =  new Paginate(all_users, pageSize);
-            var paginated_users = pager.page(paging);
+            var upperBound = parseInt(ctx.iDisplayStart)+parseInt(ctx.iDisplayLength);
+            var lowerBound =  parseInt(ctx.iDisplayStart);
             
             var dataArray = new Array();
-            for (var i = paginated_users.length - 1; i >= 0; i--) {
-                var username = paginated_users[i];
-                var userObj = user.getUser({"userid": username});
-                var proxyObj = [username, userObj.firstName, userObj.lastName];
-
+            for(var i = lowerBound; i < upperBound; i++){
+                if(totalRecords - 1 < i){
+                    break;
+                }
+                var userObj = user.getUser({"userid": all_users[i]});
+                var proxyObj = [userObj.username, userObj.firstName, userObj.lastName];
                 var roles = userObj.roles;
                 roles = parse(roles);
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
                     log.info("Test iteration2"+roles[j]);
-                    if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'){
+                    if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'||roles[j]=='Internal/mamadmin'){
                         flag = 1;
                         break;
-                    }else if(roles[j]=='Internal/publisher'||roles[j]=='Internal/reviewer'||roles[j]=='Internal/store'||roles[j]=='mamadmin'){
+                    }else if(roles[j]==' Internal/publisher'||roles[j]=='Internal/reviewer'||roles[j]=='Internal/store'){
                         flag = 2;
                         break;
                     }else{
@@ -120,8 +124,8 @@ var webconsole = (function () {
             };
             var finalObj = {};
             finalObj.sEcho = ctx.sEcho;
-            finalObj.iTotalRecords = totalRecords
-            finalObj.iTotalDisplayRecords = pageSize;
+            finalObj.iTotalRecords = totalRecords;
+            finalObj.iTotalDisplayRecords = totalRecords;
             finalObj.aaData = dataArray;
             return finalObj;
         }

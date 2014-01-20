@@ -122,7 +122,7 @@ var group = (function () {
             var um = userManager(common.getTenantID());
             log.info("Test all roles >>>>>>>>>"+stringify(um.allRoles()));
             var allRoles = common.removePrivateRole(um.allRoles());
-            var removeRoles = new Array("Internal/everyone", "wso2.anonymous.role");
+            var removeRoles = new Array("Internal/everyone", "wso2.anonymous.role", "Internal/mdmadmin");
             var roles = common.removeNecessaryElements(allRoles, removeRoles);
             return roles;
         },
@@ -146,13 +146,13 @@ var group = (function () {
             var roles = this.getAllGroups({});
             for(var i=0;i<roles.length;i++){
                     var obj = {};
-                    if(roles[i] == 'admin'||roles[i] == 'Internal/mdmadmin'){
+                    if(roles[i] == 'admin'||roles[i] == 'Internal/mdmadmin'||roles[i]=='Internal/mamadmin'){
                         obj.name = roles[i];
                         obj.type = 'administrator';
                         if(type == 'admin'){
                             newRoles.push(obj);
                         }
-                    }else if(roles[i]== 'Internal/publisher'||roles[i]=='Internal/reviewer'||roles[i]=='Internal/store'||roles[i]=='Internal/mamadmin'){
+                    }else if(roles[i]== 'Internal/publisher'||roles[i]=='Internal/reviewer'||roles[i]=='Internal/store'){
                         obj.name = roles[i];
                         obj.type = 'mam';
                         newRoles.push(obj);
@@ -166,7 +166,6 @@ var group = (function () {
             return newRoles;
         },
         getUserRoles: function(ctx){
-            log.info("User Name >>>>>>>>>"+ctx.username);
             var um = userManager(common.getTenantID());
             var roles = um.getRoleListOfUser(ctx.username);
             var roleList = common.removePrivateRole(roles);

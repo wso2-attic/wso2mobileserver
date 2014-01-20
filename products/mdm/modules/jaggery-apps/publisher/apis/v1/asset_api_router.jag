@@ -64,7 +64,9 @@ var saveFile = function(file){
 		}
 		var uid= makeid();
 		var file_name = mam_config.filePreciseLocation+uid+file_n;
-		file.saveAs(file_name);
+        file.close();
+        log.info("UIOUOI");
+        log.info(file.saveAs(file_name));
 		return "/publisher"+file_name;
 	}
 	return "";
@@ -328,12 +330,12 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}/{id}', f
     var msg={};
     var artifactManager = rxtManager.getArtifactManager(shortName);
 
-if(context.post['images_thumbnail'] instanceof Array){
-	context.post['images_thumbnail'] = context.post['images_thumbnail'][0];
-}
-if(context.post['images_banner'] instanceof Array){
-	context.post['images_banner'] = context.post['images_banner'][0];
-}
+    if(context.post['images_thumbnail'] instanceof Array){
+    	context.post['images_thumbnail'] = context.post['images_thumbnail'][0];
+    }
+    if(context.post['images_banner'] instanceof Array){
+    	context.post['images_banner'] = context.post['images_banner'][0];
+    }
 
     try {
         var modelA = modelManager.getModel(shortName);
@@ -345,16 +347,60 @@ if(context.post['images_banner'] instanceof Array){
         //Get the original artifact
         var originalArtifact = artifactManager.get(id);
 
-        modelA.import('form.importer', context.post);
 
         //Validation requires the lifecycle state
-        modelA.set('*.lifecycleState',originalArtifact.lifecycleState);
+        modelA.set('*.lifecycleState', originalArtifact.lifecycleState);
 
+        
+        if(shortName != "mobileapp"){
+            modelA.import('form.importer',context.post);
+        }
+
+        if(shortName =="mobileapp"){
+            modelA.import('asset', originalArtifact);
+            var username= server.current(session).username.replace('@', ':');
+            var ctx = context.post;
+            var files = request.getAllFiles();
+            var banner = files['bannerFile'];
+            if(banner){
+                banner = saveFile(banner);
+                log.info(banner);
+                modelA.set('images.banner',banner);
+            }
+            var icon = files['iconFile'];
+            if(icon){
+                icon = saveFile(icon);
+                modelA.set('images.thumbnail',icon);
+            }
+
+            var screenshot1 = files['screenshot1File'];
+            screenshot1 = saveFile(screenshot1);
+
+            var screenshot2 = files['screenshot2File'];
+            screenshot2 = saveFile(screenshot2);
+
+            var screenshot3 = files['screenshot3File'];
+            screenshot3 = saveFile(screenshot3);
+
+            var screenshots = screenshot1+","+screenshot2+","+screenshot3;
+
+            if(screenshots!=",,"){
+                modelA.set('images.screenshots',screenshots);
+            }
+            if(!checkNonSpecial(ctx.name)){
+                print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Special characters found in name"]}})
+                return;
+            }
+            modelA.set('overview.name',originalArtifact.attributes.overview_name);
+            modelA.set('overview.version', originalArtifact.attributes.overview_version);
+            modelA.set('overview.description',ctx.description);
+            modelA.set('overview.recentchanges',ctx.recentChanges);
+            modelA.set('overview.provider', originalArtifact.attributes.overview_provider);
+        }
         var report=modelA.validate();
 
         //Check if the validation check has failed
         if((report)&&(report.failed)){
-
             msg['ok']=false;
             msg['report']=report;
             print(msg);
@@ -387,7 +433,7 @@ if(context.post['images_banner'] instanceof Array){
 
         artifactManager.update(artifact);
 
-        dataInjector.inject(artifact,DataInjectorModes.DISPLAY);
+        // dataInjector.inject(artifact,DataInjectorModes.DISPLAY);
 
         msg['ok']=true;
         msg['message']='asset updated';
@@ -395,6 +441,7 @@ if(context.post['images_banner'] instanceof Array){
         print(msg);
 
     } catch (e) {
+        log.info(e);
         log.debug('The asset ' + id + ' could not be updated.The following exception was thrown: ' + e);
         response.sendError(404, 'The asset ' + id + ' could not be updated.Please check the server logs.');
     }

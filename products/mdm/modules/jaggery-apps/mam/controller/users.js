@@ -46,13 +46,36 @@ add = function(appController) {
 };
 
 
+edit = function(appController) {
+	var userid = request.getParameter('user');
+	try {
+		var selectedUser = user.getUser({userid: userid});
+	} catch(e) {
+		var selectedUser = {};
+	}
+	
+	//print(selectedUser);
+	
+	context = appController.context();
+	context.title = context.title + " | Add User";
+	context.page = "configuration";
+	context.jsFile = "users/edit.js";
+	context.data = {
+		configOption : "users",
+		user : selectedUser
+	};
+	return context;
+
+};
+
+
 view = function(appController) {
 	context = appController.context();
 	var userId = request.getParameter('user');
 	if (!userId) {
-		userId = session.get('mamConsoleSelectedUser');
+		userId = session.get('mdmConsoleSelectedUser');
 	}
-	session.put('mamConsoleSelectedUser', userId);
+	session.put('mdmConsoleSelectedUser', userId);
 	try {
 		var objUser = user.getUser({
 			"userid" : userId
@@ -65,10 +88,13 @@ view = function(appController) {
 	try {
 		var groups = userG.getRolesOfUserByAssignment({
 			username : userId
+
 		});
 	} catch(e) {       
 		var groups = [];
 	}
+	
+		
 	context.title = context.title + " | View User";
 	context.page = "configuration";	
 	context.data = {

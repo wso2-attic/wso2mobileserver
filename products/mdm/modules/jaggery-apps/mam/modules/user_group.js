@@ -72,8 +72,7 @@ var user_group = (function () {
          },
          getRolesOfUserByAssignment:function(ctx){
              var totalGroups = group.getAllGroups({});
-             var removeRoles = new Array("Internal/mdmadmin");
-             var allRoles = common.removeNecessaryElements(totalGroups,removeRoles);
+             var allRoles = totalGroups;
              log.info("getRolesOfUserByAssignment :"+stringify(allRoles));
              var userRoles = user.getUserRoles(ctx);
              log.info("User Roles"+stringify(userRoles));

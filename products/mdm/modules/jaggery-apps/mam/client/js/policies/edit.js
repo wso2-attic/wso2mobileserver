@@ -1,3 +1,5 @@
+var appsLoded  = false;
+
 $("#btn-add").click(function() {
 	
 	$( 'form').parsley( 'validate' );	
@@ -207,22 +209,30 @@ $(document).ready( function () {
 					}
 					
 					if(code == '509B'){
-						for(var j = 0; j < data.length; j++){
-							$("#applist .icon-ok-sign").css("display", "inline");							
-							//alert(data[j].identity);
-							 $("[name='inputInstallApps_helper1'] > option").each(function() {
-								    //alert(this.text + ' ' + this.value);								   
-								    if(data[j].identity === this.value){								    	
-								    	 $("[name='inputInstallApps_helper1'] option[value='"+ this.value+"']").remove();
-								    }
-								      
-								});
-							  $("[name='inputInstallApps_helper2']").append('<option value="'+ data[j].identity + '" data-os="'+ data[j].os + '" data-name="'+ data[j].name + '" data-type="'+ data[j].type + '">'+ data[j].name + '</option>');
-							  
-    						  
+						if(!appsLoded){
+							
+									for(var j = 0; j < data.length; j++){
+									$("#applist .icon-ok-sign").css("display", "inline");							
+									//alert(data[j].identity);
+									 $("[name='inputInstallApps_helper1'] > option").each(function() {
+										    //alert(this.text + ' ' + this.value);								   
+										    if(data[j].identity === this.value){								    	
+										    	 $("[name='inputInstallApps_helper1'] option[value='"+ this.value+"']").remove();
+										    }
+										      
+										});
+									
+									  $("[name='inputInstallApps_helper2']").append('<option value="'+ data[j].identity + '" data-os="'+ data[j].os + '" data-name="'+ data[j].name + '" data-type="'+ data[j].type + '">'+ data[j].name + '</option>');
+									  
+		    						  
+								}
+								appsLoded = true;
+								$("#inputInstallApps").trigger('bootstrapduallistbox.refresh', true);
+							
+							
+							
 						}
 						
-						$("#inputInstallApps").trigger('bootstrapduallistbox.refresh', true);
 					}
 					
 				});

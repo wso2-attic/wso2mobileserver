@@ -5,9 +5,11 @@ var selectedUser = null;
 $(document).ready(function() {
 	oTable = $('#main-table').dataTable({
 		"sDom" : "<'row-fluid'<'tabel-filter-group span8'T><'span4'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+
 		"iDisplayLength" : 10,		
-		"bStateSave" : false,
-		
+		"bProcessing" : true,
+		"bServerSide" : true,
+
 		  aoColumns: [
                       
                       null,
@@ -39,7 +41,7 @@ $(document).ready(function() {
                    ],	
 		
 		
-		"sAjaxSource" : "/mdm/api/webconsole/allUsers",
+		"sAjaxSource" : "/mam/api/webconsole/allUsers",
 		"fnServerParams": function ( aoData ) {
           	var roleid = getURLParameter('group');
           	if(roleid != "null"){
@@ -50,7 +52,7 @@ $(document).ready(function() {
        },
        
        "fnDrawCallback": function( oSettings ) {
-       		$(".tabel-filter-group").html("Type: " + fnCreateSelect( null));
+       		$(".tabel-filter-group").html("Type: " + fnCreateSelect( this.fnGetColumnData(3)));
 	
 			$('.tabel-filter-group select').change( function () {
 		            oTable.fnFilter( $(this).val(), 3 );
@@ -72,7 +74,7 @@ $(document).ready(function() {
 
 function fnCreateSelect( aData ){
 
-    var r='<select><option value="">--All--</option><option value="user">User</option><option value="administrator">Administrator</option><option value="mam">MAM</option>';
+    var r='<select><option value="">--All--</option><option value="user">User</option><option value="administrator">Administrator</option><option value="mam">MAM</option>', i, iLen=aData.length;
    // for ( i=0 ; i<iLen ; i++ )
    // {
    //     r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
