@@ -26,10 +26,16 @@
 		<ios-checkin-url>https://host:9443/mdm/checkin</ios-checkin-url>
 		<ios-server-url>https://host:9443/mdm/server</ios-server-url>
 		
-		<!-- iOS mdm APNS configurations -->
-		<ios-apns-cert-path>path to /PlainCert.pfx</ios-apns-cert-path>
-		<ios-apns-cert-password>pass</ios-apns-cert-password>
-		
+		<!-- iOS APNS configurations -->
+		<ios-apns-cert-path>path to push certificate</ios-apns-cert-path>
+	        <ios-apns-cert-password>password</ios-apns-cert-password>
+        	<ios-apns-production-mode>false</ios-apns-production-mode>
+       
+        	<!-- iOS MDM APNS configurations -->
+        	<ios-mdm-apns-cert-path>path to MDM push certificate</ios-mdm-apns-cert-path>
+	        <ios-mdm-apns-cert-password>password</ios-mdm-apns-cert-password>
+        	<ios-mdm-apns-production-mode>true</ios-mdm-apns-production-mode>
+
 		<!-- iOS mdm topic id -->
 		<ios-mdm-topic-id>com.apple.mgmt.External.becee161-1896-423e-ad81-76a5d8fb44d9</ios-mdm-topic-id>
 		
