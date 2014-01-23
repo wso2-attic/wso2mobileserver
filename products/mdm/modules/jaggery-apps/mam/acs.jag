@@ -49,6 +49,7 @@
 							if(objUser != null){
 								var userFeed = {};
 								userFeed.tenantId = stringify(objUser["tenantId"]);
+                                userFeed.tenantDomain = user.getTenantDomainFromID(stringify(objUser["tenantId"]));
 								userFeed.username = objUser["username"];
 								userFeed.email = objUser["email"];
 								userFeed.firstName = objUser["firstName"];
@@ -79,7 +80,6 @@
                                         var userList = new Array();
                                         group.addGroup({'name':'Internal/mamadmin','users':userList});
                                     }
-
                                     var appController =require('/controller/app.js');
                                     response.sendRedirect('console/management');
                                 }else{

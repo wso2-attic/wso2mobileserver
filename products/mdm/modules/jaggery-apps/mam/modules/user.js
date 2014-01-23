@@ -326,6 +326,27 @@ var user = (function () {
             }
             return usersByType;
         },
+        hasDevicesenrolled: function(ctx){
+            //Check if user has any devices enrolled
+            try {
+                var tenantId = common.getTenantID();
+                if(tenantId){
+                    var devices = db.query("SELECT COUNT(*) as count FROM devices WHERE user_id = ? AND tenant_id = ?", ctx.userid, tenantId);
+                    if (devices != null && devices != undefined) {
+                        if (devices[0].count > 0) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } else {
+                    log.debug("Not able to get Tenant ID from Session");
+                    return null;
+                }
+            } catch(e) {
+                log.error(e);
+                return null;
+            }
+        },
         /*end of other user manager functions*/
 /*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -437,7 +458,6 @@ var user = (function () {
             }
             return message;
         },
-        
         getTenantDomainFromID: function() {
             if (arguments[0] == "-1234") {
                 return "carbon.super";
@@ -445,9 +465,17 @@ var user = (function () {
             var carbon = require('carbon');
             var ctx = {};
             ctx.tenantId = arguments[0];
-            var tenantDomain = carbon.server.tenantDomain(ctx);
+            try {
+                var tenantDomain = carbon.server.tenantDomain(ctx);
+                if (tenantDomain == null){
+                    tenantDomain = "default";
+                }
+            } catch (e) {
+                tenantDomain = "default";
+            }
+
             return tenantDomain;
-        },
+        }
     };
     return module;
 })();
