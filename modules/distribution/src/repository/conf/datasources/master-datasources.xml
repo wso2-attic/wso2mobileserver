@@ -7,9 +7,9 @@
     <datasources>
 	<datasource>
             <name>EMM_DB</name>
-            <description>The datasource used for mdm</description>
+            <description>The datasource used for emm solution</description>
             <jndiConfig>
-                <name>jdbc/mdmdb</name>
+                <name>jdbc/emmdb</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
