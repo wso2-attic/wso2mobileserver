@@ -113,7 +113,6 @@ var entitlement = entitlement || {};
 	        isAuthenticated = authenticationAdminStub.login(userName, password, remoteIp);
 	     
 	        authCookie = authenticationAdminStub._getServiceClient().getServiceContext().getProperty(HTTPConstants.COOKIE_STRING);
-		log.info("Cookiii"+authCookie);
 	        return isAuthenticated;
 	}
 
@@ -152,8 +151,6 @@ var entitlement = entitlement || {};
 		option = client.getOptions();
 		option.setManageSession(true);
 		option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,authCookie);
-		log.info("A K :"+authCookie);
-		log.info("Stub :"+entitlementServiceStub);
 		return entitlementServiceStub;
 	}
 	entitlement.addPolicy = function(policyString, entitlementPolicyAdminServiceStub, policyId) {
