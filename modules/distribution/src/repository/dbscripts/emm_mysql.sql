@@ -1,10 +1,9 @@
-CREATE DATABASE  IF NOT EXISTS `EMM_DB` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `EMM_DB`;
 -- MySQL dump 10.13  Distrib 5.5.29, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: EMM_DB
 -- ------------------------------------------------------
--- Server version	5.5.29-0ubuntu0.12.10.1
+-- Server version 5.5.29-0ubuntu0.12.10.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -99,7 +98,7 @@ CREATE TABLE `features` (
 
 LOCK TABLES `features` WRITE;
 /*!40000 ALTER TABLE `features` DISABLE KEYS */;
-INSERT INTO `features` VALUES (1,'LOCK','503A','Device Lock',0,1,1,0),(2,'WIPE','504A','Wipe',0,1,1,0),(3,'CLEARPASSWORD','505A','Clear',0,1,1,0),(4,'APPLIST','502A','Get All Applications',0,2,2,1),(5,'LOCATION','501A','Location',0,1,2,0),(6,'INFO','500A','Device Information',0,5,2,1),(7,'NOTIFICATION','506A','Message',0,3,1,0),(8,'WIFI','507A','Wifi',0,4,1,0),(9,'CAMERA','508A','Camera',0,1,1,0),(12,'MUTE','513A','Mute Device',0,1,1,0),(13,'INSTALLAPP','509A','Install Application',0,2,3,0),(14,'UNINSTALLAPP','510A','Uninstall Application',0,2,3,0),(15,'ENCRYPT','511A','Encrypt Storage',0,1,1,0),(16,'APN','512A','APN',0,4,1,0),(21,'WEBCLIP','518A','Create Webclips',0,4,3,0),(22,'PASSWORDPOLICY','519A','Password Policy',0,4,1,0),(23,'EMAIL','520A','Email Configuration',0,4,1,0),(24,'GOOGLECALENDAR','521A','Calender Subscription',0,4,1,0),(26,'VPN','523A','VPN',0,4,1,0),(27,'LDAP','524A','LDAP',0,4,1,0),(29,'CHANGEPASSWORD','526A','Set Password',0,4,1,0),(30,'ENTERPRISEWIPE','527A','Enterprise Wipe',0,1,1,0),(31,'POLICY','500P','Policy Enforcement',0,4,2,0),(32,'MONITORING','501P','Policy Monitoring ',0,5,2,1),(33,'BLACKLISTAPPS','528B','Blacklist Apps',0,2,1,0),(34,'REVOKEPOLICY','502P','Revoke Policy',0,4,2,0);
+INSERT INTO `features` VALUES (1,'LOCK','503A','Device Lock',0,1,1,0),(2,'WIPE','504A','Wipe',0,1,1,0),(3,'CLEARPASSCODE','505A','Clear',0,1,1,0),(4,'APPLIST','502A','Get All Applications',0,2,2,1),(5,'LOCATION','501A','Location',0,1,2,0),(6,'INFO','500A','Device Information',0,5,2,1),(7,'NOTIFICATION','506A','Message',0,3,1,0),(8,'WIFI','507A','Wifi',0,4,1,0),(9,'CAMERA','508A','Camera',0,1,1,0),(12,'MUTE','513A','Mute Device',0,1,1,0),(13,'INSTALLAPP','509A','Install Application',0,2,3,0),(14,'UNINSTALLAPP','510A','Uninstall Application',0,2,3,0),(15,'ENCRYPT','511A','Encrypt Storage',0,1,1,0),(16,'APN','512A','APN',0,4,1,0),(21,'WEBCLIP','518A','Create Webclips',0,4,3,0),(22,'PASSWORDPOLICY','519A','Password Policy',0,4,1,0),(23,'EMAIL','520A','Email Configuration',0,4,1,0),(24,'GOOGLECALENDAR','521A','Calender Subscription',0,4,1,0),(26,'VPN','523A','VPN',0,4,1,0),(27,'LDAP','524A','LDAP',0,4,1,0),(29,'CHANGEPASSWORD','526A','Set Password',0,4,1,0),(30,'ENTERPRISEWIPE','527A','Enterprise Wipe',0,1,1,0),(31,'POLICY','500P','Policy Enforcement',0,4,2,0),(32,'MONITORING','501P','Policy Monitoring ',0,5,2,1),(33,'BLACKLISTAPPS','528B','Blacklist Apps',0,2,1,0),(34,'REVOKEPOLICY','502P','Revoke Policy',0,4,2,0);
 /*!40000 ALTER TABLE `features` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,6 +280,7 @@ CREATE TABLE `policies` (
   `type` tinyint(4) DEFAULT NULL,
   `category` tinyint(4) DEFAULT NULL,
   `tenant_id` int(11) DEFAULT NULL,
+  `mam_content` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -398,6 +398,37 @@ LOCK TABLES `policy_device_profiles` WRITE;
 /*!40000 ALTER TABLE `policy_device_profiles` DISABLE KEYS */;
 /*!40000 ALTER TABLE `policy_device_profiles` ENABLE KEYS */;
 UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `device_policy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE  TABLE `device_policy` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `device_id` INT(11) NULL DEFAULT NULL ,
+  `tenant_id` INT(11) NULL DEFAULT NULL ,
+  `policy_id` INT(11) NULL DEFAULT NULL ,
+  `payload_uids` LONGTEXT NULL DEFAULT NULL ,
+  `policy_priority_id` INT(11) NULL DEFAULT NULL,
+  `status` VARCHAR(1) NULL DEFAULT NULL ,
+  `datetime` DATETIME NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `DEVICEID` (`device_id` ASC, `tenant_id` ASC, `policy_id` ASC, `status` ASC) )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `policy_priority`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE  TABLE `policy_priority` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(45) NULL DEFAULT NULL ,
+  `priority` INT NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `TYPE` (`type` ASC),
+  UNIQUE INDEX `sd` (`priority` ASC) )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `policy_priority` (`id`, `type`, `priority`) VALUES (1, 'USERS', 1);
+INSERT INTO `policy_priority` (`id`, `type`, `priority`) VALUES (2, 'PLATFORMS', 2);
+INSERT INTO `policy_priority` (`id`, `type`, `priority`) VALUES (3, 'ROLES', 3);
 
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
