@@ -6,8 +6,7 @@ var gcm = gcm || {};
 	if(typeof collapseKey != 'undefined'&& collapseKey != null){
 		return myApp.sendDataViaGCM(reg_id,code,token,data,minutes,collapseKey);
 	}else{
-       		collapseKey = "default";
-		return myApp.sendDataViaGCM(reg_id,code,token,data,minutes,collapseKey);	
+		return myApp.sendDataViaGCM(reg_id,code,token,data,minutes);	
         }
     };
 
