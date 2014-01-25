@@ -20,8 +20,8 @@
     },
     "email": {
         "companyName": "WSO2",
-        "senderAddress": "",
-        "emailPassword": "",
+        "senderAddress": "$(senderAddress)",
+        "emailPassword": "$(senderPassword)",
         "emailTemplate": "\nYou have been registered to the WSO2Mobile MAM. \n \n"
     }
 }

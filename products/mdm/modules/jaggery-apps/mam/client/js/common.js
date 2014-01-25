@@ -120,14 +120,14 @@ $.noty.defaults = {
 
 $('.selectpicker').selectpicker();
 $('.duallistbox').bootstrapDualListbox();
-$(".dropdownimage").msDropDown();
+/*$(".dropdownimage").msDropDown();
 $('.multiselect').multiselect({
 			        	includeSelectAllOption: true,
 			        	enableFiltering: 1,
 			        	maxHeight: 150,
 			        	buttonWidth: "215px"
 });
-
+*/
 
 $('.nav-tabs a').click(function(e) {
 	e.preventDefault();
@@ -137,7 +137,7 @@ $('.nav-tabs a').click(function(e) {
 $(".jtootip").tooltip();
 
 
-$(".als-container").als({
+/*$(".als-container").als({
 	visible_items: 20,
 	scrolling_items: 2,
 	orientation: "horizontal",
@@ -146,7 +146,7 @@ $(".als-container").als({
 	interval: 6000,
 	direction: "right",
 	start_from: 1
-});
+});*/
 
 
 Handlebars.registerHelper('elipsis', function(maxLength, context, options) {

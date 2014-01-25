@@ -72,7 +72,7 @@ $("#btn-add").click(function() {
 	});
 	
 	$( document ).ajaxComplete(function() {
-		//window.location.assign("configuration");
+		window.location.assign("configuration");
 	});
 	
 	noty({

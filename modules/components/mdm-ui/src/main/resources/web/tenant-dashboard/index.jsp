@@ -77,7 +77,10 @@
         <table class="tip-table">
             <tr>
                 <td class="tip-top service-hosting"></td>
-                <td class="tip-empty"></td>
+                <td class="tip-top"></td>
+                <td class="tip-top"></td>
+                <td class="tip-top"></td>
+                <td class="tip-top"></td>
             </tr>
             <tr>
                 

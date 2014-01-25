@@ -115,7 +115,7 @@ assign_users = function(appController){
 	}catch(e){
 		var users = [];
 	}
-
+	
 
 	log.info("sdfsd");
 	log.info(session.get("mamConsoleUser"));

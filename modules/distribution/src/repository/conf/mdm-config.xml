@@ -27,24 +27,24 @@
 		<ios-server-url>https://host:9443/mdm/server</ios-server-url>
 		
 		<!-- iOS APNS configurations -->
-		<ios-apns-cert-path>path to push certificate</ios-apns-cert-path>
-	        <ios-apns-cert-password>password</ios-apns-cert-password>
+		<ios-apns-cert-path>$(push_certificate)</ios-apns-cert-path>
+	        <ios-apns-cert-password>$(push_password)</ios-apns-cert-password>
         	<ios-apns-production-mode>false</ios-apns-production-mode>
        
         	<!-- iOS MDM APNS configurations -->
-        	<ios-mdm-apns-cert-path>path to MDM push certificate</ios-mdm-apns-cert-path>
-	        <ios-mdm-apns-cert-password>password</ios-mdm-apns-cert-password>
+        	<ios-mdm-apns-cert-path>$(mdm_push_certificate)</ios-mdm-apns-cert-path>
+	        <ios-mdm-apns-cert-password>$(mdm_push_password)</ios-mdm-apns-cert-password>
         	<ios-mdm-apns-production-mode>true</ios-mdm-apns-production-mode>
 
 		<!-- iOS mdm topic id -->
-		<ios-mdm-topic-id>com.apple.mgmt.External.becee161-1896-423e-ad81-76a5d8fb44d9</ios-mdm-topic-id>
+		<ios-mdm-topic-id>$(topic_id)</ios-mdm-topic-id>
 		
 		<!-- device property post url -->
 		<ios-device-property-post-url>http://host:9763/mdm/api/devices/register</ios-device-property-post-url>
 		
 		<keystore>
             <!-- Keystore file location-->
-            <keystore-location>path to /wso2carbon.jks</keystore-location>
+            <keystore-location>$(wso2carbon_jks)</keystore-location>
             <!-- Keystore type (JKS/PKCS12 etc.)-->
             <keystore-type>JKS</keystore-type>
             <!-- Keystore password-->
@@ -55,7 +55,7 @@
             <keystore-key-password>wso2carbon</keystore-key-password>	
 			
 			<!-- MDM Keystore file location-->
-            <mdm-keystore-location>path to /wso2mobilemdm.jks</mdm-keystore-location>
+            <mdm-keystore-location>$(wso2mobilemdm_jks)</mdm-keystore-location>
             <!-- MDM Keystore type (JKS/PKCS12 etc.)-->
             <mdm-keystore-type>JKS</mdm-keystore-type>
             <!-- MDM Keystore password-->

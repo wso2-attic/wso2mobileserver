@@ -32,8 +32,8 @@
         return new user.User(this, username);
     };
     UserManager.prototype.getRoleListOfUser = function (username) {
-	        return this.manager.getRoleListOfUser(username);
-	    };
+            return this.manager.getRoleListOfUser(username);
+        };
     UserManager.prototype.addUser = function (username, password, roles, claims, profile) {
         this.manager.addUser(username, password, roles || [], claims || null, profile);
     };
@@ -49,13 +49,13 @@
     UserManager.prototype.roleExists = function (role) {
         return this.manager.isExistingRole(role);
     };
-	UserManager.prototype.updateRole = function (previousRoleName, newRoleName) {
+    UserManager.prototype.updateRole = function (previousRoleName, newRoleName) {
         return this.manager.updateRoleName(previousRoleName, newRoleName);
     };
     UserManager.prototype.getClaims = function (username, profile) {
         return this.manager.getUserClaimValues(username, profile);
     };
-	UserManager.prototype.getClaimsForSet = function (username,claims, profile) {
+    UserManager.prototype.getClaimsForSet = function (username,claims, profile) {
         return this.manager.getUserClaimValues(username,claims, profile);
     };
     UserManager.prototype.getClaim = function (username, claim, profile) {
@@ -73,14 +73,18 @@
     UserManager.prototype.isAuthorized = function (role, permission, action) {
         return this.authorizer.isRoleAuthorized(role, permission, action);
     };
- 	UserManager.prototype.updateRoleListOfUser = function(name, deletedRoles, newRoles){
+    UserManager.prototype.updateRoleListOfUser = function(name, deletedRoles, newRoles){
     return this.manager.updateRoleListOfUser(name, deletedRoles, newRoles);
     };
     UserManager.prototype.updateUserListOfRole = function(name, deletedUsers, newUsers){
     return this.manager.updateUserListOfRole(name, deletedUsers, newUsers);
     };
-	UserManager.prototype.listUsers = function () {
-        return this.manager.listUsers("*", -1);
+    UserManager.prototype.listUsers = function (filter) {
+        if(filter){
+            return this.manager.listUsers(filter, -1);
+        }else{
+            return this.manager.listUsers("*", -1);
+        }
     };
     UserManager.prototype.addRole = function (role, users, permissions) {
         var perms = [],
@@ -99,7 +103,7 @@
     UserManager.prototype.allRoles = function () {
         return this.manager.getRoleNames();
     };
-	UserManager.prototype.getUserListOfRole = function (role) {
+    UserManager.prototype.getUserListOfRole = function (role) {
         return this.manager.getUserListOfRole(role);
     };
 

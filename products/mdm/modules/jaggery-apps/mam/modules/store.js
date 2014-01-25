@@ -255,8 +255,15 @@ var store = (function () {
 			}
 			var data = get(url, {});
 			log.info(url);
+			var fApps =[];
 			data =parse(data.data);
-			return data;
+			for (var i = data.length - 1; i >= 0; i--){
+				var app= data[i];
+				if(app.attributes.overview_platform.toUpperCase()!="WEBAPP"){
+					fApps.push(fApp);
+				}
+			}
+			return fApps;
 		},
 		getAppsFromStoreFormatted: function(){
 			var apps = this.getAppsFromStore();

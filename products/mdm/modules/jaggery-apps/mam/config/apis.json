@@ -23,7 +23,8 @@
 		"usersInvite": "/mam/api/users/invite",
 		"groupsInvite": "/mam/api/groups/invite",
 		"performGroupsOperation": "/mam/api/devices/operations",
-		"performDevicesOperation": "/mam/api/devices/operations/{0}"   
+		"performDevicesOperation": "/mam/api/devices/operations/{0}",
+		"hasDevicesEnrolled" : "/mam/api/users/devices/enrolled/{0}"     
     }
 
 }
