@@ -10,6 +10,9 @@ var policy = (function () {
     var groupModule = require('group.js').group;
     var group;
 
+    var deviceModule = require('device.js').device;
+    var device;
+
     var common = require("common.js");
     var sqlscripts = require('/sqlscripts/mysql.js');
 
@@ -25,7 +28,7 @@ var policy = (function () {
         user = new userModule(db);
         userg = new usergModule(db);
         group = new groupModule(db);
-
+        device = new deviceModule(db);
         //mergeRecursive(configs, conf);
     };
 
@@ -44,6 +47,28 @@ var policy = (function () {
             }
         }
         return obj1;
+    }
+
+    function isResourceExist(policyID,resource,type){
+        if(type == 'user'){
+            var result = db.query(sqlscripts.user_policy_mapping.select2,policyID,resource);
+            if(typeof result != 'undefined' && result != null &&  typeof result[0] != 'undefined' && result[0] != null){
+                return true;
+            }
+            return false;
+        }else if(type == 'platform'){
+            var result = db.query(sqlscripts.platform_policy_mapping.select2,policyID,resource);
+            if(typeof result != 'undefined' && result != null &&  typeof result[0] != 'undefined' && result[0] != null){
+                return true;
+            }
+            return false;
+        }else{
+            var result = db.query(sqlscripts.group_policy_mapping.select2,policyID,resource);
+            if(typeof result != 'undefined' && result != null &&  typeof result[0] != 'undefined' && result[0] != null){
+                return true;
+            }
+            return false;
+        }
     }
     function policyByOsType(jsonData,os){
         for(var n=0;n<jsonData.length;n++){
@@ -89,6 +114,63 @@ var policy = (function () {
         var gpresult = db.query(sqlscripts.policies.select6, role);
         return gpresult[0].id;
     }
+
+    function revokePolicy(policyId){
+
+        var policyPayload = require("/config/config.json").emptyPolicy;
+
+        var users1 = db.query(sqlscripts.user_policy_mapping.select1, String(policyId));
+        for(var i = 0;i<users1.length;i++){
+            var devices1 = db.query(sqlscripts.devices.select26, users1[i].user_id, common.getTenantID());
+            for(var j = 0;j<devices1.length;j++){
+                device.sendToDevice({'deviceid':devices1[j].id,'operation':'REVOKEPOLICY','data':policyPayload});
+            }
+        }
+
+        var platforms =  db.query(sqlscripts.platform_policy_mapping.select1,String(policyId));
+
+        for(var i = 0;i<platforms.length;i++){
+            if(platforms[i].platform_id == 'android'){
+
+                var devices2 = db.query(sqlscripts.devices.select36, common.getTenantID());
+
+                for(var j=0;j<devices2.length;j++){
+                    var tempId = getPolicyIdFromDevice(devices2[j].id);
+                    if(tempId == policyId){
+                        device.sendToDevice({'deviceid':devices2[j].id,'operation':'REVOKEPOLICY','data':policyPayload});
+                    }
+                }
+
+            }else{
+
+                var devices3 = db.query(sqlscripts.devices.select37);
+
+                for(var j=0;j<devices3.length;j++){
+                    var tempId = getPolicyIdFromDevice(devices3[j].id);
+                    if(tempId == policyId){
+                        device.sendToDevice({'deviceid':devices3[i].id,'operation':'REVOKEPOLICY','data':policyPayload});
+                    }
+                }
+            }
+
+        }
+
+        var groups =  db.query(sqlscripts.group_policy_mapping.select1, String(policyId));
+
+        for(var i = 0;i<groups.length;i++){
+            var users2 = group.getUsersOfGroup({'groupid':groups[i].group_id});
+            for(var j=0;j<users2.length;j++){
+                var devices4 = db.query(sqlscripts.devices.select26, users2[j].username, common.getTenantID());
+                for(var k = 0;k<devices4.length;k++){
+                    var tempId = getPolicyIdFromDevice(devices4[k].id);
+                    if(tempId == policyId){
+                        device.sendToDevice({'deviceid':devices4[k].id,'operation':'REVOKEPOLICY','data':policyPayload});
+                    }
+                }
+            }
+        }
+
+    }
     module.prototype = {
         constructor: module,
         updatePolicy:function(ctx){
@@ -98,38 +180,32 @@ var policy = (function () {
             policyId = policy[0].id;
             if(ctx.category==1){
                 if(policy!= undefined && policy != null && policy[0] != undefined && policy[0] != null){
-                log.info("Content >>>>>"+stringify( ctx.policyData));
-                result = db.query(sqlscripts.policies.update1, ctx.policyData, ctx.policyType, ctx.policyName, common.getTenantID());
-                log.info("Result >>>>>>>"+result);
-                this.enforcePolicy({"policyid":policyId});
+                    result = db.query(sqlscripts.policies.update1, ctx.policyData, ctx.policyType, ctx.policyName, common.getTenantID());
                 }else{
                     result = this.addPolicy(ctx);
                 }
             }else if(ctx.category==2){
                 var currentPolicy = policy[0];
                 if(currentPolicy){
-                    currentPolicy.content = parse(currentPolicy.content).concat(ctx.policyData);
-                    result = db.query(sqlscripts.policies.update1, currentPolicy.content, currentPolicy.type, currentPolicy.name, common.getTenantID());
-                    this.enforcePolicy({"policyid":currentPolicy.id});
+                    currentPolicy.mam_content = ctx.policyData;
+                    log.info(ctx.policyData);
+                    result = db.query(sqlscripts.policies.update2, currentPolicy.mam_content, currentPolicy.type, currentPolicy.name, common.getTenantID());
                 }
             }
             return result;
         },
         addPolicy: function(ctx){
             var existingPolicies =  db.query(sqlscripts.policies.select14, ctx.policyName, common.getTenantID());
-            // log.info(ctx);
             if(ctx.category==1){
                 if(existingPolicies != undefined && existingPolicies != null && existingPolicies[0] != undefined && existingPolicies[0] != null ){
                     return 409;
                 }
                 var result = db.query(sqlscripts.policies.insert1, ctx.policyName,ctx.policyData,ctx.policyType, ctx.category, common.getTenantID());
-                
             }else if(ctx.category==2){
                 var currentPolicy = existingPolicies[0];
                 if(currentPolicy){
-                    currentPolicy.content = parse(currentPolicy.content).concat(ctx.policyData);
-                    result = db.query(sqlscripts.policies.update1, currentPolicy.content, currentPolicy.type, currentPolicy.name, common.getTenantID());
-                    this.enforcePolicy({"policyid":currentPolicy.id});
+                    currentPolicy.mam_content = ctx.policyData;
+                    result = db.query(sqlscripts.policies.update2, currentPolicy.mam_content, currentPolicy.type, currentPolicy.name, common.getTenantID());
                 }else{
                     log.info("MDM policy not found");
                 }
@@ -138,7 +214,7 @@ var policy = (function () {
         },
         addDefaultPolicy: function(ctx){
             var existingPolicies =  db.query(sqlscripts.policies.select14, 'default', common.getTenantID());
-            if(existingPolicies.length<=0){
+            if(existingPolicies.length<0){
                 db.query(sqlscripts.policies.insert2, 'default', common.getTenantID());
             }
         },
@@ -155,6 +231,7 @@ var policy = (function () {
             return result[0];
         },
         deletePolicy:function(ctx){
+            revokePolicy(ctx.policyid);
             var result = db.query(sqlscripts.policies.delete1, ctx.policyid, common.getTenantID());
             db.query(sqlscripts.group_policy_mapping.delete1, ctx.policyid);
             return result;
@@ -167,15 +244,17 @@ var policy = (function () {
             var policyId = ctx.policyid;
 
             for(var i = 0; i< deletedGroups.length;i++){
-                var result = db.query(sqlscripts.group_policy_mapping.delete2, policyId,deletedGroups[i]);
-                log.info("Result1 >>>>>"+result);
+                if(isResourceExist(policyId,deletedGroups[i],'group')==true){
+                    var result = db.query(sqlscripts.group_policy_mapping.delete2, policyId,deletedGroups[i]);
+                }
             }
             for(var i = 0; i< newGroups.length;i++){
                 try{
-                    var result =db.query(sqlscripts.group_policy_mapping.insert1, newGroups[i],policyId);
-                    log.info("Result2 >>>>>"+result);
+                    if(isResourceExist(policyId,newGroups[i],'group')==false){
+                        var result =db.query(sqlscripts.group_policy_mapping.insert1, newGroups[i],policyId);
+                    }
                 }catch(e){
-                    log.info("ERROR Occured >>>>>");
+                    log.info(e);
                 }
             }
         },
@@ -185,15 +264,17 @@ var policy = (function () {
             var policyId = ctx.policyid;
 
             for(var i = 0; i< deletedUsers.length;i++){
-                var result = db.query(sqlscripts.user_policy_mapping.delete1, policyId,deletedUsers[i]);
-                log.info("Result1 >>>>>"+result);
+                if(isResourceExist(policyId,deletedUsers[i],'user')==true){
+                    var result = db.query(sqlscripts.user_policy_mapping.delete1, policyId,deletedUsers[i]);
+                }
             }
             for(var i = 0; i< newUsers.length;i++){
                 try{
-                    var result =db.query(sqlscripts.user_policy_mapping.insert1, newUsers[i],policyId);
-                    log.info("Result2 >>>>>"+result);
+                    if(isResourceExist(policyId,newUsers[i],'user')==false){
+                        var result =db.query(sqlscripts.user_policy_mapping.insert1, newUsers[i],policyId);
+                    }
                 }catch(e){
-                    log.info("ERROR Occured >>>>>");
+                    log.info(e);
                 }
             }
         },
@@ -203,15 +284,17 @@ var policy = (function () {
             var policyId = ctx.policyid;
 
             for(var i = 0; i< deletedPlatforms.length;i++){
-                var result = db.query(sqlscripts.platform_policy_mapping.delete1, policyId,deletedPlatforms[i]);
-                log.info("Result1 >>>>>"+result);
+                if(isResourceExist(policyId,deletedPlatforms[i],'platform')==true){
+                    var result = db.query(sqlscripts.platform_policy_mapping.delete1, policyId,deletedPlatforms[i]);
+                }
             }
             for(var i = 0; i< newPlatforms.length;i++){
                 try{
-                    var result =db.query(sqlscripts.platform_policy_mapping.insert1, newPlatforms[i],policyId);
-                    log.info("Result2 >>>>>"+result);
+                    if(isResourceExist(policyId,newPlatforms[i],'platform')==false){
+                        var result =db.query(sqlscripts.platform_policy_mapping.insert1, newPlatforms[i],policyId);
+                    }
                 }catch(e){
-                    log.info("ERROR Occured >>>>>");
+                    log.info(e);
                 }
             }
         },
@@ -220,8 +303,6 @@ var policy = (function () {
             var removeRoles = new Array("Internal/store", "Internal/publisher", "Internal/reviewer");
             var allGroups = common.removeNecessaryElements(totalGroups,removeRoles);
             var result = db.query(sqlscripts.group_policy_mapping.select1,ctx.policyid);
-
-            log.debug("Testing Roles >>>>>> " + result);
 
             var array = new Array();
             if(result == undefined || result == null || result[0] == undefined || result[0] == null){
@@ -312,6 +393,7 @@ var policy = (function () {
         },
         enforcePolicy:function(ctx){
             var policyId =  ctx.policyid;
+
             var policies = db.query(sqlscripts.policies.select10, String(policyId), common.getTenantID());
             var payLoad = parse(policies[0].content);
 

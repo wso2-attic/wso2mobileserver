@@ -79,25 +79,15 @@ router.get('apps', function(ctx){
 /* 
  Sample call - https://localhost:9443/mam/api/apps/roles/installed?platform=iOS&packageid=com.naveenium.foursquare
 */
-router.get('apps/roles/installed', function(ctx){
+router.get('apps/roles', function(ctx){
 	if(ctx.packageid){
-		var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
+		var result = store.getRolesForApp(ctx.packageid, ctx.platform, 1);
 		response.content = result;
 	}else{
 		response.status=400;
 	}
 });
-/* 
- Sample call - https://localhost:9443/mam/api/apps/roles/not-installed?platform=iOS&packageid=com.naveenium.foursquare
-*/
-router.get('apps/roles/not-installed', function(ctx){
-	if(ctx.packageid){
-		var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
-		response.content = result;
-	}else{
-		response.status=400;
-	}
-});
+
 /* 
  Sample call - https://localhost:9443/mam/api/apps/roles/installed?platform=iOS&packageid=com.naveenium.foursquare
 */
@@ -125,7 +115,7 @@ router.get('apps/users/not-installed', function(ctx){
 
 router.post('apps/roles/uninstall', function(ctx){
 	if(ctx.packageid){
-		var result = store.getRolesForAppInstalled(ctx.packageid, ctx.platform);
+		var result = store.getRolesForApp(ctx.packageid, ctx.platform, 2);
 		var roles = ctx.roles;
 		var uninstallPayload = [];
 		for (var i = roles.length - 1; i >= 0; i--){
@@ -154,7 +144,7 @@ router.post('apps/roles/install', function(ctx){
 	if(ctx.packageid){
 		var installParam = buildInstallParam(ctx);
 		var installPayload = [];
-		var result = store.getRolesForAppNotInstalled(ctx.packageid, ctx.platform);
+		var result = store.getRolesForApp(ctx.packageid, ctx.platform, 2);
 		for (var i = ctx.roles.length - 1; i >= 0; i--){
 			var role = ctx.roles[i];
 			var row  = result[role];

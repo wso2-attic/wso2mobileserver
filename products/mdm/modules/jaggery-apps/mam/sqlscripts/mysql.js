@@ -146,6 +146,7 @@ var policies = {
     'insert2' : "insert into policies (name,content,type,category, tenant_id) values (?,'[]', 1, 1,?)",
 
     'update1' : "UPDATE policies SET content= ?,type = ? WHERE name = ? AND tenant_id = ?",
+    'update2' : "UPDATE policies SET mam_content= ?,type = ? WHERE name = ? AND tenant_id = ?",
 
     'delete1' : "DELETE FROM policies where id = ? AND tenant_id = ?"
 };

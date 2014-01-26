@@ -47,12 +47,23 @@
                         sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
 
                         var user = require('store').user;
-
-                        if (user.loginWithSAML(sessionObj.loggedInUser)) {
-                            log.debug('user is set :::' + sessionObj.loggedInUser);
-                            response.sendRedirect('/publisher');
+                        var carbon = require('carbon');
+                        var tenantUser = carbon.server.tenantUser(sessionObj.loggedInUser);
+                        var um = new carbon.user.UserManager(require('store').server.instance(), tenantUser.tenantId);
+                        var user_roles = um.getRoleListOfUser(tenantUser.username);
+                        var login_flag = false;
+                        for(var i = 0; i<user_roles.length; i++){
+                            if(user_roles[i]=="Internal/publisher"||user_roles[i]=="Internal/reviewer"|| user_roles[i]=="admin"){
+                                if (user.loginWithSAML(sessionObj.loggedInUser)) {
+                                    log.debug('user is set :::' + sessionObj.loggedInUser);
+                                    response.sendRedirect('/publisher');
+                                    login_flag=true;
+                                }
+                            }
                         }
-
+                        if(!login_flag){
+                            response.sendError(403);
+                        }
                     }
                 }
             }

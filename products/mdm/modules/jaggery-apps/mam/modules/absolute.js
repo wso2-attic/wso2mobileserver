@@ -288,13 +288,7 @@ var mvc = (function () {
 				}
 			}
 			catch(e){
-				log.info(e);
-				// log.info(e);
-				if(e==appRedirect){
-					log.error("User redirected");
-				}else{
-					//log.error(e);
-				}
+				//Error is printed in debug. 
 			}
         },
 		registerHelper: function(helperName, helperFunction){

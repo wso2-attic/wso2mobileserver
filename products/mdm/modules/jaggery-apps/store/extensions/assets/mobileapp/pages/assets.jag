@@ -95,7 +95,8 @@ require('/modules/store.js').exec(function (ctx) {
             assets = store.assets(type, paging);
         }
     }
-
+    log.info("KK");
+log.info(require('store').server.current(session));
     var rxtAttributes = require('/modules/util.js').getRXTAttributes(tenantId, type);
     var devices = [];
     if(user!=null){

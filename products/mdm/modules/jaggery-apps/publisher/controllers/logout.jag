@@ -1,9 +1,10 @@
 <%
 (function(){
-    var user = require('store').server.current(session).username;//session.get("LOGGED_IN_USER");
+    var user = require('store').server.current(session);//session.get("LOGGED_IN_USER");
     if(user === null) {
         response.sendRedirect('/portal');
     } else {
+        user = user.username;
         var config = require('/config/publisher.js').config(),
                 sso = require('sso'),
                 sso_sessions = application.get('sso_sessions'),

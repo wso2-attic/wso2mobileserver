@@ -77,13 +77,12 @@
 					var information = JSON.parse(d);
 					mergeRecursive(meta,information);
 				}
+				print(meta);
+				log.info("Successfully discovered");
 			}catch(e){
-				log.info(e);
 				log.debug("Uploaded file is corrupted");
 				print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Uploaded file is corrupted"]}})
 			}
-			log.info("Successfully discovered");
-			print(meta);
 		}else{
 			print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Invalid Filetype - Uploaded file is not an archive"]}})
 			return;

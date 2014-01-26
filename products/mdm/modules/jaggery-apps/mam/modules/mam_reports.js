@@ -5,7 +5,6 @@ var mam_reports = (function () {
         CONTEXT: "/"
     };
     var routes = new Array();
-    var log = new Log();
     var db;
     var module = function (dbs) {
         db = dbs;
@@ -19,10 +18,20 @@ var mam_reports = (function () {
     module.prototype = {
         constructor: module,
 
-        getInstalledApps:function(){
-
+        getInstalledApps:function(params){
+        	var queryString;
+        	var devicesInfo;
+        	var platform = params.platformType;
             var appsStore = store.getAppsFromStorePackageAndName();
-            var devicesInfo = db.query("SELECT n.id, p.type_name, n.device_id, n.received_data FROM notifications as n JOIN (SELECT device_id, MAX(received_date) as MaxTimeStamp FROM notifications WHERE feature_code = ? AND received_date != 'NULL' GROUP BY device_id) dt ON (n.device_id = dt.device_id AND n.received_date = dt.MaxTimeStamp) JOIN devices as d ON (n.device_id = d.id) JOIN platforms as p ON (p.id = d.platform_id) WHERE feature_code = ? ORDER BY n.id", GET_APP_FEATURE_CODE, GET_APP_FEATURE_CODE);
+            
+            if (platform == 0) {
+            	queryString = "SELECT n.id, p.type_name, n.device_id, n.received_data FROM notifications as n JOIN (SELECT device_id, MAX(received_date) as MaxTimeStamp FROM notifications WHERE feature_code = ? AND received_date != 'NULL' GROUP BY device_id) dt ON (n.device_id = dt.device_id AND n.received_date = dt.MaxTimeStamp) JOIN devices as d ON (n.device_id = d.id) JOIN platforms as p ON (p.id = d.platform_id) WHERE feature_code = ? ORDER BY n.id";
+            	devicesInfo = db.query(queryString, GET_APP_FEATURE_CODE, GET_APP_FEATURE_CODE);
+            } else {
+            	queryString = "SELECT n.id, p.type_name, n.device_id, n.received_data FROM notifications as n JOIN (SELECT device_id, MAX(received_date) as MaxTimeStamp FROM notifications WHERE feature_code = ? AND received_date != 'NULL' GROUP BY device_id) dt ON (n.device_id = dt.device_id AND n.received_date = dt.MaxTimeStamp) JOIN devices as d ON (n.device_id = d.id) JOIN platforms as p ON (p.id = d.platform_id AND p.type = ?) WHERE feature_code = ? ORDER BY n.id";
+            	devicesInfo = db.query(queryString, GET_APP_FEATURE_CODE, platform, GET_APP_FEATURE_CODE);
+            }
+
             var deviceInfo;
             var existingApps =[];
 
@@ -30,9 +39,9 @@ var mam_reports = (function () {
             for (var i=0;i<devicesInfo.length;i++) {
                 deviceInfo = parse(devicesInfo[i].received_data);
                 for(var j=0;j<deviceInfo.length;j++){
-                    if (devicesInfo[i].type_name == "Android") {
-                        existingApps.push(deviceInfo[j].package);                       
-                    } else if (devicesInfo[i].type_name == "iOS") {
+                    if (devicesInfo[i].type_name.toUpperCase() === "ANDROID") {
+                        existingApps.push(deviceInfo[j].package);
+                    } else if (devicesInfo[i].type_name.toUpperCase() === "IOS") {
                         existingApps.push(deviceInfo[j].Identifier);
                     }
                 }       
@@ -68,7 +77,7 @@ var mam_reports = (function () {
 
         getInstalledAppsByUser: function (params) {
             var queryString;
-            var results = [], app_info, result, device, user_id, tenant_id;
+            var results = [], app_info, appData , user_id, tenant_id;
             var deviceInfo, devicesInfo;
             //Create the db query based on user id provided
             user_id = params.userid;
@@ -85,7 +94,7 @@ var mam_reports = (function () {
             var appList = new Object();
             //create a dictionary using the data retrieved from the appStore for quick reference
             for (var i = 0; i < appsStore.length; i++) {
-                appList[appsStore[i].package] = appsStore[i].name;
+                appList[appsStore[i].package] = {"name": appsStore[i].name, "type": appsStore[i].type};
             }
 
             //Temporary patch to make report generation easy
@@ -97,11 +106,15 @@ var mam_reports = (function () {
                         app_info.platform = devicesInfo[i].type_name;
                         app_info.device_id = devicesInfo[i].device_id;
                         app_info.os_version = devicesInfo[i].os_version;
-                        if (devicesInfo[i].type_name == "Android") {
-                            app_info.name = appList[deviceInfo[j].package];
+                        if (devicesInfo[i].type_name.toUpperCase() === "ANDROID") {
+                            appData = appList[deviceInfo[j].package];
+                            app_info.name = appData.name;
+                            app_info.type = appData.type;
                             app_info.package = deviceInfo[j].package;
-                        } else if (devicesInfo[i].type_name == "iOS") {
-                            app_info.name = appList[deviceInfo[j].Identifier];
+                        } else if (devicesInfo[i].type_name.toUpperCase() === "IOS") {
+                            appData = appList[deviceInfo[j].Identifier];
+                            app_info.name = appData.name;
+                            app_info.type = appData.type;
                             app_info.package = deviceInfo[j].Identifier;
                         }
                         results.push(app_info);

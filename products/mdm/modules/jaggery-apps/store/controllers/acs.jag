@@ -30,7 +30,7 @@
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
                     if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
-
+						log.info("Baby");
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
 
@@ -38,6 +38,7 @@
 
                         var user = require('store').user;
                         if (user.loginWithSAML(sessionObj.loggedInUser)) {
+                        	log.info(require('store').server.current(session));
                             log.debug('user is set :::' + sessionObj.loggedInUser);
                             response.sendRedirect(relayState);
                         }

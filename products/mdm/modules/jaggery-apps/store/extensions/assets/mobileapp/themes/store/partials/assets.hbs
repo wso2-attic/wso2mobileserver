@@ -73,12 +73,12 @@
 
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"
-		aria-hidden="true" onclick="javacript:location.reload();">
+		aria-hidden="true" onclick="javacript:window.location.href = '/store/assets/mobileapp';">
 			x
 		</button>
 		<h4 id="myModalLabel">Select your device to install</h4>
 	</div>
-	<div class="modal-body">		
+	<div class="modal-body"> 		
 		{{#devices}}
 		<div data-dismiss="modal"  class="span1 text-center device-image-block-modal" style="text-align: center; cursor: pointer"
 		data-device-id="{{id}}" data-platform="{{platform}}">

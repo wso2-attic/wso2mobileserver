@@ -11,6 +11,7 @@ var getTenantID = function() {
     }
 }
 
+
 var removePrivateRole = function(roleList){
     var roles = new Array();
     for(var i = 0; i<roleList.length; i++){
@@ -33,6 +34,14 @@ var removePrivateRole = function(roleList){
 */
 var getDatabase = function(){
     var db = application.get(DB_SESSION);
+  	if(db){
+  		try{
+  			db.query("SELECT 1 FROM dual");
+  		}catch(e){
+  			log.info("New connection was taken");
+  			db = null;
+  		}
+  	}
     if(!db){
         try{
             db = new Database("EMM_DB");

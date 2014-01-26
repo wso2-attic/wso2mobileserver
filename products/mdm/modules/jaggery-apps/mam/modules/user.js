@@ -199,12 +199,17 @@ var user = (function () {
             log.info("LLLLLLLLLLLLLLLLLLLL"+stringify(users_list));
             return users_list;
         },
-        getAllUserNames: function(){
+        getAllUserNames: function(filter){
             var tenantId = common.getTenantID();
             var users_list = [];
             if(tenantId){
                 var um = userManager(common.getTenantID());
-                var allUsers = um.listUsers();
+                if(filter){
+                    var allUsers = um.listUsers(filter);
+                    log.info(allUsers);
+                }else{
+                    var allUsers = um.listUsers();
+                }
                 var removeUsers = new Array("wso2.anonymous.user","admin","admin@admin.com");
                 var users = common.removeNecessaryElements(allUsers,removeUsers);
                 users_list = users;

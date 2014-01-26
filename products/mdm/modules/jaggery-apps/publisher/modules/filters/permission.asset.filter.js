@@ -4,6 +4,16 @@
  Created Date: 7/10/2013
  */
 
+var cleanUsername = function (username) {
+    /**
+     * this is a one-way hash function, @ is replaced if the user name is an email
+     * if the user name is coming from a secondery user store it will be second.com/user hence
+     * "/" will be replaced.
+     */
+
+    return username.replace('@', ':').replace('/', ':');
+};
+
 var filterModule = function () {
 
     var log = new Log('permission.asset.filter');
@@ -87,7 +97,7 @@ var filterModule = function () {
     function fillDynamicPermissibleRoles(item, permissions) {
         var list = [];
         for (var index in permissions) {
-            list.push(permissions[index].replace('{overview_provider}', item.attributes.overview_provider));
+            list.push(permissions[index].replace('{overview_provider}', cleanUsername(item.attributes.overview_provider)));
         }
 
         return list;

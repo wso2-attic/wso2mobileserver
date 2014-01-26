@@ -33,8 +33,8 @@
 			<div class="control-group">
 				<label class="control-label" for="txtName">Title</label>
 				<div class="controls">
-					<input class="field span6" type="text" name="overview_name" id="txtName" value="{{artifact.attributes.overview_name}}">	
-					<input type="hidden" name="app_id" id="app_id" value="{{artifact.id}}">								
+					<input class="field span6" type="text" name="overview_name" id="txtName" disabled="disabled" value="{{artifact.attributes.overview_name}}">	
+					<input type="hidden" name="app_id" id="app_id" value="{{artifact.id}}" >								
 				</div>
 			</div>
 			<!--
@@ -60,6 +60,15 @@
 					<textarea class="field span6" id="txtRecentChanges"
 										name="recentChanges" rows="6" style="width:90%">{{artifact.attributes.overview_recentchanges}}</textarea>
 				</div>
+			</div>
+			
+			
+			<div id="control-packagename"	class="control-group">
+									<label class="control-label" for="txtName">Version <span style="color:#FF0000">*</span></label>
+									<div class="controls">
+										<input class="field span6" style="width: 110px" type="text"  value="{{artifact.attributes.overview_version}}"
+										id="txtVersion" disabled="disabled">
+									</div>
 			</div>
 
 			
@@ -151,7 +160,7 @@
 			<div id="saveButtons" class="form-actions">
 				<input type="submit" value="Submit" class="btn btn-primary" name="addNewAssetButton">
 				<input type="hidden" value="{{shortName}}" name="{{shortName}}" id="meta-asset-type">
-				<input type="reset" value="Cancel" class="btn">
+				<a href="/publisher/assets/mobileapp/" class="btn">Cancel</a>
 			</div>
 		</form>
 	</div>

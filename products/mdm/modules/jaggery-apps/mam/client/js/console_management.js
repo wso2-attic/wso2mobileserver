@@ -55,26 +55,21 @@ $(document).ready(function() {
 		$('.stakes > .nav li').each(function(){
 			if($(this).hasClass('active')){
 				var currentTab = $(this).children('a').attr('href');
-				$(currentTab+' .nav li').each(function(){
-					if($(this).hasClass('active')){
-						if($(this).children('a').hasClass('install')){
-							if(currentTab=='#roles'){
-								viewRolesInstalled(packageId,platform);
-							}else{
-								viewUsersInstalled(packageId,platform);
-							}
-						}else if($(this).children('a').hasClass('not-installed')){
-							
-							if(currentTab=='#roles'){
-								viewRolesNotInstalled(packageId,platform, type, url, id);
-							}else{
-								viewUsersNotInstalled(packageId,platform, type, url, id);
-							}
-						}
-					}
-				});
-			}
-		});
+                if (currentTab == '#roles') {
+                    viewRoles(packageId, platform, type, url, id);
+                } else if (currentTab == '#users') {
+                    $(currentTab + ' .nav li').each(function () {
+                        if ($(this).hasClass('active')) {
+                            if ($(this).children('a').hasClass('install')) {
+                                viewUsersInstalled(packageId, platform);
+                            } else if ($(this).children('a').hasClass('not-installed')) {
+                                viewUsersNotInstalled(packageId, platform, type, url, id);
+                            }
+                        }
+                    });
+                }
+            }
+        });
 		
 	});
 	$('#users .nav li a').off('click').click(function(){
@@ -90,137 +85,129 @@ $(document).ready(function() {
 			viewUsersNotInstalled(packageId,platform, type, url, id);
 		}
 	});
-	$('#roles .nav li a').off('click').click(function(){
-		var selectedApp = $('.app_box .selected');
-		var packageId = selectedApp.data('packageid');
-		var platform = selectedApp.data('platform');
-		var url = selectedApp.data('url');
-		var type = selectedApp.data('type');
-		var id = selectedApp.data('id');
-		if($(this).hasClass('install')){
-			viewRolesInstalled(packageId,platform);
-		}else if($(this).hasClass('not-installed')){
-			viewRolesNotInstalled(packageId,platform, type, url,id);
-		}
-	});
-	
-	var viewRolesNotInstalled = function(packageId,platform, type, url, id){
-		$.get('/mam/api/apps/roles/not-installed', {
-			'platform':platform,
-			'packageid':packageId
-		}, function(data){
-			compileHandlbarsTemplate('roles_table_notinstalled', data, function(tempGen){
-				$('#roles_not-installed').html(tempGen);
-				var roles_table_installed = $('#roles_not-installed .main-table').dataTable({
-					"sDom" : "<'row-fluid'<'tabel-filter-group span8'T><'span4'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-					"iDisplayLength" : 20,		
-					"bStateSave" : false,
-					"aoColumnDefs": [
-					  {
-					     bSortable: false,
-					     aTargets: [ 0 ]
-					  }
-					],
-					"oTableTools" : {
-						"aButtons" : ["copy", "print", {
-							"sExtends" : "collection",
-							"sButtonText" : 'Save <span class="caret" />',
-							"aButtons" : ["csv", "xls", "pdf"]
-						}]
-					}
-				});
-				$('#roles button').removeClass('btn-danger');
-				$('#roles button').addClass('btn-success').text("Install");
-				$('#roles button').off('click').click(function(){
-					var roles = [];
-					$('#roles_not-installed .main-table input[type=checkbox]:checked').each(function(){
-						roles.push($(this).data('role'));
-					});
-					
-					if ($('#checkAllRoleNotInstalled').prop('checked')) {
-						roles = [];
-						roles.push('Internal/everyone');
-					}
+    $('.stakes > .nav li').off('click').click(function () {
+        if ($(this).hasClass('active')) {
+            var currentTab = $(this).children('a').attr('href');
+            if (currentTab == '#roles') {
+                var selectedApp = $('.app_box .selected');
+                var packageId = selectedApp.data('packageid');
+                var platform = selectedApp.data('platform');
+                var url = selectedApp.data('url');
+                var type = selectedApp.data('type');
+                var id = selectedApp.data('id');
+                viewRoles(packageId, platform, type, url, id);
+            }
+        }
+    });
 
-					
-					
-					$.post('/mam/api/apps/roles/install', JSON.stringify({
-						'roles' : roles,
-						'platform':platform,
-						'packageid':packageId,
-						'url': url,
-						'type': type,
-						'id':id
-					}),function(){
-						//$(".alert span").html('App will be installed to selected roles');
-						//$(".alert").show();
-						noty({
-							text : 'App will be installed to selected roles',
-							'layout' : 'center'
-						});
-					});
-				});
-			});
-		});
-	};
-	var viewRolesInstalled = function(packageId,platform){
-		$.get('/mam/api/apps/roles/installed', {
-			'platform':platform,
-			'packageid':packageId
-		}, function(data){
-			compileHandlbarsTemplate('roles_table_installed', data, function(tempGen){
-				$('#roles_installed').html(tempGen);
-				var roles_table_installed = $('#roles_installed .main-table').dataTable({
-					"sDom" : "<'row-fluid'<'tabel-filter-group span8'T><'span4'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-					"iDisplayLength" : 20,		
-					"bStateSave" : false,
-					"aoColumnDefs": [
-					  {
-					     bSortable: false,
-					     aTargets: [ 0 ]
-					  }
-					],
-					"oTableTools" : {
-						"aButtons" : ["copy", "print", {
-							"sExtends" : "collection",
-							"sButtonText" : 'Save <span class="caret" />',
-							"aButtons" : ["csv", "xls", "pdf"]
-						}]
-					}
-				});
-				$('#roles button').removeClass('btn-success');
-				$('#roles button').addClass('btn-danger').text("Uninstall");
-				$('#roles button').off('click').click(function(){
-					var roles = [];
-					$('#roles_installed .main-table input[type=checkbox]:checked').each(function(){
-						roles.push($(this).data('role'));
-					});
-					
-					if ($('#checkAllRoleInstalled').prop('checked')) {
-						roles = [];
-						roles.push('Internal/everyone');
-					}
-					
-					
-					$.post('/mam/api/apps/roles/uninstall', JSON.stringify({
-						'roles' : roles,
-						'platform':platform,
-						'packageid':packageId
-					}),function(){
-						//$(".alert span").html('App will be uninstalled from the selected roles');
-						//$(".alert").show();
-						noty({
-							text : 'App will be installed to selected roles',
-							'layout' : 'center'
-						});
-					});
-				});
-			});
-		});
-	};
-	
-	var viewUsersInstalled = function(packageId,platform){
-		$.get('/mam/api/apps/users/installed', {
+    //Handlers for check and uncheck all checkboxes in the users tables when all checkbox is changed
+    $(document).on("click", "#checkAllUserInstalled", function () {
+        if ($(this).prop('checked')) {
+            $('#users_installed .main-table input[type=checkbox]').each(function () {
+                $(this).prop('checked', true);
+            });
+        } else {
+            $('#users_installed .main-table input[type=checkbox]').each(function () {
+                $(this).prop('checked', false);
+            });
+        }
+    });
+
+    $(document).on("click", "#checkAllUserNotInstalled", function () {
+        if ($(this).prop('checked')) {
+            $('#users_not-installed .main-table input[type=checkbox]').each(function () {
+                $(this).prop('checked', true);
+            });
+        } else {
+            $('#users_not-installed .main-table input[type=checkbox]').each(function () {
+                $(this).prop('checked', false);
+            });
+        }
+    });
+
+    $(document).on("click", "#checkAllRoles", function () {
+        if ($(this).prop('checked')) {
+            $('#roles_app_status .main-table input[type=checkbox]').each(function () {
+                $(this).prop('checked', true);
+            });
+        } else {
+            $('#roles_app_status .main-table input[type=checkbox]').each(function () {
+                $(this).prop('checked', false);
+            });
+        }
+    });
+
+    var viewRoles = function (packageId, platform, type, url, id) {
+        $.get('/mam/api/apps/roles/', {
+            'platform': platform,
+            'packageid': packageId
+        }, function (data) {
+            compileHandlbarsTemplate('roles_table', data, function (tempGen) {
+                $('#roles_app_status').html(tempGen);
+                var roles_app_status = $('#roles_app_status .main-table').dataTable({
+                    "sDom": "<'row-fluid'<'tabel-filter-group span8'T><'span4'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+                    "iDisplayLength": 20,
+                    "bStateSave": false,
+                    "aoColumnDefs": [
+                        {
+                            bSortable: false,
+                            aTargets: [ 0 ]
+                        }
+                    ],
+                    "oTableTools": {
+                        "aButtons": ["copy", "print", {
+                            "sExtends": "collection",
+                            "sButtonText": 'Save <span class="caret" />',
+                            "aButtons": ["csv", "xls", "pdf"]
+                        }]
+                    }
+                });
+                var getSelectedRoles = function () {
+                    var roles = [];
+                    $('#roles_app_status .main-table input[type=checkbox]:checked').each(function () {
+                        roles.push($(this).data('role'));
+                    });
+
+                    if ($('#checkAllRoles').prop('checked')) {
+                        roles = [];
+                        roles.push('Internal/everyone');
+                    }
+                    return roles;
+                };
+                $('#roles .btn-success').off('click').click(function () {
+                    $.post('/mam/api/apps/roles/install', JSON.stringify({
+                        'roles': getSelectedRoles(),
+                        'platform': platform,
+                        'packageid': packageId,
+                        'url': url,
+                        'type': type,
+                        'id': id
+                    }), function () {
+                        noty({
+                            text: 'App will be installed to selected roles',
+                            'layout' : 'center'
+                        });
+                    });
+                });
+
+                $('#roles .btn-danger').off('click').click(function () {
+                    $.post('/mam/api/apps/roles/uninstall', JSON.stringify({
+                        'roles': getSelectedRoles(),
+                        'platform': platform,
+                        'packageid': packageId
+                    }), function () {
+                        noty({
+                            text: 'App will be uninstalled from the selected roles',
+                            'layout': 'center'
+                        });
+                    });
+                });
+            });
+        });
+    };
+
+    var viewUsersInstalled = function (packageId, platform) {
+        $.get('/mam/api/apps/users/installed', {
 			'platform':platform,
 			'packageid':packageId
 		}, function(data){
@@ -254,34 +241,25 @@ $(document).ready(function() {
 					
 					
 					if ($('#checkAllUserInstalled').prop('checked')) {
-						roles = [];
-						roles.push('Internal/everyone');
-						
-						$.post('/mam/api/apps/roles/install', JSON.stringify({
-							'roles' : roles,
+                        var roles = [];
+                        roles.push('Internal/everyone');
+
+                        $.post('/mam/api/apps/roles/uninstall', JSON.stringify({
+                            'roles' : roles,
 							'platform':platform,
 							'packageid':packageId
 						}),function(){
 							//$(".alert span").html('App will be uninstalled from the selected roles');
 							//$(".alert").show();
 							noty({
-								text : 'App will be installed to selected roles',
-								'layout' : 'center'
+                                text: 'App will be uninstalled from all users',
+                                'layout' : 'center'
 							});
 						});
 						return;
 					}
 					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+
 					$.post('/mam/api/apps/users/uninstall', JSON.stringify({
 						'users' : users,
 						'platform':platform,
@@ -290,8 +268,8 @@ $(document).ready(function() {
 						//$(".alert span").html('App will be uninstalled from the selected users');
 						//$(".alert").show();
 						noty({
-							text : 'App will be installed to selected users',
-							'layout' : 'center'
+                            text: 'App will be uninstalled from the selected users',
+                            'layout' : 'center'
 						});
 					});
 				});
@@ -334,19 +312,19 @@ $(document).ready(function() {
 					
 					
 					if ($('#checkAllUserNotInstalled').prop('checked')) {
-						roles = [];
-						roles.push('Internal/everyone');
-						
-						$.post('/mam/api/apps/roles/uninstall', JSON.stringify({
-							'roles' : roles,
+                        var roles = [];
+                        roles.push('Internal/everyone');
+
+                        $.post('/mam/api/apps/roles/install', JSON.stringify({
+                            'roles' : roles,
 							'platform':platform,
 							'packageid':packageId
 						}),function(){
 							//$(".alert span").html('App will be uninstalled from the selected roles');
 							//$(".alert").show();
 							noty({
-								text : 'App will be installed to selected roles',
-								'layout' : 'center'
+                                text: 'App will be installed to the all users',
+                                'layout' : 'center'
 							});
 						});
 						return;
@@ -368,8 +346,8 @@ $(document).ready(function() {
 						//$(".alert span").html('App will be installed to selected roles');
 						//$(".alert").show();
 						noty({
-							text : 'App will be installed to selected user',
-							'layout' : 'center'
+                            text: 'App will be installed to selected users',
+                            'layout' : 'center'
 						});
 					});
 				});

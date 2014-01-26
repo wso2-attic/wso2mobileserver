@@ -23,7 +23,7 @@ var routeManager = new router.Router();
 var utility=require('/modules/utility.js').rxt_utility();
 
 var checkNonSpecial = function(value){
-    var non_special_regex = /^[A-Za-z][A-Za-z0-9]*$/;
+    var non_special_regex = /^[A-Za-z][A-Za-z0-9\s-]*$/;
     return non_special_regex.test(value);
 }
 var checkURL = function(value) {
@@ -43,6 +43,11 @@ var makeid= function()
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+}
+var getExtensionText = function(extension){
+    var index = extension.lastIndexOf('.');
+    var ext = index < extension.length ? extension.substring(index + 1) : '';
+    return ext;
 }
 var getExtension = function(file){
 	var path = file.getName();
@@ -246,10 +251,21 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
                     model.set('overview.appid', meta.package);
                 }
             }else if(ctx.platform.toUpperCase()=="ANDROID"){
+                if(ctx.markettype=='Enterprise' ){
+                    if(getExtensionText(meta.path)!="apk"){
+                        print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["File uploaded is not supported by Android"]}})
+                        return;
+                    }
+                }
                 if(validateAppIdentifier({"overview_packagename": meta.package, "overview_version":version}, meta.package)){
                         return;
                 }
-            } 
+            }else if(ctx.platform.toUpperCase()=="IOS" && ctx.markettype!='Market'){
+                if(getExtensionText(meta.path)!="ipa"){
+                    print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["File uploaded is not supported by iOS"]}})
+                    return;
+                }
+            }
             if(!meta.weburl){
                 model.set('overview.url', meta.path);
             }else{

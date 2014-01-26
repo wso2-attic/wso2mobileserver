@@ -39,3 +39,11 @@ mvc.registerHelper('showActive', function(currentPage, page, options) {
   	return "";
   }
 });
+
+mvc.registerHelper('elipsis', function(maxLength, context, options) {
+    if(context.length > maxLength) {
+      context = context.substring(0, maxLength)+"...";
+    }
+
+    return context;
+  });

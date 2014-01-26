@@ -88,8 +88,9 @@ $("#btn-add").click(function() {
 	
 	
 	var installedAppData = new Array(); 
-	$('#inputInstallApps :selected').each(function(i, selected){ 
- 		installedAppData.push({identity: $(selected).val(), os: $(selected).data('os'), type: $(selected).data('type'), name: $(selected).data('name')});
+	$("[name='inputInstallApps_helper2'] > option").each(function(){ 
+ 		//alert($(this).text());
+ 		installedAppData.push({identity: $(this).val(), os: $(this).data('os'), type: $(this).data('type'), name: $(this).data('name')});
 	});
 	
 	if(installedAppData.length > 0){
@@ -137,6 +138,19 @@ $("#btn-add").click(function() {
 
 $( "#modalBlackListAppButton" ).click(function() {
 		var alreadyExist = false;
+		
+		
+		if($("#modalBlackListPackageName").val() == ""){
+			
+			noty({
+							text : 'Please add package/bundle name',
+							'layout' : 'center',
+							'type': 'error'
+			});
+			return;
+		}
+		
+		
 		$("#inputBlackListApps option").each(function(){
     		if($(this).data('type') == $("#modalBlackListType").val() && $(this).val() == $("#modalBlackListPackageName").val() && $(this).data('os') == $("#modalBlackListOS").val() ){
     			noty({
@@ -179,7 +193,7 @@ $(document).ready( function () {
 		success : function(policyData) {
 			//policyData = policyData[0];			
 			$("#policyName").val(policyData.name);			
-			policyContent = JSON.parse(policyData.content);				
+			policyContent = JSON.parse(policyData.mam_content);				
 			for( var i = 0; i < policyContent.length; i++){
 				var code = policyContent[i].code;
 				var data = policyContent[i].data;				
@@ -202,10 +216,8 @@ $(document).ready( function () {
 					
 					
 					if(code == '528B'){
-						for(var j = 0; j < data.length; j++){
-							$("#applist .icon-ok-sign").css("display", "inline");							
-							$('#inputBlackListApps').append('<option value="'+ data[j].identity + '" data-os="'+ data[j].os + '" data-type="'+ data[j].type + '">'+ data[j].identity + '</option>');
-						}
+						$("#applist .icon-ok-sign").css("display", "inline");							
+							$('#inputBlackListApps').append('<option value="'+ value.identity + '" data-os="'+ value.os + '" data-type="'+ value.type + '">'+ value.identity + '</option>');
 					}
 					
 					if(code == '509B'){
