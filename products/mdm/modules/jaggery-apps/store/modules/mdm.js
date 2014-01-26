@@ -29,7 +29,7 @@ var mdm = (function () {
 	function jsonPost(postUrl, postData){
         	var url = postUrl;
 			var data = postData;
-			data = JSON.stringify({"data":data});
+			data = JSON.stringify({"data":data, "SAML_TOKEN": session.get("samlresponse")});
 			var result = post(url, data, {
 				"Content-Type": "application/json",
 			    "User-Agent" : "Jaggery-XHR",
@@ -46,7 +46,7 @@ var mdm = (function () {
 			var result = jsonPost(url, payload);
 		},
 		installWebClip: function(payload, device){
-			var url =  configs.mdm.api+'/devices/'+device+'/operations/WEBCLIP';
+			var url =  configs.mdm.api+'/devices/'+device+'/WEBCLIP';
 			var result = jsonPost(url, payload);
 		},
 		getDevices: function(username, platform){

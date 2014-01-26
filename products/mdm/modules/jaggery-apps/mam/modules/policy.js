@@ -23,6 +23,9 @@ var policy = (function () {
     var log = new Log();
     var db;
 
+    var mdmModule = require('mdm.js').mdm;
+    var mdm = new mdmModule();
+
     var module = function (dbs) {
         db = dbs;
         user = new userModule(db);
@@ -190,6 +193,7 @@ var policy = (function () {
                     currentPolicy.mam_content = ctx.policyData;
                     log.info(ctx.policyData);
                     result = db.query(sqlscripts.policies.update2, currentPolicy.mam_content, currentPolicy.type, currentPolicy.name, common.getTenantID());
+                    mdm.enforce(currentPolicy.id);
                 }
             }
             return result;

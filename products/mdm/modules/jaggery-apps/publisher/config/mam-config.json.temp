@@ -1,0 +1,8 @@
+{
+	'filePreciseLocation': "/upload/",
+	"email": {
+        "companyName": "WSO2",
+        "senderAddress": "$(senderAddress)",
+		"emailPassword": "$(senderPassword)",
+    }
+}

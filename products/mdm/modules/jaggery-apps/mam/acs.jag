@@ -68,6 +68,7 @@
 										break;
 									}
 								}
+                                session.put("samlresponse",samlResponse);
                                 if(userFeed.isAdmin || userFeed.isMAMAdmin){
                                     session.put("mamConsoleUserLogin", "true");
                                     session.put("mamConsoleUser", userFeed);

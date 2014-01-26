@@ -134,7 +134,12 @@ router.post('apps/roles/uninstall', function(ctx){
 				}
 			}
 		};
-		store.uninstallApp(uninstallPayload);
+		try{
+			store.uninstallApp(uninstallPayload);
+		}catch(e){
+			response.status=403;
+			return;
+		}
 		response.status=200;
 	}else{
 		response.status=400;
@@ -165,7 +170,12 @@ router.post('apps/roles/install', function(ctx){
 				};
 			}
 		};
-		store.installApp(installPayload);
+		try{
+			store.installApp(installPayload);
+		}catch(e){
+			response.status=403;
+			return;
+		}
 		response.status=200;
 	}else{
 		response.status=400;
@@ -190,7 +200,12 @@ router.post('apps/users/uninstall', function(ctx){
 				};
 			}
 		};
-		store.uninstallApp(uninstallPayload);
+		try{
+			store.uninstallApp(uninstallPayload);
+		}catch(e){
+			response.status=403;
+			return;
+		}
 		response.status=200;
 	}else{
 		response.status=400;
@@ -220,7 +235,12 @@ router.post('apps/users/install', function(ctx){
 				};
 			}
 		};
-		store.installApp(installPayload,ctx.platform);
+		try{
+			store.installApp(installPayload,ctx.platform);
+		}catch(e){
+			response.status=403;
+			return;
+		}
 		response.status=200;
 	}else{
 		response.status=400;

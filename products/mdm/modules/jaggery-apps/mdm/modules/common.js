@@ -88,6 +88,15 @@ var getCurrentDateTime = function(){
     return fdate;
 }
 
+var getCurrentDateTimeAdjusted = function() {
+    var seconds = arguments[0];
+    var date = new Date();
+    date.setTime(date.getTime() + (seconds*1000));
+
+    var fdate = date.getFullYear() + '-' +('00' + (date.getMonth()+1)).slice(-2) + '-' +('00' + date.getDate()).slice(-2) + ' ' + ('00' + date.getHours()).slice(-2) + ':' + ('00' + date.getMinutes()).slice(-2) + ':' + ('00' + date.getSeconds()).slice(-2);
+    return fdate;
+}
+
 var getFormattedDate = function(value){
     if(value==null && value == undefined){
         return "";
@@ -104,9 +113,9 @@ var initAPNS = function(deviceToken, magicToken) {
 		return;
 	}
 
-    log.debug("initAPNS >>>>>>>>");
-    log.debug("Device Token: >>>>>> " + deviceToken);
-    log.debug("Magic Token: >>>>>> " + magicToken);
+    log.debug("initAPNS >> ");
+    log.debug("Device Token: >> " + deviceToken);
+    log.debug("Magic Token: >> " + magicToken);
 
 	try {
 		var apnsInitiator = new Packages.com.wso2mobile.ios.apns.MDMPushNotificationSender();
@@ -125,7 +134,7 @@ var initAPNS = function(deviceToken, magicToken) {
 }
 
 var sendIOSPushNotifications = function(token, message) {
-    log.debug("sendIOSPushNotifications >>>>>>>>");
+    log.debug("Send IOS Push Notifications");
     log.debug("token: >>>>>> " + token);
     log.debug("message: >>>>>> " + message);
 	if(token == null || token == null || 
@@ -191,8 +200,6 @@ var loadPayload = function(identifier , operationCode, data) {
 	paramMap.put("PayloadOrganization", "WSO2");
 		
 	var isProfile = false;
-	
-	log.error("operationCode >>>>>>>>>>>>>>>>>> " + operationCode);	
 	
 	if(operationCode == "503A") {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.DEVICE_LOCK;  
@@ -361,7 +368,6 @@ var loadPayload = function(identifier , operationCode, data) {
 
 	paramMap.put("PayloadUUID", identifier);
 	paramMap.put("CommandUUID", identifier);
-    log.debug("CommandUUID >>>>>>>>>>> " + identifier);
 
     var responseData;
     try {
@@ -411,5 +417,48 @@ var handleError = function(that, ctx, block){
         print("Unexpected Error happened");
         response.status = 500;
         log.error(e);
+    }
+}
+
+var SAML_RESPONSE_TOKEN_SESSION_KEY = "SAML_TOKEN";
+var SAML_ASSERTION_TOKEN_SESSION_KEY = "SAML_ASSERTION_TOKEN";
+var SSO_NAME = "SSORelyingParty.Name";
+var getToken = function (){
+    if(session.get(SAML_RESPONSE_TOKEN_SESSION_KEY)){
+        return session.get(SAML_RESPONSE_TOKEN_SESSION_KEY);
+    } else if(session.get(SAML_ASSERTION_TOKEN_SESSION_KEY)){
+        return session.get(SAML_ASSERTION_TOKEN_SESSION_KEY);
+    } else {
+        return null;
+    }
+};
+var getBackendCookie = function (samlToken) {
+    var token = getToken();
+    var token = null;
+    var encodedToken = token && token.replace(/>/g, '&gt;').replace(/</g,'&lt;');
+    var xhr = new XMLHttpRequest();
+    xhr.setRequestHeader('SOAPAction', 'urn:login');
+    xhr.setRequestHeader('Content-Type', 'application/soap+xml');
+    var endPoint = "https://localhost:9443/admin/services/"+"SAML2SSOAuthenticationService";
+    xhr.open("POST", endPoint);
+    var payload = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:sso="http://sso.saml2.authenticator.identity.carbon.wso2.org" xmlns:xsd="http://dto.sso.saml2.authenticator.identity.carbon.wso2.org/xsd"><soap:Header/><soap:Body><sso:login><sso:authDto><xsd:response>'+samlToken+'</xsd:response></sso:authDto></sso:login></soap:Body></soap:Envelope>';
+    xhr.send(payload);
+    var cookieString = xhr.getResponseHeader("Set-Cookie");
+    // log.info(xhr.responseText);
+    var xml_response =  xhr.responseText;
+    // var fullNodeList = xml_response.getElementsByTagName("loginResponse");
+    // log.info(fullNodeList[1].childNodes[0].nodeValue);
+    if(xml_response.search("false")==-1){
+        return true;
+    }
+    return false;
+};
+var checkAuth = function(ctx){
+    var SAML_TOKEN = ctx.SAML_TOKEN;
+    var authState =  getBackendCookie(SAML_TOKEN);
+    if(authState){
+       return authState;
+    }else{
+        response.sendError(403);
     }
 }

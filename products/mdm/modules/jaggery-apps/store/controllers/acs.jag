@@ -40,6 +40,7 @@
                         if (user.loginWithSAML(sessionObj.loggedInUser)) {
                         	log.info(require('store').server.current(session));
                             log.debug('user is set :::' + sessionObj.loggedInUser);
+                            session.put("samlresponse", samlResponse);
                             response.sendRedirect(relayState);
                         }
 

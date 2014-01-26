@@ -54,6 +54,10 @@ var notification = (function() {
             
             var identifier = ctx.msgID.replace("\"", "").replace("\"","")+"";
             var notifications = db.query(sqlscripts.notifications.select6, identifier);
+
+            //log.debug("identifier >>>>>> " + identifier);
+            //log.debug("notifications >>>> " + stringify(notifications));
+
             var recivedDate =  common.getCurrentDateTime();
             
             if(notifications != null &&  notifications[0] != null) {
@@ -61,44 +65,83 @@ var notification = (function() {
                 var device_id = notifications[0].device_id;
                 var message = notifications[0].message;
 
-                if(featureCode == "500P") {
+                 if(featureCode == "500P" || featureCode == "502P") {
 
                 	var notificationId = identifier.split("-")[0];
                     var policySequence = identifier.split("-")[1];
 
                     var pendingFeatureCodeList = db.query(sqlscripts.notifications.select7, notificationId);
 
+                    //log.debug("PendingFeature >>>> " + stringify(pendingFeatureCodeList));
+
                     var received_data = pendingFeatureCodeList[0].received_data;
                     var device_id = pendingFeatureCodeList[0].device_id;
                     var targetOperationData = (parse(received_data))[parseInt(policySequence)];
                     var targetOperationId = targetOperationData.message.code;
                     var pendingExist = false;
+                    var isRevokePolicy = false;
                     var parsedReceivedData = (parse(received_data));
 
-                    for(var i = 0; i < parsedReceivedData.length; i++) {
-                        var receivedObject = parsedReceivedData[i];
 
-                        if(receivedObject.message.code == targetOperationId) {
-                            if(ctx.error == "Error") {
-                                receivedObject.status = "error";
-                            } else {
-                                receivedObject.status = "received";
+                    //log.debug("Received data >>>>> " + stringify(stringify(parsedReceivedData)));
+
+                    if (featureCode == "502P") {
+                        isRevokePolicy = true;
+
+                        var revokeCount = parse(message).length;
+                        var revokedPolicy = 0;
+
+                        //log.debug("Revoke COunt >>>> " + revokeCount);
+
+                        for (var i =0; i< parsedReceivedData.length; i++) {
+
+                            var receivedObject = parsedReceivedData[i];
+                            if (receivedObject.status == "received" || receivedObject.status == "error") {
+                                revokedPolicy++;
                             }
                         }
 
-                        if(receivedObject.status == "pending") {
+                        //log.debug("revoked Policy   >>>>>> " + revokedPolicy);
+
+                        if (revokeCount > revokedPolicy + 1) {
                             pendingExist = true;
                         }
+                        parsedReceivedData[revokedPolicy].status = "received";
 
-                        parsedReceivedData[i] = receivedObject;
+
+                        //log.debug("parsedReceivedData >>>>>> " + stringify(parsedReceivedData));
+
+                    } else {
+                        for(var i = 0; i < parsedReceivedData.length; i++) {
+                            var receivedObject = parsedReceivedData[i];
+
+                            if(receivedObject.message.code == targetOperationId) {
+                                if(ctx.error == "Error") {
+                                    receivedObject.status = "error";
+                                } else {
+                                    receivedObject.status = "received";
+                                }
+                            }
+
+                            if(receivedObject.status == "pending") {
+                                pendingExist = true;
+                            }
+
+                            parsedReceivedData[i] = receivedObject;
+                        }
                     }
+
 
                     db.query(sqlscripts.notifications.update4, stringify(parsedReceivedData), recivedDate, notificationId);
 
                     if(pendingExist) {
-                        return true;
+                        if (isRevokePolicy == true) {
+                            return "RevokePolicy";
+                        } else {
+                            return true;
+                        }
                     } else {
-                    	
+                    	log.debug("Update notifications!!!!");
 	                	db.query(sqlscripts.notifications.update5, notificationId);
                     }
 
@@ -158,8 +201,6 @@ var notification = (function() {
                 		}
                 	}
                     try{
-                        log.info("dddddddddddddd :"+device_id);
-                        log.info("ffffffffffff :"+featureCode);
                         db.query(sqlscripts.notifications.delete2, device_id,"501P");
                     }catch(e){
                         log.info(e);
@@ -189,9 +230,6 @@ var notification = (function() {
             }
         },
         addNotification: function(ctx){
-			log.debug("Android - Monitoring occured");
-			log.debug("Current Message ID " + ctx.msgID);
-			// log.debug("Android Notification >>>>> data" + ctx.data);
 			var recivedDate = common.getCurrentDateTime();
 
 			var result = db.query(sqlscripts.notifications.select9, ctx.msgID);
@@ -200,7 +238,8 @@ var notification = (function() {
 					result[0] == null || result[0] == undefined) {
 				return;
 			}
-			
+			log.debug("[Android] - Device contacted :"+result[0].device_id);
+			log.debug("Current Message ID " + ctx.msgID);
 			var deviceId = result[0].device_id;
 			var featureCode = result[0].feature_code;
 
@@ -279,33 +318,33 @@ var notification = (function() {
 		},
 		getPolicyState : function(ctx) {
 
-			var result = db.query(sqlscripts.notifications.select10,
-					ctx.deviceid, '501P');
-			var newArray = new Array();
-			if (result == null || result == undefined || result.length == 0) {
-				return newArray;
-			}
-			var arrayFromDatabase = parse(result[result.length - 1].received_data);
+            var result = db.query(sqlscripts.notifications.select10,
+                    ctx.deviceid, '501P');
+            var newArray = new Array();
+            if (result == null || result == undefined || result.length == 0) {
+                return newArray;
+            }
+            var arrayFromDatabase = parse(result[result.length - 1].received_data);
             var blackListApp = {};
             blackListApp.status = true;
-			for ( var i = 0; i < arrayFromDatabase.length; i++) {
-				if (arrayFromDatabase[i].code == 'notrooted') {
-					var obj = {};
-					obj.name = 'Not Rooted';
-					obj.status = arrayFromDatabase[i].status;
-					newArray.push(obj);
-					if (obj.status == false) {
-						log.info(obj.status);
-						log.info(ctx.deviceid);
-						device.changeDeviceState(ctx.deviceid, "C");
-					}
+            var checkState = true;
+            for ( var i = 0; i < arrayFromDatabase.length; i++) {
+                if (arrayFromDatabase[i].code == 'notrooted') {
+                    var obj = {};
+                    obj.name = 'Not Rooted';
+                    obj.status = arrayFromDatabase[i].status;
+                    newArray.push(obj);
+                    if (obj.status == false) {
+                        device.changeDeviceState(ctx.deviceid, "C");
+                        checkState = false;
+                    }
 
-				} else {
-					var featureCode = arrayFromDatabase[i].code;
-					try {
-						var obj = {};
-						var features = db.query(sqlscripts.features.select6,
-								featureCode);
+                } else {
+                    var featureCode = arrayFromDatabase[i].code;
+                    try {
+                        var obj = {};
+                        var features = db.query(sqlscripts.features.select6,
+                                featureCode);
 
                         if (featureCode == "528B") {
                             if (blackListApp.status == true) {
@@ -321,25 +360,26 @@ var notification = (function() {
                                 var currentState = device
                                     .getCurrentDeviceState(ctx.deviceid);
                                 if (currentState == 'A') {
+                                    checkState = false;
                                     device.changeDeviceState(ctx.deviceid, "PV");
                                 }
                             }
                         }
-
-
-					} catch (e) {
-						log.info(e);
-					}
-				}
-			}
-
+                    } catch (e) {
+                        log.info(e);
+                    }
+                }
+            }
+            if(checkState == true){
+                device.changeDeviceState(ctx.deviceid, "A");
+            }
             if (blackListApp.name != null) {
                 newArray.push(blackListApp);
             }
 
-			log.info("Final result >>>>>>>>>>" + stringify(newArray));
-			return newArray;
-		},
+            log.info("Final result >>>>>>>>>>" + stringify(newArray));
+            return newArray;
+        },
 		getPolicyComplianceDevices : function(ctx) {
 			var compliance = ctx.compliance;
 

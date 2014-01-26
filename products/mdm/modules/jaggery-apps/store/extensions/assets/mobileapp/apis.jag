@@ -49,7 +49,12 @@ router.post('apps/devices/{deviceid}/install', function(ctx){
 		type : asset.attributes.overview_type,
 		identity: identity
 	};
-	mdmServer.install(payload, ctx.deviceid);
+	if(asset.attributes.overview_platform.toUpperCase()=='WEBAPP'){
+		payload['title'] = asset.attributes.overview_name;
+		mdmServer.installWebClip(payload, ctx.deviceid);
+	}else{
+		mdmServer.install(payload, ctx.deviceid);
+	}
 });
 
 router.post('apps/devices/{deviceid}/uninstall', function(ctx){

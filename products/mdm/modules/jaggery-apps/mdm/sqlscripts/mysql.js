@@ -39,16 +39,18 @@ var devices = {
     'select34':"select devices.id as id, devices.properties as properties, devices.user_id as user_id, platforms.name as name, devices.os_version as os_version, devices.created_date as created_date from devices,platforms where platforms.id = devices.platform_id && devices.user_id like ? && devices.tenant_id = ? && platform_id = ?",
     'select35':"select devices.id as id, devices.properties as properties, devices.user_id as user_id, platforms.name as name, devices.os_version as os_version, devices.created_date as created_date   from devices,platforms where platforms.id = devices.platform_id && devices.user_id like ? && devices.tenant_id = ?",
     'select36':"select * from devices where user_id = ?",
-    'select36':"SELECT * from devices JOIN platforms ON platforms.id = devices.platform_id WHERE type = 'Android' AND devices.tenant_id = ?",
-    'select37':"SELECT * from devices JOIN platforms ON platforms.id = devices.platform_id WHERE type = 'iOS'",
+    'select41':"SELECT devices.id as id from devices JOIN platforms ON platforms.id = devices.platform_id WHERE type_name = 'Android' AND devices.tenant_id = ?",
+    'select37':"SELECT devices.id as id from devices JOIN platforms ON platforms.id = devices.platform_id WHERE type_name = 'iOS'",
     'select38':"SELECT properties, user_id FROM devices WHERE udid = ?",
     'select39':"SELECT push_token FROM devices WHERE id = ?",
+    'select40':"SELECT COUNT(*) as count FROM devices WHERE user_id = ? AND tenant_id = ?",
     
     'select40':"SELECT devices.tenant_id as tenant_id, platforms.type_name as platform_type FROM devices JOIN platforms ON platforms.id = devices.platform_id WHERE devices.id = ? AND devices.tenant_id = ?",
     'select41':"SELECT id FROM devices WHERE reg_id = ?",
     'select42':"SELECT devices.id FROM devices JOIN platforms ON platforms.id = devices.platform_id WHERE LOWER(platforms.type_name) = LOWER(?) AND tenant_id = ?",
     'select43':"SELECT properties, platform_id FROM devices WHERE id = ?",
     'select44':"SELECT * from devices",
+    'select45':"SELECT devices.user_id, devices.properties, platforms.name as platform_name, devices.os_version, devices.created_date, devices.status  FROM devices,platforms where platforms.type =? && platforms.id = devices.platform_id  &&  devices.created_date between ? and ? and  devices.tenant_id = ?",
 
     'insert1' : "INSERT INTO devices (tenant_id, os_version, created_date, properties, reg_id, status, deleted, user_id, platform_id, vendor, udid, wifi_mac) VALUES(?, ?, ?, ?, ?,'A','0', ?, ?, ?,'0', ?)",
     'insert2' : "INSERT INTO devices (tenant_id, user_id, platform_id, reg_id, properties, created_date, status, byod, deleted, vendor, udid) SELECT tenant_id, user_id, platform_id, ?, ?, created_date, status, byod, 0, vendor, udid FROM device_pending WHERE udid = ?",
@@ -63,7 +65,7 @@ var devices = {
     'update7' : "UPDATE devices SET properties = ? WHERE udid = ?",
     
     'delete1' :"Delete from devices where reg_id = ?",
-    'delete2' :"DELETE FROM devices WHERE udid = ?",
+    'delete2' :"DELETE FROM devices WHERE udid = ?"
 };
 
 var device_pending = {
@@ -99,17 +101,17 @@ var device_awake = {
 
 var notifications = {
     'select1' : "SELECT count(*) as count FROM notifications JOIN features ON notifications.feature_code = features.code WHERE notifications.device_id = ? AND notifications.feature_code = ? AND features.monitor = 1 AND (notifications.status = 'A' OR notifications.status = 'P')",
-    'select2' : "SELECT id, device_id FROM notifications WHERE status = 'P' AND device_id IN (SELECT id FROM devices WHERE platform_id IN (SELECT id FROM platforms WHERE type_name = 'iOS')) ORDER BY sent_date DESC",
+    'select2' : "SELECT id, device_id FROM notifications WHERE status = 'P' AND device_id IN (SELECT id FROM devices WHERE platform_id IN (SELECT id FROM platforms WHERE type_name = 'iOS')) ORDER BY sent_date ASC",
     'select3' : "SELECT feature_code ,message, id, received_data FROM notifications WHERE (notifications.status='P' OR notifications.status = 'A') AND notifications.device_id = ? ORDER BY sent_date ASC",
-    'select4' : "SELECT device_id, message FROM notifications WHERE id = ?",
+    'select4' : "SELECT device_id, message FROM notifications WHERE id = ? OORDER BY sent_date ASC",
     'select5' : "SELECT * FROM notifications WHERE device_id = ? ORDER BY id DESC LIMIT 10",
-    'select6' : "SELECT message, feature_code, device_id FROM notifications WHERE id = ?",
-    'select7' : "SELECT received_data, device_id FROM notifications WHERE id = ?",
+    'select6' : "SELECT message, feature_code, device_id FROM notifications WHERE id = ? ORDER BY sent_date ASC",
+    'select7' : "SELECT received_data, device_id FROM notifications WHERE id = ? ORDER BY sent_date ASC",
     'select8' : "SELECT device_id FROM notifications WHERE id = ?",
-    'select9' : "select * from notifications where id = ?",
-    'select10': "SELECT DISTINCT * FROM notifications WHERE received_data IS NOT NULL && device_id = ? && feature_code= ?",
-    'select11': "SELECT received_date, device_id, feature_code, user_id FROM notifications WHERE id = ? AND feature_code != '500P' AND feature_code != '529A'",
-    'select12': "select * from notifications where `device_id`=? and `feature_code`= ? and `status`='R' and `id` = (select MAX(`id`) from notifications where `device_id`=? and `feature_code`= ? and `status`='R')",
+    'select9' : "select * from notifications where id = ? ORDER BY sent_date ASC",
+    'select10': "SELECT DISTINCT * FROM notifications WHERE received_data IS NOT NULL && device_id = ? && feature_code= ? ORDER BY sent_date ASC",
+    'select11': "SELECT received_date, device_id, feature_code, user_id FROM notifications WHERE id = ? AND feature_code != '500P' AND feature_code != '529A' ORDER BY sent_date ASC",
+    'select12': "select * from notifications where `device_id`=? and `feature_code`= ? and `status`='R' and `id` = (select MAX(`id`) from notifications where `device_id`=? and `feature_code`= ? and `status`='R') ORDER BY sent_date ASC",
 
     'insert1' : "INSERT INTO notifications (device_id, group_id, message, status, sent_date, feature_code, user_id ,feature_description, tenant_id) values(?, ?, ?, 'P', ?, ?, ?, ?, ?)",
     'insert2' : "INSERT INTO notifications (device_id, group_id, message, status, sent_date, feature_code, user_id, feature_description, tenant_id) values( ?, '1', ?, 'P', ?, ?, ?, ?, ?)",
@@ -150,6 +152,7 @@ var policies = {
     'select13': "SELECT policies.content as data, policies.type FROM policies,group_policy_mapping where category = ? && policies.id = group_policy_mapping.policy_id && group_policy_mapping.group_id = ?",
     'select14': "SELECT * from  policies WHERE name = ? AND tenant_id = ?",
     'select15': "SELECT policies.id as policyid, policies.content as data, policies.mam_content as mam_data, policies.type FROM policies, user_policy_mapping where policies.category = ? && policies.id = user_policy_mapping.policy_id && user_policy_mapping.user_id = ? && policies.tenant_id = ? ORDER BY policies.id DESC",
+    'select16': "SELECT policies.id as policyid, policies.content as data, policies.mam_content as mam_data, policies.type as type, policy_priority.type as policytype FROM policies JOIN device_policy ON device_policy.policy_id = policies.id JOIN policy_priority ON policy_priority.id = device_policy.policy_priority_id WHERE device_policy.device_id = ? AND device_policy.tenant_id = ? AND device_policy.status = 'A' ORDER BY datetime DESC",
 
     'insert1' : "insert into policies (name,content,type,category, tenant_id, mam_content) values (?,?,?,?,?, '[]')",
     'insert2' : "insert into policies (name,content,type,category, tenant_id, mam_content) values (?,'[]', 1, 1,?, '[]')",
