@@ -384,7 +384,7 @@
             <outputDirectory>wso2mobileserver-${pom.version}/dbscripts/identity</outputDirectory>
             <fileMode>644</fileMode>
         </file>
-        <file>
+<!--         <file>
             <source>src/repository/cassandra/cassandra.yaml</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/etc</outputDirectory>
             <fileMode>644</fileMode>
@@ -393,7 +393,7 @@
             <source>src/repository/cassandra/cassandra-component.xml</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/etc</outputDirectory>
             <fileMode>644</fileMode>
-        </file>
+        </file> -->
         <file>
             <source>src/repository/conf/user-mgt.xml</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/</outputDirectory>

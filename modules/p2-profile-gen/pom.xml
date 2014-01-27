@@ -187,7 +187,7 @@
                                     org.wso2mobile.platform:org.wso2mobile.platform.feature:${project.version}
                                 </featureArtifactDef>
 																<!-- BAM Features -->
-																<featureArtifactDef>
+																<!-- <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.cassandra.explorer.feature:${carbon.platform.version}
                                 </featureArtifactDef>
 																<featureArtifactDef>
@@ -211,7 +211,7 @@
                                 </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon:org.wso2.carbon.databridge.streamdefn.cassandra.feature:${carbon.platform.version}
-                                </featureArtifactDef>
+                                </featureArtifactDef> -->
 
                                 <!-- Stratos features    -->
                                 <featureArtifactDef>
@@ -371,7 +371,7 @@
                                     <version>${stratos.patch.version.221}</version>
                                 </feature>
 																<!-- BAM features -->
-								<feature>
+								<!-- <feature>
                                     <id>org.wso2.carbon.cassandra.explorer.feature.group</id>
                                     <version>${carbon.platform.version}</version>
                                 </feature>
@@ -403,7 +403,7 @@
                                 <feature>
                                     <id>org.wso2.carbon.databridge.streamdefn.cassandra.feature.group</id>
                                     <version>${carbon.platform.version}</version>
-                                </feature>
+                                </feature> -->
                             </features>
                         </configuration>
                     </execution>
