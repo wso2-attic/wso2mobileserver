@@ -293,8 +293,14 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/</outputDirectory>
             <filtered>true</filtered>
         </file>
+       
         <file>
             <source>src/repository/conf/wso2mobilemdm.jks</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>src/repository/conf/wso2permission.jks</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security</outputDirectory>
             <filtered>true</filtered>
         </file>
