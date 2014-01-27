@@ -335,7 +335,7 @@ var policy = (function () {
             return array;
         },
         getUsersByPolicy:function(ctx){
-            var allUsers = user.getAllUserNames(ctx);
+            var allUsers = user.getAllUserNames();
             var result = db.query(sqlscripts.user_policy_mapping.select1, ctx.policyid);
 
             var array = new Array();

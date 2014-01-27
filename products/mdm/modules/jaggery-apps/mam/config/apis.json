@@ -7,6 +7,7 @@
         "getUserAuthenticate": "/mam/api/users/authenticate",
         "getCurrentUser": "/mam/api/users/current",
         "groupsCRUD": "/mam/api/groups/{0}",
+        "groupsAssign": "/mam/api/groups/users?groupid={0}",
         "usersCRUD": "/mam/api/users/{0}",        
         "getDeviceAppList": "/mam/api/refresh/devices/{0}/502A",
 		"getDeviceGenInfo": "/mam/api/refresh/devices/{0}/500A",

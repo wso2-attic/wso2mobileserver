@@ -200,12 +200,13 @@ var loadPayload = function(identifier , operationCode, data) {
 	paramMap.put("PayloadOrganization", "WSO2");
 		
 	var isProfile = false;
-	
+	log.info("EEEEE");
+	log.info(data);
 	if(operationCode == "503A") {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.DEVICE_LOCK;  
 	} else if(operationCode == "505A") {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.CLEAR_PASSCODE;
-		paramMap.put("UnlockToken", data.unlock_token);
+		paramMap.put("UnlockToken", data.unlockToken);
 	} else if(operationCode == "502A") {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.APPLICATION_LIST;
 	} else if(operationCode == "500A") {
@@ -229,7 +230,7 @@ var loadPayload = function(identifier , operationCode, data) {
 	} else if(operationCode == "512A") {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.APN_SETTINGS; 
 		paramMap.put("PayloadIdentifier", payloadIdentifier["APN"]);
-		paramMap.put("PayloadDisplayName", "VPN Configurations");
+		paramMap.put("PayloadDisplayName", "APN Configurations");
 		paramMap.put("APN", data.carrier);
 		paramMap.put("Username", data.user_name);
 		paramMap.put("Password", data.password);
@@ -240,8 +241,8 @@ var loadPayload = function(identifier , operationCode, data) {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.WEBCLIP;
 		paramMap.put("PayloadIdentifier", payloadIdentifier["WEBCLIP"]);
 		paramMap.put("PayloadDisplayName", "Web Clip");
-		paramMap.put("URL", data.url);
-		paramMap.put("Label", data.label);
+		paramMap.put("URL", data.identity);
+		paramMap.put("Label", data.title);
 		isProfile = true;
 	} else if(operationCode == "519A") {
 		operation = Packages.com.wso2mobile.ios.mdm.payload.PayloadType.PASSCODE_POLICY; 

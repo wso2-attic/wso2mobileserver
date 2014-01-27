@@ -15,6 +15,11 @@ var group = (function () {
 		        response.status = 404;
 		    }
 		});
+        router.put('groups/users', function(ctx){
+             var result = group.updateUserListOfRole(ctx);
+             response.content = result;
+             response.status = 200;
+        });
         router.put('groups/invite', function(ctx){
             var users= group.getUsersOfGroup(ctx);
             for (var i = users.length - 1; i >= 0; i--){
@@ -34,19 +39,11 @@ var group = (function () {
 		    response.status = 200;
 		});
         router.get('groups/{groupid}/users', function(ctx){
-            log.info("Test Router");
             var allUsers = group.getUsersByGroup(ctx);
             response.content =  allUsers;
             response.status = 200;
         });
-        router.put('groups/{groupid}/users', function(ctx){
-            log.info("Test Request PUTTTTT"+stringify(ctx));
-             var result = group.updateUserListOfRole(ctx);
-             response.content = result;
-             response.status = 200;
-        });
 		router.post('groups', function(ctx){
-            log.info("Test Groups >>>>>>>>>>");
 			var returnMsg = group.addGroup(ctx);
             if(returnMsg.status == 'ALLREADY_EXIST'){
                 response.status = 409;

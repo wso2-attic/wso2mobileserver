@@ -125,7 +125,7 @@ var user_group = (function () {
         },*/
         getUsersOfRoleByAssignment :function(ctx){
             var usersOfGroup = group.getUsersOfGroup(ctx);
-            var allUsers = user.getAllUserNames(ctx);
+            var allUsers = user.getAllUserNames();
             var userArray = new Array();
             if(usersOfGroup.length==0){
                 for(var i=0;i<allUsers.length;i++){

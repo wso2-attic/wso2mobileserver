@@ -20,6 +20,8 @@
     },
     "email": {
         "companyName": "WSO2",
+        "smtp":"smtp.gmail.com",
+        "port":"25",
         "senderAddress": "$(senderAddress)",
         "emailPassword": "$(senderPassword)",
         "emailTemplate": "\nYou have been registered to the WSO2Mobile MAM. \n \n"

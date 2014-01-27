@@ -1,4 +1,5 @@
 var appMetaData = null;
+var previousFile = null;
 
 $('#application-tab a').click(function(e) {
 	e.preventDefault();
@@ -104,9 +105,9 @@ $('#modal-upload-app').on('shown', function() {
 });
 
 $('#upload-app-again').click(function(e) {
-       
-         $("#modal-upload-data").css("display", "block");
+	      $("#modal-upload-data").css("display", "block");
 		  $("#modal-upload-progress").css("display", "none");
+		
 });
 
 
@@ -165,12 +166,17 @@ $(document).ready(function(){
 	$('#txtAppUpload').fileuploadFile({
         dataType: 'json',
        	add: function (e, data) {
-		        $('#btn-app-upload').click(function () {
+		        $('#btn-app-upload').one( "click", function() {
 		                    //data.context = $('<p/>').text('Uploading...').replaceAll($(this));
 		                    $("#modal-upload-data").css("display", "none");
 		                     $("#modal-upload-progress").css("display", "block");
-		                    data.platform = $('#txtOS').val();		                   
-		                    data.submit();		                    
+		                    data.platform = $('#txtOS').val();
+		                   
+		                    if(previousFile != data){
+		                    	data.submit();	
+		                    }		
+		                     previousFile = data;                   
+		                    	                    
 		                });
 		        },
 		        done: function (e, data) {

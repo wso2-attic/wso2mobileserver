@@ -96,7 +96,11 @@ var mvc = (function () {
 					response.sendError(404);
 				}
 			}else{
-				print(getResource(resourceURL));
+				try{
+					print(getResource(resourceURL));
+				}catch(e){
+					//Catching the client abort exception
+				}
 			}
 		}else{
 			response.sendError(403);

@@ -99,6 +99,56 @@
             'PUT': [
                 'Internal/everyone'
             ]
+        },
+        "/mam/api/policy/{policyid}": {
+            'DELETE': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/{policyid}/enforce": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/": {
+            'POST': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/{policyid}": {
+            'DELETE': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/": {
+            'GET': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/{policyid}/groups": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/{policyid}/users": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/{policyid}/platforms": {
+            'PUT': [
+                'Internal/everyone'
+            ]
+        },
+        "/mam/api/policies/{policyid}/groups": {
+            'GET': [
+                'Internal/everyone'
+            ]
         }
     },
     "pageRoutes": {
