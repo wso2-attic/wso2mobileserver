@@ -18,6 +18,7 @@
 import com.google.android.gcm.GCMRegistrar;
 import com.wso2mobile.mdm.api.DeviceInfo;
 import com.wso2mobile.mdm.utils.CommonUtilities;
+import com.wso2mobile.mdm.utils.LoggerCustom;
 import com.wso2mobile.mdm.utils.ServerUtilities;
 
 import android.os.AsyncTask;
@@ -56,12 +57,10 @@ public class EntryActivity extends Activity {
 		setContentView(R.layout.activity_entry);
 		checkNotNull(CommonUtilities.SERVER_URL, "SERVER_URL");
         checkNotNull(CommonUtilities.SENDER_ID, "SENDER_ID");
-<<<<<<< HEAD
-=======
+        
         if(CommonUtilities.DEBUG_MODE_ENABLED){
         	Log.e("SENDER ID : ", CommonUtilities.SENDER_ID);
         }
->>>>>>> rc1
         info = new DeviceInfo(EntryActivity.this);       
         context = EntryActivity.this;
         
@@ -84,6 +83,7 @@ public class EntryActivity extends Activity {
 		errorMessage.setText(getString(R.string.device_not_compatible_error));
 		if(!accessFlag){
 			errorMessage.setVisibility(View.VISIBLE);
+			showAlert(getResources().getString(R.string.device_not_compatible_error), getResources().getString(R.string.error_authorization_failed));
 		}
 
 		/*optionBtn.setOnClickListener(new OnClickListener() {
