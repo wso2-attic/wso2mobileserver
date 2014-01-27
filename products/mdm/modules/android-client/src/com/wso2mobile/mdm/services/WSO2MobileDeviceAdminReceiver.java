@@ -19,6 +19,8 @@ package com.wso2mobile.mdm.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
+
 import com.google.android.gcm.GCMRegistrar;
 import com.wso2mobile.mdm.AlreadyRegisteredActivity;
 import com.wso2mobile.mdm.AuthenticationErrorActivity;
@@ -46,14 +48,30 @@ public class WSO2MobileDeviceAdminReceiver extends DeviceAdminReceiver {
 	static final String TAG = "DemoDeviceAdminReceiver";
 	AsyncTask<Void, Void, Void> mRegisterTask;
 	String regId="";
+	Operation operation;
 	boolean unregState=false;
 	/** Called when this application is approved to be a device administrator. */
 	@Override
 	public void onEnabled(Context context, Intent intent) {
 		super.onEnabled(context, intent);
+		String policy;
+		JSONArray jArray = null;
+		operation = new Operation(context);
+		SharedPreferences mainPref = context.getSharedPreferences("com.mdm",
+				Context.MODE_PRIVATE);
+
+		try {
+			policy = mainPref.getString("policy", "");
+			if(policy!=null && !policy.equals("")){
+				operation.executePolicy();
+			}
+		}catch(Exception ex){
+			
+		}
 		Toast.makeText(context, R.string.device_admin_enabled,
 				Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onEnabled");
+		
 	}
 
 	/** Called when this application is no longer the device administrator. */
@@ -100,14 +118,42 @@ public class WSO2MobileDeviceAdminReceiver extends DeviceAdminReceiver {
             @Override
             protected void onPostExecute(Void result) {
 	            	try {
-	        			SharedPreferences mainPref = context.getSharedPreferences("com.mdm",
-	        					Context.MODE_PRIVATE);
-	        			Editor editor = mainPref.edit();
-	        			editor.putString("policy", "");
-	        			editor.putString("isAgreed", "0");
-	        			editor.putString("registered","0");	
-	        			editor.putString("ip","");
-	        			editor.commit();
+	            		SharedPreferences mainPref = context
+								.getSharedPreferences(
+										context
+										.getResources().getString(
+												R.string.shared_pref_package),
+										Context.MODE_PRIVATE);
+						Editor editor = mainPref.edit();
+						editor.putString(
+								context
+								.getResources().getString(
+										R.string.shared_pref_policy), "");
+						editor.putString(
+								context
+								.getResources().getString(
+										R.string.shared_pref_isagreed), "0");
+						editor.putString(
+								context
+								.getResources().getString(R.string.shared_pref_regId), "");
+						editor.putString(
+								context
+								.getResources().getString(
+										R.string.shared_pref_registered), "0");
+						editor.putString(
+								context
+								.getResources().getString(
+										R.string.shared_pref_ip), "");
+						editor.putString(
+								context
+								.getResources().getString(
+										R.string.shared_pref_sender_id), "");
+						editor.putString(
+								context
+								.getResources().getString(
+										R.string.shared_pref_eula), "");
+						
+						editor.commit();
 	        		} catch (Exception e) {
 	        			// TODO Auto-generated catch block
 	        			e.printStackTrace();

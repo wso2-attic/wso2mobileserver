@@ -40,6 +40,8 @@ public class PolicyTester {
 	PhoneState deviceState;
 	String policy;
 	String usermessage = "";
+	String apz = "";
+	int appcount = 0;
 	JSONObject returnJSON = new JSONObject();
 	JSONArray finalArray = new JSONArray();
 	boolean IS_ENFORCE = false;
@@ -271,31 +273,21 @@ public class PolicyTester {
 							jobj.put("status", true);
 						}else{
 							jobj.put("status", false);
-							/*if(usermessage!=null && usermessage!=""){
-								usermessage+="\nYour camera should be deactivated according to the policy, please deactivate your camera\n";
-							}else{
-								usermessage+="Your camera should be deactivated according to the policy, please deactivate your camera \n";
-							}*/
 						}
 					}else{
 						if(devicePolicyManager.getCameraDisabled(cameraAdmin)){
 							jobj.put("status", true);
 						}else{
 							jobj.put("status", false);
-							if(usermessage!=null && usermessage!=""){
+							/*if(usermessage!=null && usermessage!=""){
 								usermessage+="\nYour camera should be deactivated according to the policy, please deactivate your camera\n";
 							}else{
 								usermessage+="Your camera should be deactivated according to the policy, please deactivate your camera \n";
-							}
+							}*/
 						}
 					}
 				}else{
 					jobj.put("status", false);
-					/*if(usermessage!=null && usermessage!=""){
-						usermessage+="\nYour camera should be deactivated according to the policy, please deactivate your camera\n";
-					}else{
-						usermessage+="Your camera should be deactivated according to the policy, please deactivate your camera \n";
-					}*/
 				}
 				jobj.put("code", code);
 				
@@ -308,11 +300,11 @@ public class PolicyTester {
 		} else if (code.equals(CommonUtilities.OPERATION_ENCRYPT_STORAGE)) {
 			boolean encryptFunc = true;
 			String pass = "";
-			// data = intent.getStringExtra("data");
+
 			JSONParser jp = new JSONParser();
 			try {
 				JSONObject jobj = new JSONObject(data);
-				// pass = (String)jobj.get("password");
+
 				if (!jobj.isNull("function")
 						&& jobj.get("function").toString()
 								.equalsIgnoreCase("encrypt")) {
@@ -326,8 +318,6 @@ public class PolicyTester {
 							.toString());
 				}
 
-				// ComponentName cameraAdmin = new ComponentName(this,
-				// DemoDeviceAdminReceiver.class);
 				ComponentName admin = new ComponentName(context,
 						WSO2MobileDeviceAdminReceiver.class);
 				Map<String, String> params = new HashMap<String, String>();
@@ -337,8 +327,6 @@ public class PolicyTester {
 					if (encryptFunc
 							&& devicePolicyManager.getStorageEncryptionStatus() != devicePolicyManager.ENCRYPTION_STATUS_UNSUPPORTED) {
 						if (devicePolicyManager.getStorageEncryptionStatus() == devicePolicyManager.ENCRYPTION_STATUS_INACTIVE) {
-							// devicePolicyManager.resetPassword(pass,
-							// DevicePolicyManager.RESET_PASSWORD_REQUIRE_ENTRY);
 							if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 								devicePolicyManager.setStorageEncryption(admin,
 										encryptFunc);
@@ -433,7 +421,7 @@ public class PolicyTester {
 			JSONObject jobjx = new JSONObject();
 			int attempts, length, history, specialChars;
 			String alphanumeric, complex;
-			boolean b_alphanumeric=false, b_complex=false;
+			boolean b_alphanumeric=false, b_complex=false, is_comply=true, comply_fac1=true, comply_fac2=true, comply_fac3=true, comply_fac4=true, comply_fac5=true, comply_fac6=true, comply_fac7=true;
 			long timout;
 			Map<String, String> inparams = new HashMap<String, String>();
 			// data = intent.getStringExtra("data");
@@ -443,19 +431,10 @@ public class PolicyTester {
 				jobjpass.put("code", CommonUtilities.OPERATION_CHANGE_LOCK_CODE);
 				
 				if(devicePolicyManager.isActivePasswordSufficient()){
-					jobjpass.put("status", true);
+					is_comply=true;
 					//finalArray.put(jobjpass);
 				}else{
-					jobjpass.put("status", false);
-					//finalArray.put(jobjpass);
-					if(usermessage!=null && usermessage!=""){
-						 usermessage+="\nYour screen lock password doesn't meet current policy requirement. Please reset your passcode \n";
-					}else{
-						 usermessage+="Your screen lock password doesn't meet current policy requirement. Please reset your passcode \n";
-					}
-							/*Intent intent = new Intent(context, AlertActivity.class);
-							intent.putExtra("message", "Your screen lock password doesn't meet current policy requirement. Please reset your passcode");
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);*/
+					is_comply=false;
 				}
 				
 				JSONObject jobj = new JSONObject(data);
@@ -466,12 +445,12 @@ public class PolicyTester {
 					if(IS_ENFORCE){
 					devicePolicyManager.setMaximumFailedPasswordsForWipe(
 							demoDeviceAdmin, attempts);
-					jobjx.put("status", true);
+					comply_fac1=true;
 					}else{
 						if(devicePolicyManager.getMaximumFailedPasswordsForWipe(demoDeviceAdmin) != attempts){
-							jobjx.put("status", false);
+							comply_fac1=false;
 						}else{
-							jobjx.put("status", true);
+							comply_fac1=true;
 						}
 					}
 				}
@@ -481,12 +460,12 @@ public class PolicyTester {
 					if(IS_ENFORCE){
 					devicePolicyManager.setPasswordMinimumLength(
 							demoDeviceAdmin, length);
-					jobjx.put("status", true);
+					comply_fac2=true;
 					}else{
 						if(devicePolicyManager.getPasswordMinimumLength(demoDeviceAdmin) != length){
-							jobjx.put("status", false);
+							comply_fac2=false;
 						}else{
-							jobjx.put("status", true);
+							comply_fac2=true;
 						}
 					}
 				}
@@ -497,12 +476,12 @@ public class PolicyTester {
 					if(IS_ENFORCE){
 					devicePolicyManager.setPasswordHistoryLength(
 							demoDeviceAdmin, history);
-					jobjx.put("status", true);
+					comply_fac3=true;
 					}else{
 						if(devicePolicyManager.getPasswordHistoryLength(demoDeviceAdmin) != history){
-							jobjx.put("status", false);
+							comply_fac3=false;
 						}else{
-							jobjx.put("status", true);
+							comply_fac3=true;
 						}
 					}
 				}
@@ -514,12 +493,12 @@ public class PolicyTester {
 					if(IS_ENFORCE){
 					devicePolicyManager.setPasswordMinimumSymbols(
 							demoDeviceAdmin, specialChars);
-					jobjx.put("status", true);
+					comply_fac4=true;
 					}else{
 						if(devicePolicyManager.getPasswordMinimumSymbols(demoDeviceAdmin) != specialChars){
-							jobjx.put("status", false);
+							comply_fac4=false;
 						}else{
-							jobjx.put("status", true);
+							comply_fac4=true;
 						}
 					}
 				}
@@ -543,19 +522,19 @@ public class PolicyTester {
 								.setPasswordQuality(
 										demoDeviceAdmin,
 										DevicePolicyManager.PASSWORD_QUALITY_ALPHANUMERIC);
-						jobjx.put("status", true);
+						comply_fac5=true;
 						}else{
 							if(devicePolicyManager.getPasswordQuality(demoDeviceAdmin) != DevicePolicyManager.PASSWORD_QUALITY_ALPHANUMERIC){
-								jobjx.put("status", false);
+								comply_fac5=false;
 							}else{
-								jobjx.put("status", true);
+								comply_fac5=true;
 							}
 						}
 					}else{
 						if(devicePolicyManager.getPasswordQuality(demoDeviceAdmin) == DevicePolicyManager.PASSWORD_QUALITY_ALPHANUMERIC){
-							jobjx.put("status", false);
+							comply_fac5=false;
 						}else{
-							jobjx.put("status", true);
+							comply_fac5=true;
 						}
 					}
 				}
@@ -578,19 +557,19 @@ public class PolicyTester {
 						if(IS_ENFORCE){
 						devicePolicyManager.setPasswordQuality(demoDeviceAdmin,
 								DevicePolicyManager.PASSWORD_QUALITY_COMPLEX);
-						jobjx.put("status", true);
+						comply_fac6=true;
 						}else{
 							if(devicePolicyManager.getPasswordQuality(demoDeviceAdmin) != DevicePolicyManager.PASSWORD_QUALITY_COMPLEX){
-								jobjx.put("status", false);
+								comply_fac6=false;
 							}else{
-								jobjx.put("status", true);
+								comply_fac6=true;
 							}
 						}
 					}else{
 						if(devicePolicyManager.getPasswordQuality(demoDeviceAdmin) == DevicePolicyManager.PASSWORD_QUALITY_COMPLEX){
-							jobjx.put("status", false);
+							comply_fac6=false;
 						}else{
-							jobjx.put("status", true);
+							comply_fac6=true;
 						}
 					}
 				}
@@ -603,20 +582,25 @@ public class PolicyTester {
 					if(IS_ENFORCE){
 					devicePolicyManager.setPasswordExpirationTimeout(
 							demoDeviceAdmin, timout);
-					jobjx.put("status", true);
+					comply_fac7=true;
 					}else{
-						if(devicePolicyManager.getPasswordExpirationTimeout(demoDeviceAdmin) != timout){
-							jobjx.put("status", false);
-						}else{
-							jobjx.put("status", true);
+						if(devicePolicyManager.getPasswordExpirationTimeout(demoDeviceAdmin) != timout){							
+							comply_fac7=false;
+						}else{							
+							comply_fac7=true;
 						}
 					}
 				}
 				
-				if(devicePolicyManager.isActivePasswordSufficient()){
-					jobjx.put("status", true);
-				}else{
+				if(!is_comply || !comply_fac1 || !comply_fac2 || !comply_fac3 || !comply_fac4 || !comply_fac5 || !comply_fac6 || !comply_fac7){
 					jobjx.put("status", false);
+					if(usermessage!=null && usermessage!=""){
+						 usermessage+="\nYour screen lock password doesn't meet current policy requirement. Please reset your passcode \n";
+					}else{
+						 usermessage+="Your screen lock password doesn't meet current policy requirement. Please reset your passcode \n";
+					}
+				}else{
+					jobjx.put("status", true);
 				}
 				
 				
@@ -645,21 +629,13 @@ public class PolicyTester {
 																	 * no system
 																	 * packages
 																	 */
-			// String apps[] = appList.getApplicationListasArray();
 			JSONArray jsonArray = new JSONArray();
 			int max = apps.size();
-			if (max > 10) {
-				//max = 10;
-			}
-			String apz = "";
+			
 			Boolean flag = true;
-			JSONArray jArray = null;
-			int appcount = 1;
+			
 			try{
-				jArray = new JSONArray(data);
-				for (int i = 0; i < jArray.length(); i++) {
-					JSONObject appObj = (JSONObject) jArray
-							.getJSONObject(i);
+					JSONObject appObj = new JSONObject(data);
 					String identity = (String) appObj.get("identity");
 					for (int j = 0; j < max; j++) {
 						JSONObject jsonObj = new JSONObject();
@@ -670,18 +646,28 @@ public class PolicyTester {
 								jsonObj.put("notviolated", false);
 								flag = false;
 								jsonObj.put("package", apps.get(j).pname);
-								if(i<(jArray.length()-1)){
-									if(apps.get(j).appname!=null){
-										apz += appcount+". "+apps.get(j).appname + "\n";
-										appcount++;
-									}
+								if(apps.get(j).appname!=null){
+									appcount++;
+									apz = appcount+". "+apps.get(j).appname;									
+								}
+								
+								if(apz!=null || !apz.trim().equals("")){
+									if(usermessage!=null && usermessage!=""){
+										if(appcount>1){
+											usermessage+="\n"+apz;
+										}else{
+											usermessage+="\nFollowing apps are blacklisted by your MDM Admin, please remove them \n\n"+apz;
+										}												
+									}else{
+										if(appcount>1){
+											usermessage+="\n"+apz;
+										}else{
+											usermessage+="Following apps are blacklisted by your MDM Admin, please remove them \n\n"+apz;
+										}
 										
-								}else{
-									if(apps.get(j).appname!=null){
-										apz += appcount+". "+apps.get(j).appname;
-										appcount++;
 									}
 								}
+																		
 							}else{
 								jsonObj.put("notviolated", true);
 							}
@@ -692,7 +678,6 @@ public class PolicyTester {
 						}
 						jsonArray.put(jsonObj);
 					}
-				}
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
@@ -706,17 +691,7 @@ public class PolicyTester {
 				appsObj.put("status", flag);
 				appsObj.put("code", code);
 				finalArray.put(appsObj);
-				if(apz!=null || !apz.trim().equals("")){
-					if(usermessage!=null && usermessage!=""){
-						usermessage+="\nFollowing apps are blacklisted by your MDM Admin, please remove them \n\n"+apz;
-					}else{
-						usermessage+="Following apps are blacklisted by your MDM Admin, please remove them \n\n"+apz;
-					}
-					/*Intent intent = new Intent(context, AlertActivity.class);
-					intent.putExtra("message", "Following apps are blacklisted by your MDM Admin, please remove them \n\n"+apz);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(intent);*/
-				}
+				
 			} catch (JSONException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -727,41 +702,6 @@ public class PolicyTester {
 		return true;
 	}
 	
-	/**
-	 * Set WiFi
-	 */
-	/*public boolean setWifi(String SSID, String password) {
-
-		WifiConfiguration wc = new WifiConfiguration();
-
-		wc.SSID = "\"{SSID}\"".replace("{SSID}", SSID);
-		wc.preSharedKey = "\"{PRESHAREDKEY}\"".replace("{PRESHAREDKEY}",
-				password);
-
-		wc.status = WifiConfiguration.Status.ENABLED;
-		wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-		wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-		wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-		wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-		wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-		wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-		wc.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-
-		WifiManager wifi = (WifiManager) context
-				.getSystemService(Context.WIFI_SERVICE);
-
-		int netId = wifi.addNetwork(wc);
-		wifi.enableNetwork(netId, true);
-		
-		if (wifi.getConnectionInfo().getSSID()!= null && wifi.getConnectionInfo().getSSID().equals(SSID)){
-    		Log.i("Hub", "WiFi is enabled AND active !");
-    		Log.i("Hub", "SSID = "+wifi.getConnectionInfo().getSSID());
-    		return true;
-		}else{
-			Log.i("Hub", "NO WiFi");
-			return false;
-		}
-	}*/
 
 	/**
 	 * Mute the device
