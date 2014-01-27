@@ -76,7 +76,7 @@ var entitlement = entitlement || {};
 
     var process = require('process');
     entitlement.login = function (){        
-        java.lang.System.setProperty("javax.net.ssl.trustStore", process.getProperty('carbon.home')+"/repository/resources/security/"+"wso2permission.jks");
+        java.lang.System.setProperty("javax.net.ssl.trustStore", process.getProperty('carbon.home')+"/repository/resources/security/"+"client-truststore.jks");
             java.lang.System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
         configCtx = ConfigurationContextFactory.createConfigurationContextFromFileSystem(null, null);
         var authorized = false;
@@ -111,7 +111,7 @@ var entitlement = entitlement || {};
 
     entitlement.setAuthCookie = function(cookie){
         authCookie = cookie;
-        java.lang.System.setProperty("javax.net.ssl.trustStore", process.getProperty('carbon.home')+"/repository/resources/security/"+"wso2permission.jks");
+        java.lang.System.setProperty("javax.net.ssl.trustStore", process.getProperty('carbon.home')+"/repository/resources/security/"+"client-truststore.jks");
             java.lang.System.setProperty("javax.net.ssl.trustStorePassword", "wso2carbon");
         configCtx = ConfigurationContextFactory.createConfigurationContextFromFileSystem(null, null);
         }
