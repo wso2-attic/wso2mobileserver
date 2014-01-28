@@ -85,11 +85,11 @@
             <outputDirectory>wso2mobileserver-${pom.version}/docs</outputDirectory>
             <fileMode>755</fileMode>
         </fileSet>
-
         <!-- copy the landing page webapp -->
         <fileSet>
-            <directory>lib/home</directory>
+            <directory>src/repository/resources/stratos_root</directory>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/deployment/server/webapps/STRATOS_ROOT</outputDirectory>
+            <fileMode>755</fileMode>
         </fileSet>
         <fileSet>
             <directory>../p2-profile-gen/target/wso2carbon-core-${carbon.kernal.version}/modules</directory>
