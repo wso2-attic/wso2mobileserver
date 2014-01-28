@@ -11,7 +11,7 @@ var cleanUsername = function (username) {
      * "/" will be replaced.
      */
 
-    return username.replace('@', ':').replace('/', ':');
+    return username.replace('@', ':');
 };
 
 var filterModule = function () {
@@ -49,10 +49,17 @@ var filterModule = function () {
      */
     function execute(context) {
         var data = context['data'];
-        var userRoles = context['roles'];
+        var userRoles =context['roles'];
         var item;
         var items = [];
-
+        // for (var i = userRoles.length - 1; i >= 0; i--) {
+        //     var role_obj =  userRoles[i];
+        //     role_obj = cleanUsername(role_obj);
+        //     userRoles[i] = role_obj;
+        // };
+        log.info(userRoles);
+        log.info(data);
+        log.info("_____");
         //Go through each data item
         for (var index in data) {
 
@@ -71,10 +78,13 @@ var filterModule = function () {
                 var commonRoles = utility.intersect(userRoles, permissableRoles, function (a, b) {
                     return (a == b);
                 });
-
+                log.info(permissableRoles);
+                log.info(userRoles);
+                log.info(commonRoles);
+                log.info("****");
                 //Check if we have common roles
                 if (commonRoles.length > 0) {
-// log.info('adding asset'+stringify(item));
+                    log.info('adding asset'+stringify(item));
                     items.push(item);
                 }
             }
@@ -97,7 +107,7 @@ var filterModule = function () {
     function fillDynamicPermissibleRoles(item, permissions) {
         var list = [];
         for (var index in permissions) {
-            list.push(permissions[index].replace('{overview_provider}', cleanUsername(item.attributes.overview_provider)));
+            list.push(permissions[index].replace('{overview_provider}', item.attributes.overview_provider));
         }
 
         return list;

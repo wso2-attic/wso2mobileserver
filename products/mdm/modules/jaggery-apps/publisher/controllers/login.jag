@@ -15,7 +15,7 @@
       }else{
         var postUrl = "https://" + host;
       }
-
+      log.info(session.get("Loged"));
     if (!session.get("Loged")) {
         %>
 

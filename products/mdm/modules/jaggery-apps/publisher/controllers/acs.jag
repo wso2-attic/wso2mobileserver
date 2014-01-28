@@ -61,7 +61,9 @@
                                 }
                             }
                         }
+
                         if(!login_flag){
+                            session.remove("Loged");
                             response.sendError(403);
                         }
                     }
