@@ -125,7 +125,9 @@ var user_group = (function () {
         },*/
         getUsersOfRoleByAssignment :function(ctx){
             var usersOfGroup = group.getUsersOfGroup(ctx);
+
             var allUsers = user.getAllUserNames();
+
             var userArray = new Array();
             if(usersOfGroup.length==0){
                 for(var i=0;i<allUsers.length;i++){
@@ -136,19 +138,26 @@ var user_group = (function () {
                 }
             }else{
                 for(var i=0;i<allUsers.length;i++){
+                    var flag = 0;
                     for(var j=0;j<usersOfGroup.length;j++){
+                        log.info("T"+allUsers[i]+"---"+usersOfGroup[j].username);
                         if(allUsers[i]==usersOfGroup[j].username){
-                            var obj = {};
-                            obj.available = true;
-                            obj.username = allUsers[i];
-                            userArray.push(obj);
+                            flag = 1;
                             break;
-                        }else{
-                            var obj = {};
-                            obj.available = false;
-                            obj.username = allUsers[i];
-                            userArray.push(obj);
                         }
+                        flag =0;
+                    }
+                    if(flag == 1){
+                        var obj = {};
+                        obj.available = true;
+                        obj.username = allUsers[i];
+                        userArray.push(obj);
+
+                    }else if(flag == 0){
+                        var obj = {};
+                        obj.available = false;
+                        obj.username = allUsers[i];
+                        userArray.push(obj);
                     }
                 }
             }
