@@ -420,7 +420,8 @@ var store = (function () {
 								roleVal = returnResult[role];
 							}
 							roleVal.device_not_install_count = roleVal.device_not_install_count+1;
-							if(query_type==2){
+                            roleVal.total_devices = getAllDeviceCountForGroup(role, platform);
+                            if(query_type==2){
 								roleVal.devices.push(result.device_id);
 							}
 							

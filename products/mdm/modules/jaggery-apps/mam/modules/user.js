@@ -337,7 +337,7 @@ var user = (function () {
                 var tenantId = common.getTenantID();
                 if(tenantId){
                     var devices = db.query("SELECT COUNT(*) as count FROM devices WHERE user_id = ? AND tenant_id = ?", ctx.userid, tenantId);
-                    if (devices != null && devices != undefined) {
+                    if (devices != null && devices != undefined && devices[0] != null && devices[0] != undefined) {
                         if (devices[0].count > 0) {
                             return true;
                         }
@@ -390,7 +390,7 @@ var user = (function () {
             sender.from = config.email.senderAddress;
 
             log.info("Email sent to -> "+ctx.username);
-            sender.to = ctx.username;
+            sender.to = stringify(ctx.username);
             sender.subject = subject;
             sender.text = content;
             try{

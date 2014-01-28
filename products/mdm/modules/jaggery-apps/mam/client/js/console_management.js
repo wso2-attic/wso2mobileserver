@@ -79,12 +79,14 @@ $(document).ready(function() {
 		var url = selectedApp.data('url');
 		var type = selectedApp.data('type');
 		var id = selectedApp.data('id');
-		if($(this).hasClass('install')){
-			viewUsersInstalled(packageId,platform);
-		}else if($(this).hasClass('not-installed')){
-			viewUsersNotInstalled(packageId,platform, type, url, id);
-		}
-	});
+        if (packageId) {
+            if ($(this).hasClass('install')) {
+                viewUsersInstalled(packageId, platform);
+            } else if ($(this).hasClass('not-installed')) {
+                viewUsersNotInstalled(packageId, platform, type, url, id);
+            }
+        }
+    });
     $('.stakes > .nav li').off('click').click(function () {
         if ($(this).hasClass('active')) {
             var currentTab = $(this).children('a').attr('href');
@@ -95,7 +97,9 @@ $(document).ready(function() {
                 var url = selectedApp.data('url');
                 var type = selectedApp.data('type');
                 var id = selectedApp.data('id');
-                viewRoles(packageId, platform, type, url, id);
+                if (packageId) {
+                    viewRoles(packageId, platform, type, url, id);
+                }
             }
         }
     });
