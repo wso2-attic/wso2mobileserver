@@ -186,6 +186,7 @@
                                           dir="../../products/mdm/modules/jaggery-apps">
                                   </fileset>
                               </copy>
+                             
 															<copy todir="target/wso2carbon-core-${carbon.kernal.version}/repository/components/patches/patch0001"
                                     overwrite="true">
                                   <fileset

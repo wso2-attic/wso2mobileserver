@@ -103,7 +103,12 @@
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/</outputDirectory>
             <includes>
                 <include>*/**</include>
+
             </includes>
+            <excludes>
+                <exclude>**/social/</exclude>
+            </excludes>
+            
         </fileSet>
         <fileSet>
             <directory>src/repository/resources/jaggery/modules/</directory>
