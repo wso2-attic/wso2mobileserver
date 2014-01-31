@@ -64,7 +64,7 @@ var vppManager = (function () {
 			var userId = db.query("select user_id from devices where id=? and tenant_id=?", deviceId, tenantId)[0].user_id;
 			var query = "select * from vpp_coupons where uuid=? and tenantId=? and status='F'";
 			var result = db.query(query, uuid, tenantId);
-            log.info(result);
+            log.debug(result);
 			if(result.length>0){
 				var couponRecord = result[0];
 				query = "update vpp_coupons set user=?, deviceId=?, status='E' where coupon=? and uuid=? and tenantId=?";

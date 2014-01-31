@@ -39,7 +39,7 @@ require('/modules/store.js').exec(function (ctx) {
             var result = mdmServer.getDevices(user.username+"@"+user.tenantDomain);
             devices = parse(result);
         }catch(e){
-            log.info(e);
+            log.debug(e);
         }
     }
 

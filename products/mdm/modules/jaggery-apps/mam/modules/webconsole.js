@@ -75,6 +75,9 @@ var webconsole = (function () {
             var all_users;
             var search = ctx.sSearch;
             var userType = ctx.userType;
+            if(userType){
+                userType = userType.toLowerCase();
+            }
             if(ctx.groupid != null || ctx.groupid != undefined) {
                 all_users = user.getAllUserNamesByRole(ctx);
             } else {
@@ -101,12 +104,12 @@ var webconsole = (function () {
                 roles = parse(roles);
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
-                    log.info("Test iteration2"+roles[j]);
+                    log.debug("Test iteration2"+roles[j]);
                     if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'||roles[j]=='Internal/mamadmin'){
                         flag = 1;
                         if(userType){
                             if(userType=="mam" || userType=="user"){
-                                break main;
+                                continue main;
                             }
                         }
                         break;
@@ -114,7 +117,7 @@ var webconsole = (function () {
                         flag = 2;
                         if(userType){
                             if(userType=="admin" || userType=="user"){
-                                break main;
+                                continue main;
                             }
                         }
                         break;
@@ -122,7 +125,7 @@ var webconsole = (function () {
                         flag = 0;
                         if(userType){
                             if(userType=="admin" || userType=="mam"){
-                                break main;
+                                continue main;
                             }
                         }
                     }

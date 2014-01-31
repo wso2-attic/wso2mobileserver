@@ -101,7 +101,7 @@ var user = (function () {
         constructor: module,
         /*User CRUD Operations (Create, Retrieve, Update, Delete)*/
         addUser: function(ctx){
-            log.info("Check Params"+stringify(ctx));
+            log.debug("Check Params"+stringify(ctx));
             var claimMap = new java.util.HashMap();
 
             claimMap.put(claimEmail, ctx.username);
@@ -201,7 +201,7 @@ var user = (function () {
             }else{
                 print('Error in getting the tenantId from session');
             }
-            log.info("LLLLLLLLLLLLLLLLLLLL"+stringify(users_list));
+            log.debug("LLLLLLLLLLLLLLLLLLLL"+stringify(users_list));
             return users_list;
         },
         getAllUserNames: function(filter){
@@ -238,7 +238,7 @@ var user = (function () {
         },
         deleteUser: function(ctx){
             var result = db.query(sqlscripts.devices.select36, ctx.userid);
-            log.info("Result :"+result);
+            log.debug("Result :"+result);
             if(result != undefined && result != null && result != '' && result[0].length != undefined && result[0].length != null && result[0].length > 0){
                 return 404;
             }else{
@@ -256,7 +256,7 @@ var user = (function () {
 
         /*Get list of roles belongs to particular user*/
         getUserRoles: function(ctx){
-            log.info("User Name >>>>>>>>>"+ctx.username);
+            log.debug("User Name >>>>>>>>>"+ctx.username);
             var tenantUser = carbon.server.tenantUser(ctx.username);
             var um = userManager(common.getTenantID());
             var roles = um.getRoleListOfUser(tenantUser.username);
@@ -308,7 +308,7 @@ var user = (function () {
                 var roles = this.getUserRoles({'username':users[i].username});
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
-                    log.info("Test iteration2"+roles[j]);
+                    log.debug("Test iteration2"+roles[j]);
                     if(roles[j]=='admin'||roles[j]=='Internal/mdmadmin'){                                                                                
                         flag = 1;
                         break;
@@ -378,12 +378,12 @@ var user = (function () {
 				return null;
 			}
 			var user =  this.getUser({'userid': ctx.username, login:true});
-            var result = db.query(sqlscripts.tenantplatformfeatures.select1,  stringify(user.tenantId));
-            if(result[0].record_count == 0) {
-				for(var i = 1; i < 13; i++) {
-                    var result = db.query(sqlscripts.tenantplatformfeatures.select2, stringify(user.tenantId), i);
-				}
-			}
+//            var result = db.query(sqlscripts.tenantplatformfeatures.select1,  stringify(user.tenantId));
+//            if(result[0].record_count == 0) {
+//				for(var i = 1; i < 13; i++) {
+//                    var result = db.query(sqlscripts.tenantplatformfeatures.select2, stringify(user.tenantId), i);
+//				}
+//			}
 		    return user;
 		},
 
@@ -393,7 +393,7 @@ var user = (function () {
 			if(ctx.generatedPassword){
 				password_text = "Your password to your login : "+ctx.generatedPassword;
 			}
-            content = "Dear "+ ctx.first_name+", "+config.email.emailTemplate+config.HTTPS_URL+"/mdm/api/device_enroll \n "+password_text+" \n"+config.email.companyName;
+            content = "Dear "+ ctx.firstName+", "+config.email.emailTemplate+config.HTTPS_URL+"/mdm/api/device_enroll \n "+password_text+" \n"+config.email.companyName;
             subject = "MDM Enrollment";
 
             var email = require('email');
@@ -413,10 +413,10 @@ var user = (function () {
 
         /*Get all devices belongs to particular user*/
 		getDevices: function(obj){
-            log.info("begin");
-            log.info(String(obj.userid));
-            log.info(common.getTenantID());
-            log.info("end");
+            log.debug("begin");
+            log.debug(String(obj.userid));
+            log.debug(common.getTenantID());
+            log.debug("end");
 
             var devices = db.query(sqlscripts.devices.select26, String(obj.userid), common.getTenantID());
 

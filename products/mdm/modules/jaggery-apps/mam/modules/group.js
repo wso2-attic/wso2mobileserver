@@ -124,7 +124,6 @@ var group = (function () {
         getAllGroups: function(ctx){
             var type = ctx.type;
             var um = userManager(common.getTenantID());
-            log.info("Test all roles >>>>>>>>>"+stringify(um.allRoles()));
             var allRoles = common.removePrivateRole(um.allRoles());
             var removeRoles = new Array("Internal/everyone", "wso2.anonymous.role", "Internal/mdmadmin");
             var roles = common.removeNecessaryElements(allRoles, removeRoles);

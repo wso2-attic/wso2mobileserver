@@ -68,11 +68,11 @@ var user = (function () {
             }
         });
 		router.get('users/{userid}/sendmail',function(ctx){
-			log.info('email sending to user');
+			log.debug('email sending to user');
 			var u = user.getUser(ctx)[0];
 			if(u!=null){
 				user.sendEmail(u.username, u.first_name);
-				log.info('Email sent to user with id '+u.username);
+				log.debug('Email sent to user with id '+u.username);
 				return;
 			}
 			response.status = 404;
@@ -90,13 +90,13 @@ var user = (function () {
 		});
 		router.put('users/', function(ctx){
             var returnMsg = user.addUser(ctx);
-            log.info(returnMsg.status);
+            log.debug(returnMsg.status);
             if(returnMsg.status == 'ALLREADY_EXIST'){
                 response.status = 409;
                 response.content = "Already Exist";
             }else if(returnMsg.status == 'SUCCESSFULL' ){
                 ctx.generatedPassword = returnMsg.generatedPassword;
-                log.info("Email :"+ctx.generatedPassword);
+                log.debug("Email :"+ctx.generatedPassword);
                 user.sendEmail(ctx);
                 response.status = 201;
                 response.content = "Successfull";
@@ -111,7 +111,6 @@ var user = (function () {
             }
 		});
         router.delete('users/{+userid}', function(ctx){
-            log.info("Test User Delete");
             var result = user.deleteUser(ctx);
             if(result == 404){
                 response.status = 404;
@@ -122,7 +121,6 @@ var user = (function () {
             }
         });
 		router.get('users/{+username}/groups/',function(ctx){
-            log.info("Check Router");
 			var groups = user.getRolesByUser(ctx);
 		    /*if(groups[0]!= null){
 		     	response.status = 200;
@@ -156,12 +154,11 @@ var user = (function () {
 		    }
 		});
         router.put('users/invite',function(ctx){
-            log.info('email sending to user');
 			var u = user.getUser(ctx);
 			if(u!=null){
-				log.info(u)
-				user.sendEmail({'username':String(u.username), 'first_name': String(u.firstName)});
-				log.info('Email sent to user with id '+u.username);
+				log.debug(u)
+				user.sendEmail({'username':String(u.username), 'firstName': String(u.firstName)});
+				log.debug('Email sent to user with id '+u.username);
 				return;
 			}
 			response.status = 404;

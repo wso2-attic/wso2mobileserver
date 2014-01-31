@@ -27,7 +27,7 @@ var checkNonSpecial = function(value){
     return non_special_regex.test(value);
 }
 var checkURL = function(value) {
-    log.info(value);
+    log.debug(value);
     var urlregex = new RegExp("(http|ftp|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?");
     if (urlregex.test(value)) {
         return (true);
@@ -70,8 +70,7 @@ var saveFile = function(file){
 		var uid= makeid();
 		var file_name = mam_config.filePreciseLocation+uid+file_n;
         file.close();
-        log.info("UIOUOI");
-        log.info(file.saveAs(file_name));
+        file.saveAs(file_name);
 		return "/publisher"+file_name;
 	}
 	return "";
@@ -81,7 +80,7 @@ var getBundleID = function(appid){
     try{
         var result =  get('https://itunes.apple.com/lookup?id='+appid).data;
         if(result!=null){
-            log.info(result);
+            log.debug(result);
             result = parse(result);
             if(result.resultCount==1){
                 var appinfo =  result.results[0];
@@ -102,14 +101,11 @@ var validateAppIdentifier = function(attributes, display_attribute){
 
     //Perform a search for an asset with the provided name
     var matches=artifactManager.find(function(asset){
-        log.info(asset);
-        log.info(predicate);
         var equal=utility.assertEqualCaseSensitive(asset,predicate);
         return equal;
     },null);
 
     if(matches.length>0){  
-        log.info(attributes);
         print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["App with identifer "+display_attribute+" and version "+attributes.overview_version+" already exists"]}})
         return true;
     }
@@ -203,7 +199,7 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
 		if(shortName =="mobileapp"){
 			var username= server.current(session).username.replace('@', ':');
 			var ctx = context.post;
-			log.info(ctx);
+			log.debug(ctx);
 			var files = request.getAllFiles();
 			var banner = files['bannerFile'];
 		 	banner = saveFile(banner);
@@ -221,14 +217,14 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
 			screenshot3 = saveFile(screenshot3);
 
 			var screenshots = screenshot1+","+screenshot2+","+screenshot3;
-            log.info(screenshots);
+            log.debug(screenshots);
 
             if(screenshots==",,"){
                 print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Screenshots not added"]}})
                 return;
             }
 			var meta = ctx['appmeta'];
-			log.info(stringify(meta));
+			log.debug(stringify(meta));
 			if(meta == undefined || meta==""){
 				log.debug("Application meta data was not found");
 		        response.sendError(500, 'Application meta data was not found');
@@ -313,12 +309,12 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
 
         //var createdAsset = artifactManager.add(assetModel);
 		
-		log.info('finished saving');
+		log.debug('finished saving');
 		
         //Get the model id
         var idField = model.get('*.id');
 
-		log.info('obtained idField');
+		log.debug('obtained idField');
 
 		var asset=model.export('asset.exporter');
 		var assetCachingModule=require('/modules/cache/cache.manager.js').assetCachingModule();
@@ -334,7 +330,7 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
 
     }
     catch (e) {
-		log.info(e);
+		log.debug(e);
         log.debug('An asset of type: ' + shortName + ' could not be created.The following exception was thrown: ' + e);
         response.sendError(500, 'An asset of type: ' + shortName + ' could not be created.Please check the server logs.');
     }
@@ -380,7 +376,6 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}/{id}', f
             var banner = files['bannerFile'];
             if(banner){
                 banner = saveFile(banner);
-                log.info(banner);
                 modelA.set('images.banner',banner);
             }
             var icon = files['iconFile'];
@@ -457,7 +452,7 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}/{id}', f
         print(msg);
 
     } catch (e) {
-        log.info(e);
+        log.debug(e);
         log.debug('The asset ' + id + ' could not be updated.The following exception was thrown: ' + e);
         response.sendError(404, 'The asset ' + id + ' could not be updated.Please check the server logs.');
     }

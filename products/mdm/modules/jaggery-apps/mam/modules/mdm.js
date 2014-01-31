@@ -64,7 +64,7 @@ var mdm = (function () {
 		},
 		enforce: function(policyid){
 			var url = configs.mdm.api+'/policies/external/'+policyid+'/enforce';
-			var result = jsonPost(url, []);
+			var result = jsonPost(url, {tenantId: common.getTenantID()});
 		}
     };
     // return module

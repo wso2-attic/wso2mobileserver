@@ -102,7 +102,7 @@ var user = (function () {
         constructor: module,
         /*User CRUD Operations (Create, Retrieve, Update, Delete)*/
         addUser: function(ctx){
-            log.info("Check Params"+stringify(ctx));
+            log.debug("Check Params"+stringify(ctx));
             var claimMap = new java.util.HashMap();
 
             claimMap.put(claimEmail, ctx.username);
@@ -196,7 +196,6 @@ var user = (function () {
             }else{
                 print('Error in getting the tenantId from session');
             }
-            log.info("LLLLLLLLLLLLLLLLLLLL"+stringify(users_list));
             return users_list;
         },
         getAllUserNames: function(filter){
@@ -206,7 +205,6 @@ var user = (function () {
                 var um = userManager(common.getTenantID());
                 if(filter){
                     var allUsers = um.listUsers(filter);
-                    log.info(allUsers);
                 }else{
                     var allUsers = um.listUsers();
                 }
@@ -234,7 +232,6 @@ var user = (function () {
         },
         deleteUser: function(ctx){
             var result = db.query("select * from devices where user_id = ?",ctx.userid);
-            log.info("Result :"+result);
             if(result != undefined && result != null && result != '' && result[0].length != undefined && result[0].length != null && result[0].length > 0){
                 return 404;
             }else{
@@ -255,7 +252,6 @@ var user = (function () {
             var um = userManager(common.getTenantID());
             var roles = um.getRoleListOfUser(ctx.username);
             var roleList = common.removePrivateRole(roles);
-            log.info(roleList);
             return roleList;
         },
         updateRoleListOfUser:function(ctx){
@@ -304,7 +300,6 @@ var user = (function () {
                 var roles = this.getUserRoles({'username':users[i].username});
                 var flag = 0;
                 for(var j=0 ;j<roles.length;j++){
-                    log.info("Test iteration2"+roles[j]);
                     if(roles[j]=='admin'||roles[j]=='Internal/mamadmin'){
                         flag = 1;
                         break;
@@ -360,9 +355,7 @@ var user = (function () {
         /*authentication for devices only*/
         authenticate: function(ctx){
             ctx.username = ctx.username;
-            log.info("username "+ctx.username);
             var authStatus = server().authenticate(ctx.username, ctx.password);
-            log.info(">>auth "+authStatus);
             if(!authStatus) {
                 return null;
             }
@@ -382,21 +375,21 @@ var user = (function () {
             if(ctx.generatedPassword){
                 password_text = "Your password to your login : "+ctx.generatedPassword;
             }
-            content = "Dear "+ ctx.first_name+", "+config.email.emailTemplate+config.HTTPS_URL+"/mdm/api/device_enroll \n "+password_text+" \n"+config.email.companyName;
+            content = "Dear "+ ctx.firstName+", "+config.email.emailTemplate+config.HTTPS_URL+"/mdm/api/device_enroll \n "+password_text+" \n"+config.email.companyName;
             subject = "MAM Enrollment";
 
             var email = require('email');
             var sender = new email.Sender(config.email.smtp, config.email.port, config.email.senderAddress, config.email.emailPassword, "tls");
             sender.from = config.email.senderAddress;
 
-            log.info("Email sent to -> "+ctx.username);
+            log.debug("Email sent to -> "+ctx.username);
             sender.to = stringify(ctx.username);
             sender.subject = subject;
             sender.text = content;
             try{
                 sender.send();
             }catch(e){
-                log.info(e);
+                log.debug(e);
             }
         },
 

@@ -28,7 +28,6 @@ var group = (function () {
             response.status = 200;
         });
 		router.delete('groups/{groupid}', function(ctx){
-            log.info("Test Delete Router");
 			group.deleteGroup(ctx);
 		    response.status = 201;
 		});

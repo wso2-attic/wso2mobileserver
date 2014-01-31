@@ -73,9 +73,9 @@ var user_group = (function () {
          getRolesOfUserByAssignment:function(ctx){
              var totalGroups = group.getAllGroups({});
              var allRoles = totalGroups;
-             log.info("getRolesOfUserByAssignment :"+stringify(allRoles));
+             log.debug("getRolesOfUserByAssignment :"+stringify(allRoles));
              var userRoles = user.getUserRoles(ctx);
-             log.info("User Roles"+stringify(userRoles));
+             log.debug("User Roles"+stringify(userRoles));
              var array = new Array();
              if(userRoles.length == 0){
                 for(var i=0;i < allRoles.length;i++){
@@ -140,7 +140,7 @@ var user_group = (function () {
                 for(var i=0;i<allUsers.length;i++){
                     var flag = 0;
                     for(var j=0;j<usersOfGroup.length;j++){
-                        log.info("T"+allUsers[i]+"---"+usersOfGroup[j].username);
+                        log.debug("T"+allUsers[i]+"---"+usersOfGroup[j].username);
                         if(allUsers[i]==usersOfGroup[j].username){
                             flag = 1;
                             break;

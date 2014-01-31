@@ -32,7 +32,7 @@ require('/modules/store.js').exec(function (ctx) {
             var result = mdmServer.getDevices(user.username);
             devices = parse(result);
         }catch(e){
-            log.info(e);
+            debug.debug(e);
         }
     }
 

@@ -19,10 +19,10 @@ configuration = function(appController){
 	try{
 		var groups = group.getGroupsByType({type:context.contextData.user.role});		
 	}catch(e){
-		log.info(e)
+		log.debug(e)
 		var groups = [];
 	}
-	log.info(groups);
+	log.debug(groups);
 	context.title = context.title + " | Configuration";
 	context.page = "configuration";
 	context.jsFile= "roles/configuration.js";
@@ -47,7 +47,7 @@ users = function(appController){
 	try{
 		var users = group.getUsersOfGroup({'groupid':role});
 	}catch(e){
-        log.info(group.getUsersOfGroup({'groupid':role}));
+        log.debug(group.getUsersOfGroup({'groupid':role}));
 		var users = [];
 	}
 	for (var i = 0; i < users.length; i++) {
@@ -116,9 +116,7 @@ assign_users = function(appController){
 		var users = [];
 	}
 	
-
-	log.info("sdfsd");
-	log.info(session.get("mamConsoleUser"));
+	log.debug(session.get("mamConsoleUser"));
 	context = appController.context();
 	context.title = context.title + " | Assign Users to group";
 	context.page = "configuration";
@@ -153,9 +151,7 @@ assign_permissions = function(appController){
 edit = function(appController){
 	context = appController.context();
 	var role = request.getParameter('group');
-	
-	log.info("sdfsd");
-	log.info(session.get("mdmConsoleUser"));
+	log.debug(session.get("mdmConsoleUser"));
 	
 	context.title = context.title + " | Edit Role";
 	context.page = "configuration";
@@ -177,9 +173,9 @@ view_users = function(appController){
 
 
 	try{
-        log.info("Test Group ID"+groupId);
+        log.debug("Test Group ID"+groupId);
 		var users = group.getUsersOfGroup({groupid: groupId});
-        log.info("Test Result"+users);
+        log.debug("Test Result"+users);
 	}catch(e){
 		var users = [];
 	}

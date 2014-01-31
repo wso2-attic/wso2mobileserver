@@ -157,7 +157,6 @@ router.post('apps/roles/install', function(ctx){
 				for (var j = row.devices.length - 1; j >= 0; j--){
 					var device = row.devices[j];
 					try{
-						log.info(stringify(installParam));
 						installPayload.push(injectVPPCode(ctx.id, {
 							deviceid : device,
 							identity : installParam,

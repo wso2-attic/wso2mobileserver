@@ -103,7 +103,7 @@ var device = (function () {
             return obj;
         }
         var ppresult = db.query(sqlscripts.policies.select2, category,platformName, tenantID );
-        log.info(ppresult);
+        log.debug(ppresult);
         if(ppresult!=undefined && ppresult != null && ppresult[0] != undefined && ppresult[0] != null ){
             var policyPayLoad = parse(ppresult[0].data);
             obj.payLoad = policyPayLoad;
@@ -141,14 +141,14 @@ var device = (function () {
         return xmlRequest;
     }
     function checkPermission(role, deviceId, operationName, that){
-        log.info(role);
-        log.info(operationName);
+        log.debug(role);
+        log.debug(operationName);
         var entitlement = session.get("entitlement");
         try{
             var stub = entitlement.setEntitlementServiceParameters();
             var decision = entitlement.evaluatePolicy(getXMLRequestString(role,"POST",operationName),stub);
 
-            log.info("d :"+decision.toString().substring(28,34));
+            log.debug("d :"+decision.toString().substring(28,34));
             decision = decision.toString().substring(28,34);
             if(decision=="Permit"){
                 return true;
@@ -214,7 +214,7 @@ var device = (function () {
         var userID = devices[0].user_id;
         if(tenantID==null){
             tenantID = common.getTenantIDFromEmail(userID);
-            log.info(tenantID);
+            log.debug(tenantID);
         }
         var osVersion = devices[0].os_version;
         var platformId = devices[0].platform_id;
@@ -232,7 +232,7 @@ var device = (function () {
             try{
                 db.query(sqlscripts.notifications.delete1, deviceId,featureCode);
             }catch (e){
-                log.info(e);
+                log.debug(e);
             }
         }
         var currentDate = common.getCurrentDateTime();
@@ -243,12 +243,12 @@ var device = (function () {
 
         var lastRecordJson = lastRecord[0];
         var token = lastRecordJson["LAST_INSERT_ID()"];
-        log.info(regId);
-        log.info(featureCode);
-        log.info(token);
-        log.info(payLoad);
+        log.debug(regId);
+        log.debug(featureCode);
+        log.debug(token);
+        log.debug(payLoad);
         var gcmMSG = gcm.sendViaGCMtoMobile(regId, featureCode, token, payLoad, 3);
-        log.info(gcmMSG);
+        log.debug(gcmMSG);
         return true;
     }
 
@@ -346,11 +346,9 @@ var device = (function () {
         var featureDescription = features[0].description;
         if(featureCode == "501P"){
             try{
-                log.info("Test2");
                 db.query(sqlscripts.notifications.delete1, ctx.deviceid,featureCode);
-                log.info("Test3");
             }catch (e){
-                log.info(e);
+                log.debug(e);
             }
         }
 
@@ -509,9 +507,9 @@ var device = (function () {
                 featureArr["feature_code"] = featureList[i].code;
                 featureArr["feature_type"] = ftype[0].name;
                 featureArr["description"] = featureList[i].description;
-                log.info("Test1");
+                log.debug("Test1");
                 // log.info(checkPermission(role,deviceId, featureList[i].name, this));
-                log.info("Test2");
+                log.debug("Test2");
                 featureArr["enable"] = checkPermission(role,deviceId, featureList[i].name, this);
                 //featureArr["enable"] = true;
                 if(featureList[i].template === null || featureList[i].template === ""){
@@ -584,7 +582,7 @@ var device = (function () {
                 this.sendToDevice({'deviceid':deviceId,'operation':'INFO','data':{}});
                 this.sendToDevice({'deviceid':deviceId,'operation':'APPLIST','data':{}});
                 var mdmPolicy = getPolicyPayLoad(deviceId,1);
-                log.info("Policy Payload :"+mdmPolicy);
+                log.debug("Policy Payload :"+mdmPolicy);
                 if(mdmPolicy != undefined && mdmPolicy != null){
                     if(mdmPolicy.payLoad != undefined && mdmPolicy.payLoad != null && mdmPolicy.type != undefined && mdmPolicy.type != null){
                         var obj = {};
@@ -602,7 +600,7 @@ var device = (function () {
         <!-- android specific functions -->
         getSenderId: function(ctx){
             var androidConfig = require('/config/android.json');
-            log.info(androidConfig);
+            log.debug(androidConfig);
             return androidConfig.sender_id;
         },
         isRegistered: function(ctx){
@@ -622,7 +620,7 @@ var device = (function () {
             var tenantUser = carbon.server.tenantUser(ctx.email);
             var userId = tenantUser.username;
             var tenantId = tenantUser.tenantId;
-            log.info("tenant idddddddd"+tenantId);
+            log.debug("tenant idddddddd"+tenantId);
             var platforms = db.query(sqlscripts.platforms.select1, ctx.platform);//from device platform comes as iOS and Android then convert into platform id to save in device table
             var platformId = platforms[0].id;
 

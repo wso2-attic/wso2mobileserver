@@ -87,7 +87,7 @@ var store = (function () {
 	        	var role = userList[j];
 	        	if(role.indexOf('/') !== -1){
 				 role = role.split('/')[1];
-	        	 log.info(role);
+	        	 log.debug(role);
 				}
 	        	
 	            var resultDeviceCount = db.query("SELECT COUNT(id) AS device_count FROM devices WHERE user_id = ? AND tenant_id = ? and "+buildPlatformString(platform),
@@ -97,7 +97,7 @@ var store = (function () {
 		}else{
 			deviceCountAll = db.query("SELECT COUNT(id) AS device_count FROM devices WHERE tenant_id = ? and "+ buildPlatformString(platform),
 	                 getTenantID())[0].device_count;
-			log.info(deviceCountAll);
+			log.debug(deviceCountAll);
 		}
         return deviceCountAll;
 	};
@@ -169,7 +169,6 @@ var store = (function () {
     module.prototype = {
         constructor: module,
         getAllDevicesFromEmail: function(ctx){
-           log.info("Test platform :"+ctx.data.platform);
            var devicesArray;
 		   if(ctx.data.platform=='webapp'){
 			user.getUser(ctx.user)
@@ -232,8 +231,8 @@ var store = (function () {
                     }
                }
            }else{
-				log.info(ctx.data.email);
-				log.info(stringify(user.getUser({userid:ctx.data.email})));
+				log.debug(ctx.data.email);
+				log.debug(stringify(user.getUser({userid:ctx.data.email})));
                 var userID = user.getUser({userid:ctx.data.email}).username;
                 var devices = db.query("select * from devices where devices.user_id='"+String(userID)+"'");
                 devicesArray = new Array();
@@ -264,19 +263,27 @@ var store = (function () {
         },
 		// [{"id" : "6a680b0a-4f7a-42a2-9f68-3bc6ff377818", "type" : "mobileapp", "path" : "/_system/governance/mobileapps/android/Batman/1.0", "lifecycle" : "MobileAppLifeCycle", "lifecycleState" : "Published", "mediaType" : "application/vnd.wso2-mobileapp+xml", "attributes" : {"overview_status" : "null", "overview_name" : "Batman", "overview_url" : "/upload/MbAk3app.apk", "overview_bundleversion" : "1.0.1", "overview_packagename" : "com.wb.goog.ArkhamCity", "overview_category" : "iOS,Android,Web Clips", "images_thumbnail" : "/publisher//upload/GTbdSicon.png", "overview_type" : "Enterprise", "overview_description" : "sdfjkdslfj ", "overview_recentchanges" : "wieruweoir ", "overview_version" : "1.0", "images_screenshots" : "/publisher//upload/8UISPscreenshot1.jpg,/publisher//upload/ElLTAscreenshot2.jpg,", "overview_provider" : "admin@admin.com", "images_banner" : "/publisher//upload/8PnYgbanner.jpg", "overview_appid" : "null", "overview_platform" : "android"}, "content" : {}, "rating" : {"average" : 0.0, "user" : 0}, "indashboard" : false}, {"id" : "e23f5cf0-d1be-421d-a44e-74bd0ab65fff", "type" : "mobileapp", "path" : "/_system/governance/mobileapps/android/Zip Archiver/1.0", "lifecycle" : "MobileAppLifeCycle", "lifecycleState" : "Published", "mediaType" : "application/vnd.wso2-mobileapp+xml", "attributes" : {"overview_status" : "null", "overview_name" : "Zip Archiver", "overview_url" : "/upload/mGc3Happ.apk", "overview_bundleversion" : "0.6.1", "overview_packagename" : "org.b1.android.archiver", "overview_category" : "iOS,Android,Web Clips", "images_thumbnail" : "/publisher//upload/1eLXXicon.png", "overview_type" : "Enterprise", "overview_description" : "dfdslkfj ", "overview_recentchanges" : "wurowieur ", "overview_version" : "1.0", "images_screenshots" : "/publisher//upload/n5iv6screenshot2.jpg,/publisher//upload/Zu0Qkscreenshot1.jpg,", "overview_provider" : "admin@admin.com", "images_banner" : "/publisher//upload/s6jCKbanner.png", "overview_appid" : "null", "overview_platform" : "android"}, "content" : {}, "rating" : {"average" : 0.0, "user" : 0}, "indashboard" : false}]
 		getAppsFromStore : function(page){
-			var url  = configsFile.store_location+"/apis/assets/mobileapp"+"?domain="+getTenantDomainFromID(getTenantID());
-			if(page!=null){
-				url  = configsFile.store_location+"/apis/assets/mobileapp/paging?page="+page+"&domain="+getTenantDomainFromID(getTenantID());
-			}
-			var data = get(url, {});
+			/* 
+				Processing pagniation 
+			*/
+			var pagination = true;
 			var fApps =[];
-			data =parse(data.data);
-			for (var i = data.length - 1; i >= 0; i--){
-				var app= data[i];
-				if(app.attributes.overview_platform.toUpperCase()!="WEBAPP"){
-					fApps.push(app);
+			var page = 1;
+			do{
+				var url  = configsFile.store_location+"/apis/assets/mobileapp"+"?domain="+getTenantDomainFromID(getTenantID())+"&page="+page;
+				var data = get(url, {});
+				data =parse(data.data);
+				if(data.length==0){
+					pagination =false;
 				}
-			}
+				for (var i = data.length - 1; i >= 0; i--){
+					var app= data[i];
+					if(app.attributes.overview_platform.toUpperCase()!="WEBAPP"){
+						fApps.push(app);
+					}
+				}
+				page++;
+			}while (pagination);
 			return fApps;
 		},
 		getAppsFromStoreFormatted: function(){
@@ -396,9 +403,7 @@ var store = (function () {
 					}
 				}
 			};
-			log.info(package_identifier);
 			query = buildDynamicQuery(platform, 2, getTenantID());
-			log.info(query);
 			query = db.query(query, package_identifier);
 			
 			for (var i = query.length - 1; i >= 0; i--){
@@ -435,8 +440,6 @@ var store = (function () {
 			var query = buildDynamicQuery(platform, 1, getTenantID());
 			var package_identifier = manipulatePackageId(package_identifier);
 			var returnResult = {};
-			log.info(package_identifier);
-			log.info(query);
 			query = db.query(query, package_identifier);
 			for (var i = query.length - 1; i >= 0; i--){
 				var result = query[i];
@@ -478,7 +481,6 @@ var store = (function () {
 						userObj.roles = removePrivateRole(userObj.roles);
 						for (var j = userObj.roles.length - 1; j >= 0; j--){
 							var role = userObj.roles[j];
-							log.info(role);
 							var roleVal = returnResult[role];
 							if(roleVal==undefined){
 								returnResult[role] = {

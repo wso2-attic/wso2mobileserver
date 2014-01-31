@@ -56,7 +56,7 @@
                             if(user_roles[i]=="Internal/publisher"||user_roles[i]=="Internal/reviewer"|| user_roles[i]=="admin"){
                                 if (user.loginWithSAML(sessionObj.loggedInUser)) {
                                     log.debug('user is set :::' + sessionObj.loggedInUser);
-                                    response.sendRedirect('/publisher');
+                                    try{response.sendRedirect('/publisher');}catch(e){}
                                     login_flag=true;
                                 }
                             }

@@ -48,21 +48,21 @@ var notification = (function () {
             return notifications;
         },
         addIosNotification: function(ctx){
-			log.info("IOS Notification >>>>>"+stringify(ctx));
+			log.debug("IOS Notification >>>>>"+stringify(ctx));
             var currentdate = new Date();
             var recivedDate =  currentdate.getDate() + "/"+ (currentdate.getMonth()+1)  + "/"+ currentdate.getFullYear() + " @ "+ currentdate.getHours() + ":"+ currentdate.getMinutes() + ":"+ currentdate.getSeconds();
 
             db.query("UPDATE notifications SET status='R', received_data= ? , received_date = ? WHERE id = ?", ctx.data+"", recivedDate+"", ctx.msgID.replace("\"", "").replace("\"","")+"");
         },
         addNotification: function(ctx){
-			log.info("Android Notification >>>>>"+stringify(ctx));
+			log.debug("Android Notification >>>>>"+stringify(ctx));
             var currentdate = new Date();
             var recivedDate =  currentdate.getDate() + "/"+ (currentdate.getMonth()+1)  + "/"+ currentdate.getFullYear() + " @ "+ currentdate.getHours() + ":"+ currentdate.getMinutes() + ":"+ currentdate.getSeconds();
 
             db.query("UPDATE notifications SET status='R', received_data = ? , received_date = ? WHERE id = ?", ctx.data, recivedDate, ctx.msgID);
         },
         getLastRecord: function(ctx){
-            log.info("Operation >>>>>>"+ctx.operation);
+            log.debug("Operation >>>>>>"+ctx.operation);
             var result = db.query("SELECT DISTINCT * FROM notifications WHERE received_data IS NOT NULL && device_id = ? && feature_code= ?", ctx.deviceid, ctx.operation);
             var features = db.query("SELECT * FROM features WHERE code= ?", ctx.operation);
             ctx.operation = String(features[0].name);
@@ -75,7 +75,7 @@ var notification = (function () {
             return result[result.length-1];
         },
         getPolicyState: function(ctx){
-            log.info("Test Function :aaaaaaaaaaaaaaaaaaaaa"+ctx.deviceid);
+            log.debug("Test Function :aaaaaaaaaaaaaaaaaaaaa"+ctx.deviceid);
             var result = db.query("SELECT DISTINCT * FROM notifications WHERE received_data IS NOT NULL && device_id = ? && feature_code= ?", ctx.deviceid, '501P');
 
             var newArray = new Array();
@@ -85,8 +85,8 @@ var notification = (function () {
             }
 
             var arrayFromDatabase = parse(result[result.length-1].received_data);
-            log.info("result >>>>>>>"+stringify(result[result.length-1].received_data));
-            log.info(arrayFromDatabase[0]);
+            log.debug("result >>>>>>>"+stringify(result[result.length-1].received_data));
+            log.debug(arrayFromDatabase[0]);
 
             for(var i = 0; i< arrayFromDatabase.length; i++){
                if(arrayFromDatabase[i].code == 'notrooted'){
@@ -103,7 +103,7 @@ var notification = (function () {
                }
 
             }
-            log.info("Final result >>>>>>>>>>"+stringify(newArray));
+            log.debug("Final result >>>>>>>>>>"+stringify(newArray));
             return newArray;
         },
         getPolicyComplianceDevices:function(ctx){

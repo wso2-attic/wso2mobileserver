@@ -49,7 +49,7 @@ var render = function (theme, data, meta, require) {
 						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
 					}
 					
-					continue;
+					break; 
 				}
 				
 				if(data.roles[k] == "Internal/reviewer"){

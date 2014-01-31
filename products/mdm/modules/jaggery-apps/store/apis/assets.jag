@@ -19,7 +19,11 @@ require('/modules/store.js').exec(function (ctx) {
         if (tag) {
             assets = store.tagged(type, tag, paging);
         } else {
-            assets = store.assets(type, paging);
+            try{
+                assets = store.assets(type, paging);
+            }catch(e){
+                assets = [];
+            }
         }
         caramel.render(assets);
         return;

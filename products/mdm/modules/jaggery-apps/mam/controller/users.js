@@ -135,7 +135,6 @@ assign_groups = function(appController) {
 			}
 		}
 	}
-	log.info(groups);
 	context = appController.context();
 	context.title = context.title + " | Assign Users to group";
 	context.page = "configuration";

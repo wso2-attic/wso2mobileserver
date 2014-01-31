@@ -211,7 +211,7 @@ var policy = (function () {
                     currentPolicy.mam_content = ctx.policyData;
                     result = db.query(sqlscripts.policies.update2, currentPolicy.mam_content, currentPolicy.type, currentPolicy.name, common.getTenantID());
                 }else{
-                    log.info("MDM policy not found");
+                    log.debug("MDM policy not found");
                 }
             }
             return 201;
@@ -258,7 +258,7 @@ var policy = (function () {
                         var result =db.query(sqlscripts.group_policy_mapping.insert1, newGroups[i],policyId);
                     }
                 }catch(e){
-                    log.info(e);
+                    log.debug(e);
                 }
             }
         },
@@ -278,7 +278,7 @@ var policy = (function () {
                         var result =db.query(sqlscripts.user_policy_mapping.insert1, newUsers[i],policyId);
                     }
                 }catch(e){
-                    log.info(e);
+                    log.debug(e);
                 }
             }
         },
@@ -298,7 +298,7 @@ var policy = (function () {
                         var result =db.query(sqlscripts.platform_policy_mapping.insert1, newPlatforms[i],policyId);
                     }
                 }catch(e){
-                    log.info(e);
+                    log.debug(e);
                 }
             }
         },
