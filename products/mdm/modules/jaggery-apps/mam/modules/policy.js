@@ -110,7 +110,7 @@ var policy = (function () {
             return ppresult[0].id;
         }
         var roleList = user.getUserRoles({'username':userId});
-        var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer","private_kasun:wso2mobile.com");
+        var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer");
         var roles = common.removeNecessaryElements(roleList,removeRoles);
         var role = roles[0];
 

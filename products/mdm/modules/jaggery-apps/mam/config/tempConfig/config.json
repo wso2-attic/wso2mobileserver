@@ -19,11 +19,11 @@
         "api" : "%https.ip%/mdm/api"
     },
     "email": {
-        "companyName": "WSO2",
-        "smtp":"smtp.gmail.com",
-        "port":"25",
+        "companyName": "$(email_companyname)",
+        "smtp":"$(email_smtp)",
+        "port":"$(email_port)",
         "senderAddress": "$(senderAddress)",
         "emailPassword": "$(senderPassword)",
-        "emailTemplate": "\nYou have been registered to the WSO2Mobile MAM. \n \n"
+        "emailTemplate": "$(email_bodytemplate)"
     }
 }

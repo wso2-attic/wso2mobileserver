@@ -88,7 +88,7 @@ var device = (function () {
 
         var platformName = platforms[0].type_name;//platform name for pull policy payLoad
         var roleList = user.getUserRoles({'username':username});
-        var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer","private_kasun:wso2mobile.com");
+        var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role");
         var roles = common.removeNecessaryElements(roleList,removeRoles);
         var role = roles[0];//role name for pull policy payLoad
 
@@ -632,7 +632,7 @@ var device = (function () {
                 if(result[0]==null){
 
                     var roleList = user.getUserRoles({'username':userId});
-                    var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer","private_kasun:wso2mobile.com");
+                    var removeRoles = new Array("Internal/everyone", "portal", "wso2.anonymous.role", "reviewer");
                     var roles = common.removeNecessaryElements(roleList,removeRoles);
                     var role = roles[0];
                     db.query(sqlscripts.devices.insert1, tenantId, ctx.osversion, createdDate, ctx.properties, ctx.regid, userId, platformId, ctx.vendor, ctx.mac);

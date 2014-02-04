@@ -120,9 +120,11 @@ $(function () {
 
     var search = function () {
         var url, searchVal = $('#search').val();
+        
         //var url, searchVal = test($('#search').val());
         currentPage = 1;
         if (store.asset) {
+        	
             url = caramel.url('/assets/' + store.asset.type + '/?' + buildParams(searchVal));
             caramel.data({
                 title: null,
@@ -131,6 +133,7 @@ $(function () {
             }, {
                 url: url,
                 success: function (data, status, xhr) {
+                	
                     //TODO: Integrate a new History.js library to fix this
                     if ($.browser.msie == true && $.browser.version < 10) {
                         renderAssets(data);
@@ -140,13 +143,16 @@ $(function () {
                             context: data
                         }, document.title, url);
                     }
+                    location.reload(); 
                 },
                 error: function (xhr, status, error) {
+                	
                     theme.loaded($('#assets-container').parent(), '<p>Error while retrieving data.</p>');
                 }
             });
             theme.loading($('#assets-container').parent());
         } else if (searchVal.length > 0 && searchVal != undefined) {
+        	
             url = caramel.url('/?' + buildParams(searchVal));
             caramel.data({
                 title: null,
@@ -164,6 +170,7 @@ $(function () {
                             context: data
                         }, document.title, url);
                     }
+                    
                 },
                 error: function (xhr, status, error) {
                     theme.loaded($('#assets-container').parent(), '<p>Error while retrieving data.</p>');
