@@ -142,15 +142,6 @@ CREATE TABLE `group_policy_mapping` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `group_policy_mapping`
---
-
-LOCK TABLES `group_policy_mapping` WRITE;
-/*!40000 ALTER TABLE `group_policy_mapping` DISABLE KEYS */;
-INSERT INTO `group_policy_mapping` VALUES ('admin',44),('Sales',44);
-/*!40000 ALTER TABLE `group_policy_mapping` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `notifications`
@@ -199,15 +190,6 @@ CREATE TABLE `platform_policy_mapping` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `platform_policy_mapping`
---
-
-LOCK TABLES `platform_policy_mapping` WRITE;
-/*!40000 ALTER TABLE `platform_policy_mapping` DISABLE KEYS */;
-INSERT INTO `platform_policy_mapping` VALUES ('android','44');
-/*!40000 ALTER TABLE `platform_policy_mapping` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `platformfeatures`
