@@ -1,10 +1,18 @@
 var log = new Log();
-
-var db = application.get('db');
-if(db==null || db==undefined){
-    db = new Database("EMM_DB");
-    application.put('db',db);
+var common = require("/modules/common.js");
+try{
+	common.isDatabaseConfigured();
+}catch(e){
+	var fla = 0;
+	while(fla<50){
+		log.error("");
+		fla++;
+	}
+	log.error("Database is not configured or has not started up");
+	Packages.java.lang.System.exit(0);
 }
+var db = common.getDatabase();
+
 
 var app_TENANT_CONFIGS = 'tenant.configs';
 var app_carbon = require('carbon');

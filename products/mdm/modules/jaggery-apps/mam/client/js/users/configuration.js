@@ -44,10 +44,16 @@ $(document).ready(function() {
 		
 		"sAjaxSource" : "/mam/api/webconsole/allUsers",
 		"fnServerParams": function ( aoData ) {
+			
+			usertype= $('.block-body #userTypeSelect option:selected').val();
           	var roleid = getURLParameter('group');
           	if(roleid != "null"){
           		 aoData.push( { "name": "groupid", "value": roleid } );
-          	}
+            }
+            
+            if(usertype != ""){
+          		  aoData.push( { "name": "userType", "value": usertype } );
+            }
            
            
        },
@@ -59,7 +65,7 @@ $(document).ready(function() {
 		            oTable.fnFilter( $(this).val(), 3 );
 		     } );
        	
-      		
+      		$('.block-body #userTypeSelect').val(usertype);
     	}
 		
 	});

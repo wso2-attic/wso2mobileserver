@@ -1,7 +1,7 @@
 {
-	"HEADING" : "WSO2 Mobile App Management",
-	"TITLE": "WSO2 Mobile App Management",
-	"COPYRIGHT": "Copyright (c) 2013 - WSO2 Mobile .Inc",
+	"HEADING" : "WSO2 App Management",
+	"TITLE": "WSO2 App Management",
+	"COPYRIGHT": "Copyright (c) 2013 - WSO2 .Inc",
 	
 	"MAM_UI_URI": "/mam/",
     "MAM_API_URI": "/mam/api/",
