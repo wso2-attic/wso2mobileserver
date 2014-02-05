@@ -13,7 +13,7 @@
         "keyStoreName": "/repository/resources/security/wso2carbon.jks"
     },
     "publisher_location": "%https.ip%",
-    "archieve_location": "%https.ip%",
+    "archieve_location": "%http.ip%",
     "store_location": "%https.ip%/store",
     "mdm": {
         "api" : "%https.ip%/mdm/api"
