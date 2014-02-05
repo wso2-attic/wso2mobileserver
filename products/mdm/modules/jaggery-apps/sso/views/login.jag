@@ -85,7 +85,7 @@ var e = request.getParameter('authFailure');
 			<div class="navbar">
 				<div class="raw text-center footer-bar">
 					<img class="footer-logo" style="width:100px" src="views/img/footer.png">
-					Copyright WSO2Mobile .Inc
+					Copyright WSO2 .Inc
 				</div>
 			</div>
 		</footer>
