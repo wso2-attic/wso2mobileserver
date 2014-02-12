@@ -296,8 +296,11 @@ var store = (function () {
 			}
 			return fApps;
 		},
-		getAppFromStore : function(id){
-			var url  = configsFile.store_location+"/apis/asset/mobileapp?id="+id+"&domain="+getTenantDomainFromID(getTenantID());
+		getAppFromStore : function(id, tenantDomain){
+			if(!tenantDomain){
+				tenantDomain = getTenantDomainFromID(getTenantID());
+			}
+			var url  = configsFile.store_location+"/apis/asset/mobileapp?id="+id+"&domain="tenantDomain;
 			var data = get(url, {});
 			data =parse(data.data);
 			return data;	
@@ -404,6 +407,7 @@ var store = (function () {
 				}
 			};
 			query = buildDynamicQuery(platform, 2, getTenantID());
+			log.info(package_identifier);
 			query = db.query(query, package_identifier);
 			
 			for (var i = query.length - 1; i >= 0; i--){

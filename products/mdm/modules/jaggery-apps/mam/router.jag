@@ -27,10 +27,29 @@ var store = new storeModule(db);
 var webconsoleModule = require('modules/webconsole.js').webconsole;
 var webconsole = new webconsoleModule(db);
 
+var getTenantID = function() {
+    if(!(typeof session === "undefined")){
+        if (session.get("mamConsoleUser") && session.get("mamConsoleUser").tenantId != 0) {
+            var tenantID = session.get("mamConsoleUser").tenantId;
+            return tenantID;
+        } else {
+            return "-1234";
+        }
+    }
+}
+var getTenantDomainFromID = function() {
+    if (arguments[0] == "-1234") {
+        return "carbon.super";
+    }
+    var carbon = require('carbon');
+    var ctx = {};
+    ctx.tenantId = arguments[0];
+    var tenantDomain = carbon.server.tenantDomain(ctx);
+    return tenantDomain;
+}
 
-
-var getApp = function(id){
-	var app =  store.getAppFromStore(id);
+var getApp = function(id, tenantDomain){
+	var app =  store.getAppFromStore(id, tenantDomain);
 	return app;
 }
 var buildInstallParam = function(ctx){
@@ -40,7 +59,7 @@ var buildInstallParam = function(ctx){
 	}
 	if(ctx.type == "Market" || ctx.type == "VPP"){
 		if(ctx.platform.toUpperCase() == 'IOS'){
-			installParam = getApp(ctx.id).attributes.overview_appid;
+			installParam = getApp(ctx.id).attributes.overview_appid+"?tenantDomain="+getTenantDomainFromID(getTenantID());
 		}else{
 			installParam = ctx.packageid;
 		}
@@ -269,7 +288,7 @@ router.post("vpp", function(ctx){
 	return csv; 
 });
 router.get("apps/install/ios/{id}", function(ctx){
-	var app = getApp(ctx.id);
+	var app = getApp(ctx.id, ctx.tenantDomain);
 	var iosManifest = compileTemplate("/template.hbs", {url:configs.archieve_location+""+app.attributes.overview_url, bundleid: app.attributes.overview_packagename, bundleversion: app.attributes.overview_bundleversion,  appname:app.attributes.overview_name});
 	log.info(iosManifest);
 	response.contentType = "application/xml";
