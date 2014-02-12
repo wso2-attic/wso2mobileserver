@@ -205,6 +205,13 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>src/repository/components/patches</directory>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/components/patches</outputDirectory>
+            <includes>
+                <include>*/**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>src/repository/components/lib</directory>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/components/lib</outputDirectory>
             <includes>
