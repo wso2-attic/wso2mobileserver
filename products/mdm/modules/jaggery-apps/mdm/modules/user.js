@@ -1,7 +1,8 @@
 var TENANT_CONFIGS = 'tenant.configs';
 var USER_MANAGER = 'user.manager';
 var USER_OPTIONS = 'server.user.options';
-var USER_SPACE = '/_system/governance/users';
+//Need to change this
+var USER_SPACE = '/_system/governance/';
 var user = (function () {
     var config = require('/config/mdm.js').config();
     var routes = new Array();
@@ -63,7 +64,7 @@ var user = (function () {
 	    return configs(tenantId)[USER_MANAGER];
 	};
 	
-	var createPrivateRolePerUser = function(username, roleState){
+	var createPrivateRolePerUser = function(username){
 		var um = userManager(common.getTenantID());
 		var indexUser = username.replace("@", ":");
 		var arrPermission = {};
@@ -76,9 +77,6 @@ var user = (function () {
 	    ];
 	    arrPermission[space] = permission;
         arrPermission["/permission/admin/login"] = ["ui.execute"];
-        if(roleState=="mdmadmin"){
-            arrPermission["/permission/admin/manage"] = ["ui.execute"];
-        }
         log.info(arrPermission);
 		if(!um.roleExists("Internal/private_"+indexUser)){
             var private_role = "Internal/private_"+indexUser;
@@ -129,13 +127,12 @@ var user = (function () {
         addUser: function(ctx){
             log.debug("Check Params"+stringify(ctx));
             var claimMap = new java.util.HashMap();
-
+            var roleState = null;
             claimMap.put(claimEmail, ctx.username);
             claimMap.put(claimFirstName, ctx.first_name);
             claimMap.put(claimLastName, ctx.last_name);
             claimMap.put(claimMobile, ctx.mobile_no);
             var proxy_user = {};
-
             try {
                 var tenantId = common.getTenantID();
                 var users_list = Array();
@@ -149,10 +146,9 @@ var user = (function () {
                         if(ctx.type == 'user'){
                             um.addUser(ctx.username, generated_password,ctx.groups, claimMap, null);
                         }else if(ctx.type == 'administrator'){
-                            roleState = "mdmadmin"
                             um.addUser(ctx.username, generated_password,new Array('Internal/mdmadmin'), claimMap, null);
                         }
-                        createPrivateRolePerUser(ctx.username, roleState);
+                        createPrivateRolePerUser(ctx.username);
                         proxy_user.status = "SUCCESSFULL";
                         proxy_user.firstName = ctx.first_name;
 						proxy_user.generatedPassword = generated_password;

@@ -1,6 +1,6 @@
 var TENANT_CONFIGS = 'tenant.configs';
 var USER_MANAGER = 'user.manager';
-var USER_SPACE = '/_system/governance/users';
+var USER_SPACE = '/_system/governance/';
 var user = (function () {
     var config = require('/config/mam.js').config();
     var routes = new Array();
@@ -68,7 +68,8 @@ var user = (function () {
                 carbon.registry.actions.GET,
                 carbon.registry.actions.PUT,
                 carbon.registry.actions.DELETE,
-                carbon.registry.actions.AUTHORIZE
+                carbon.registry.actions.AUTHORIZE,
+
         ];
         arrPermission[space] = permission;
         arrPermission["/permission/admin/login"] = ["ui.execute"];
@@ -124,7 +125,6 @@ var user = (function () {
         addUser: function(ctx){
             log.debug("Check Params"+stringify(ctx));
             var claimMap = new java.util.HashMap();
-
             claimMap.put(claimEmail, ctx.username);
             claimMap.put(claimFirstName, ctx.first_name);
             claimMap.put(claimLastName, ctx.last_name);

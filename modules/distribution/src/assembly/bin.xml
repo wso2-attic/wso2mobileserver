@@ -316,6 +316,12 @@
             <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security</outputDirectory>
             <filtered>true</filtered>
         </file>
+
+        <file>
+            <source>src/repository/conf/cipher-tool.properties</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/security/</outputDirectory>
+            <filtered>true</filtered>
+        </file>
         <!--copy default xacml policy to repository/resources/security -->
         <file>
             <source>src/repository/resources/policies/xacml/default/admin.xml</source>
