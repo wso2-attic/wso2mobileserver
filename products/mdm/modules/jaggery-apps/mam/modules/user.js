@@ -1,5 +1,6 @@
 var TENANT_CONFIGS = 'tenant.configs';
 var USER_MANAGER = 'user.manager';
+var USER_SPACE = '/_system/governance/users';
 var user = (function () {
     var config = require('/config/mam.js').config();
     var routes = new Array();
@@ -21,7 +22,21 @@ var user = (function () {
         db = dbs;
         //mergeRecursive(configs, conf);
     };
-
+    /**
+     * Returns the user's registry space. This should be called once with the username,
+     * then can be called without the username.
+     * @param usr user object
+     * @return {*}
+     */
+    var userSpace = function (username, tenantId) {
+        try {
+            var indexUser = username.replace("@", ":");
+            return USER_SPACE + '/' + indexUser;
+        } catch (e) {
+            log.info(e);
+            return null;
+        }
+    };
     var configs = function (tenantId) {
         var configg = application.get(TENANT_CONFIGS);
         if (!tenantId) {
@@ -48,17 +63,22 @@ var user = (function () {
         var um = userManager(common.getTenantID());
         var indexUser = username.replace("@", ":");
         var arrPermission = {};
+        var space = userSpace(username, common.getTenantID());
         var permission = [
-            'http://www.wso2.org/projects/registry/actions/get',
-            'http://www.wso2.org/projects/registry/actions/add',
-            'http://www.wso2.org/projects/registry/actions/delete',
-            'authorize','login'
+                carbon.registry.actions.GET,
+                carbon.registry.actions.PUT,
+                carbon.registry.actions.DELETE,
+                carbon.registry.actions.AUTHORIZE
         ];
-        arrPermission[0] = permission;
+        arrPermission[space] = permission;
+        arrPermission["/permission/admin/login"] = ["ui.execute"];
+        log.info(arrPermission);
         if(!um.roleExists("Internal/private_"+indexUser)){
-            um.addRole("Internal/private_"+indexUser, [username], arrPermission);
+            var private_role = "Internal/private_"+indexUser;
+            um.addRole(private_role, [username], arrPermission);
+            um.authorizeRole(private_role, arrPermission);
         }
-    }     
+    }   
 
     var getUserType = function(user_roles){
         for (var i = user_roles.length - 1; i >= 0; i--) {

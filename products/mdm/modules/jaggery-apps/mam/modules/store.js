@@ -271,6 +271,7 @@ var store = (function () {
 			var page = 1;
 			do{
 				var url  = configsFile.store_location+"/apis/assets/mobileapp"+"?domain="+getTenantDomainFromID(getTenantID())+"&page="+page;
+				log.info(url);
 				var data = get(url, {});
 				data =parse(data.data);
 				if(data.length==0){
@@ -300,7 +301,7 @@ var store = (function () {
 			if(!tenantDomain){
 				tenantDomain = getTenantDomainFromID(getTenantID());
 			}
-			var url  = configsFile.store_location+"/apis/asset/mobileapp?id="+id+"&domain="tenantDomain;
+			var url  = configsFile.store_location+"/apis/asset/mobileapp?id="+id+"&domain="+tenantDomain;
 			var data = get(url, {});
 			data =parse(data.data);
 			return data;	

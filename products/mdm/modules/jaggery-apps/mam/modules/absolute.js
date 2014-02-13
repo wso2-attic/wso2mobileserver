@@ -291,6 +291,7 @@ var mvc = (function () {
 				}
 			}
 			catch(e){
+				log.debug(e);
 				//Error is printed in debug. 
 			}
         },
