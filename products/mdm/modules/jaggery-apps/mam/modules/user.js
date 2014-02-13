@@ -33,7 +33,7 @@ var user = (function () {
             var indexUser = username.replace("@", ":");
             return USER_SPACE + '/' + indexUser;
         } catch (e) {
-            log.info(e);
+            log.debug(e);
             return null;
         }
     };
@@ -72,7 +72,7 @@ var user = (function () {
         ];
         arrPermission[space] = permission;
         arrPermission["/permission/admin/login"] = ["ui.execute"];
-        log.info(arrPermission);
+        // log.info(arrPermission);
         if(!um.roleExists("Internal/private_"+indexUser)){
             var private_role = "Internal/private_"+indexUser;
             um.addRole(private_role, [username], arrPermission);
