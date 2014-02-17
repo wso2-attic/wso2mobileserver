@@ -26,13 +26,8 @@ var checkNonSpecial = function(value){
     var non_special_regex = /^[A-Za-z][A-Za-z0-9\s-]*$/;
     return non_special_regex.test(value);
 }
-var checkURL = function(value) {
-    log.debug(value);
-    var urlregex = new RegExp("(http|ftp|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?");
-    if (urlregex.test(value)) {
-        return (true);
-    }
-    return (false);
+function url_reg(){ 
+  return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url_reg.arguments[0]); 
 }
 var makeid= function()
 {
@@ -266,7 +261,7 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}', functi
                 model.set('overview.url', meta.path);
             }else{
 
-                if(checkURL(meta.weburl)){
+                if(url_reg(meta.weburl)){
                     if(validateAppIdentifier({"overview_url": meta.weburl, "overview_version":version},meta.weburl)){
                         return;
                     }
@@ -399,7 +394,7 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}/{id}', f
                 modelA.set('images.screenshots',screenshots);
             }
             if(!checkNonSpecial(ctx.name)){
-                print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Special characters found in name"]}})
+                print({"ok" : false, "message" : "Validation failure", "report" : {"failed" : true, "name" : ["Special characters found in name"]}});
                 return;
             }
             modelA.set('overview.name',originalArtifact.attributes.overview_name);
@@ -453,8 +448,9 @@ routeManager.register('POST', 'publisher', '/publisher/api/asset/{type}/{id}', f
 
     } catch (e) {
         log.debug(e);
+        print({"ok" : false, "message" : "Permission denied", "report" : {"failed" : true, "name" : ["You are not allowed to edit at this stage"]}});
         log.debug('The asset ' + id + ' could not be updated.The following exception was thrown: ' + e);
-        response.sendError(404, 'The asset ' + id + ' could not be updated.Please check the server logs.');
+        // response.sendError(404, 'The asset ' + id + ' could not be updated.Please check the server logs.');
     }
 });
 
