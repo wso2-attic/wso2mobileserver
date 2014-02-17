@@ -55,10 +55,15 @@ $("#btn-add").click(function() {
 			},
 			200: function() {
 				noty({
-					text : 'Roles are assigned to the user successfully!',
-					'layout' : 'center'
+					text : 'Roles are updated for the user successfully!',
+					'layout' : 'center',
+					callback: {
+				        afterClose: function() {
+				        	window.location.assign("configuration");
+				        }
+				    }
 				});
-				window.location.assign("configuration");
+				
 			}
 		}
 	});	

@@ -27,17 +27,17 @@
     <!--
        Product Name
     -->
-    <Name>${product.name}</Name>
+    <Name>WSO2 Enterprise Mobile Platform</Name>
 
     <!--
        machine readable unique key to identify each product
     -->
-    <ServerKey>${product.key}</ServerKey>
+    <ServerKey>EMM</ServerKey>
 
     <!--
        Product Version
     -->
-    <Version>${product.version}</Version>
+    <Version>1.0.0</Version>
 
     <!--
        Host name or IP address of the machine hosting this server
@@ -74,7 +74,7 @@
     Ex : <Role>.*</Role> means this server can act any role
     -->
     <ServerRoles>
-        <Role>${default.server.role}</Role>
+        <Role>MobilePlatform</Role>
     </ServerRoles>
 
     <!-- uncommnet this line to subscribe to a bam instance automatically -->
@@ -128,21 +128,21 @@
             <!-- Port which KDC (Kerberos Key Distribution Center) server runs -->
             <KDCServerPort>8000</KDCServerPort>
         </EmbeddedLDAP>
-	
-	    <!-- Embedded Qpid broker ports -->
+  
+      <!-- Embedded Qpid broker ports -->
         <EmbeddedQpid>
-	    <!-- Broker TCP Port -->
+      <!-- Broker TCP Port -->
             <BrokerPort>5672</BrokerPort>
-	    <!-- SSL Port -->
+      <!-- SSL Port -->
             <BrokerSSLPort>8672</BrokerSSLPort>
         </EmbeddedQpid>
-	
-	<!-- 
+  
+  <!-- 
              Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
-	-->
-	<!--<JNDIProviderPort>2199</JNDIProviderPort>-->
-	<!--Override receive port of thrift based entitlement service.-->
-	<ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
+  -->
+  <!--<JNDIProviderPort>2199</JNDIProviderPort>-->
+  <!--Override receive port of thrift based entitlement service.-->
+  <ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
 
     </Ports>
 
@@ -199,7 +199,7 @@
     <IsCloudDeployment>false</IsCloudDeployment>
 
     <!--
-	Property to determine whether usage data should be collected for metering purposes
+  Property to determine whether usage data should be collected for metering purposes
     -->
     <EnableMetering>false</EnableMetering>
 
@@ -269,10 +269,10 @@
         <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
         <!-- If this parameter is set, the ?wsdl on an admin service will not give the admin service wsdl. -->
         <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
-	
-	<!--WARNING-Use With Care! Uncommenting bellow parameter would expose all AdminServices in HTTP transport.
-	With HTTP transport your credentials and data routed in public channels are vulnerable for sniffing attacks. 
-	Use bellow parameter ONLY if your communication channels are confirmed to be secured by other means -->
+  
+  <!--WARNING-Use With Care! Uncommenting bellow parameter would expose all AdminServices in HTTP transport.
+  With HTTP transport your credentials and data routed in public channels are vulnerable for sniffing attacks. 
+  Use bellow parameter ONLY if your communication channels are confirmed to be secured by other means -->
         <!--HttpAdminServices>*</HttpAdminServices-->
 
     </Axis2Config>
@@ -293,9 +293,9 @@
     </ServiceUserRoles>
     
     <!-- 
-      Enable following config to allow Emails as usernames. 	
-    -->	    	
-    <EnableEmailUserName>true</EnableEmailUserName>	
+      Enable following config to allow Emails as usernames.   
+    -->       
+    <EnableEmailUserName>true</EnableEmailUserName> 
 
     <!--
       Security configurations
@@ -317,6 +317,22 @@
             <!-- Private Key password-->
             <KeyPassword>wso2carbon</KeyPassword>
         </KeyStore>
+
+   <!--
+      Encrypt Decrypt Store will be used for encrypting and decrypting
+    -->
+        <RegistryKeyStore>
+            <!-- Keystore file location-->
+            <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
+            <!-- Keystore type (JKS/PKCS12 etc.)-->
+            <Type>JKS</Type>
+            <!-- Keystore password-->
+            <Password>wso2carbon</Password>
+            <!-- Private Key alias-->
+            <KeyAlias>wso2carbon</KeyAlias>
+            <!-- Private Key password-->
+            <KeyPassword>wso2carbon</KeyPassword>
+        </RegistryKeyStore>
 
         <!--
             System wide trust-store which is used to maintain the certificates of all
@@ -372,14 +388,14 @@
         -->
         <TomcatRealm>UserManager</TomcatRealm>
 
-	<!--Option to disable storing of tokens issued by STS-->
-	<DisableTokenStore>false</DisableTokenStore>
+  <!--Option to disable storing of tokens issued by STS-->
+  <DisableTokenStore>false</DisableTokenStore>
 
-	<!--
-	 Security token store class name. If this is not set, default class will be
-	 org.wso2.carbon.security.util.SecurityTokenStore
-	-->
-	<!--TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName-->
+  <!--
+   Security token store class name. If this is not set, default class will be
+   org.wso2.carbon.security.util.SecurityTokenStore
+  -->
+  <!--TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName-->
     </Security>
 
     <!--
@@ -492,8 +508,8 @@
     </HttpGetRequestProcessors>
 
     <!-- Deployment Synchronizer Configuration. t Enabled value to true when running with "svn based" dep sync.
-	In master nodes you need to set both AutoCommit and AutoCheckout to true
-	and in  worker nodes set only AutoCheckout to true.
+  In master nodes you need to set both AutoCommit and AutoCheckout to true
+  and in  worker nodes set only AutoCheckout to true.
     -->
     <DeploymentSynchronizer>
         <Enabled>false</Enabled>
@@ -580,30 +596,30 @@
        Default Feature Repository of WSO2 Carbon.
     -->
     <FeatureRepository>
-	<RepositoryName>default repository</RepositoryName>
-	<RepositoryURL>http://dist.wso2.org/p2/carbon/releases/4.2.0</RepositoryURL>
+  <RepositoryName>default repository</RepositoryName>
+  <RepositoryURL>http://dist.wso2.org/p2/carbon/releases/4.2.0</RepositoryURL>
     </FeatureRepository>
 
     <!--
-	Configure API Management
+  Configure API Management
    -->
    <APIManagement>
-	
-	<!--Uses the embedded API Manager by default. If you want to use an external 
-	API Manager instance to manage APIs, configure below  externalAPIManager-->
-	
-	<Enabled>true</Enabled>
-	
-	<!--Uncomment and configure API Gateway and 
-	Publisher URLs to use external API Manager instance-->
-	
-	<!--ExternalAPIManager>
+  
+  <!--Uses the embedded API Manager by default. If you want to use an external 
+  API Manager instance to manage APIs, configure below  externalAPIManager-->
+  
+  <Enabled>true</Enabled>
+  
+  <!--Uncomment and configure API Gateway and 
+  Publisher URLs to use external API Manager instance-->
+  
+  <!--ExternalAPIManager>
 
-		<APIGatewayURL>http://localhost:8281</APIGatewayURL>
-		<APIPublisherURL>http://localhost:8281/publisher</APIPublisherURL>
+    <APIGatewayURL>http://localhost:8281</APIGatewayURL>
+    <APIPublisherURL>http://localhost:8281/publisher</APIPublisherURL>
 
-	</ExternalAPIManager-->
-	
-	<LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
+  </ExternalAPIManager-->
+  
+  <LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
    </APIManagement>
 </Server>

@@ -276,7 +276,6 @@ var mvc = (function () {
 					try{
 						response.sendError(404);
 					}catch (e) {
-						new Log().debug(e);
 					}
 				}else{
 					if(template!=undefined){
@@ -292,6 +291,7 @@ var mvc = (function () {
 				}
 			}
 			catch(e){
+				log.debug(e);
 				//Error is printed in debug. 
 			}
         },

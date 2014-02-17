@@ -15,15 +15,25 @@ $(function() {
 		appToInstall = $(this).data("app");
 		devicePlatform = $(this).data("platform").toLowerCase();
 		
+		var showDevices = false;
+		
 		$(".device-image-block-modal").each(function(index) {	
 			var platform = $(this).data("platform").toLowerCase();
 			if(devicePlatform != "webapp"){
 				if(devicePlatform != platform){
 					$(this).css("display", "none");
+				}else{
+					showDevices = true;
 				}
+			}else{
+				showDevices = true;
 			}
 		
 		});
+		
+		if(showDevices == false){
+			$('.modal-body').html("<div class='offset2'>Sorry you dont have devices to install this app<div>");
+		}
 		
 		if(!(device > 0)){
 			$('#devicesList').modal('show');

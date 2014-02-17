@@ -103,6 +103,11 @@ $(document).on('click', '#myasset-container .asset-reinstall-btn', function() {
 
 
 
+$('#devicesList').on('hidden', function () {
+    location.reload(); 
+});
+
+
 $(".device-image").each(function(index) {	
 	var device = getURLParameter("device");	
 	if(device != "null"){

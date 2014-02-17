@@ -205,6 +205,13 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>src/repository/components/patches</directory>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/components/patches</outputDirectory>
+            <includes>
+                <include>*/**</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>src/repository/components/lib</directory>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/components/lib</outputDirectory>
             <includes>
@@ -307,6 +314,12 @@
         <file>
             <source>src/repository/conf/wso2permission.jks</source>
             <outputDirectory>wso2mobileserver-${pom.version}/repository/resources/security</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+
+        <file>
+            <source>src/repository/conf/cipher-tool.properties</source>
+            <outputDirectory>wso2mobileserver-${pom.version}/repository/conf/security/</outputDirectory>
             <filtered>true</filtered>
         </file>
         <!--copy default xacml policy to repository/resources/security -->

@@ -24,8 +24,12 @@
                                data-platform="{{this.attributes.overview_platform}}"
                                data-type="{{this.attributes.overview_type}}" data-url="{{this.attributes.overview_url}}"
                                data-id="{{this.id}}">
-                                <p class="text-center"><b> {{#elipsis 8 this.attributes.overview_name}}{{/elipsis}}</b>
-                                </p>
+                                <p class="text-center"><b> {{#elipsis 12 this.attributes.overview_name}}{{/elipsis}}</b>
+                                	 </p>
+                                	 <div style="position: absolute">
+                                	 <img  src="/store/extensions/assets/mobileapp/themes/store/img/{{this.attributes.overview_platform}}.png" style="width: 20px;"/>
+                                	</div>
+                               
                                 <img src="{{../config.publisher_location}}{{this.attributes.images_thumbnail}}"
                                      class="icon img-polaroid" style="width:75px">
                             </a>

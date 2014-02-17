@@ -1,5 +1,8 @@
 var TENANT_CONFIGS = 'tenant.configs';
 var USER_MANAGER = 'user.manager';
+var USER_OPTIONS = 'server.user.options';
+//Need to change this
+var USER_SPACE = '/_system/governance/';
 var user = (function () {
     var config = require('/config/mdm.js').config();
     var routes = new Array();
@@ -21,6 +24,22 @@ var user = (function () {
     var module = function (dbs) {
 		db = dbs;
         //mergeRecursive(configs, conf);
+    };
+
+    /**
+     * Returns the user's registry space. This should be called once with the username,
+     * then can be called without the username.
+     * @param usr user object
+     * @return {*}
+     */
+    var userSpace = function (username, tenantId) {
+        try {
+            var indexUser = username.replace("@", ":");
+            return USER_SPACE + '/' + indexUser;
+        } catch (e) {
+            log.info(e);
+            return null;
+        }
     };
 
 	var configs = function (tenantId) {
@@ -49,15 +68,20 @@ var user = (function () {
 		var um = userManager(common.getTenantID());
 		var indexUser = username.replace("@", ":");
 		var arrPermission = {};
+        var space = userSpace(username, common.getTenantID());
 	    var permission = [
-	        'http://www.wso2.org/projects/registry/actions/get',
-	        'http://www.wso2.org/projects/registry/actions/add',
-	        'http://www.wso2.org/projects/registry/actions/delete',
-	        'authorize','login'
+                carbon.registry.actions.GET,
+                carbon.registry.actions.PUT,
+                carbon.registry.actions.DELETE,
+                carbon.registry.actions.AUTHORIZE
 	    ];
-	    arrPermission[0] = permission;
+	    arrPermission[space] = permission;
+        arrPermission["/permission/admin/login"] = ["ui.execute"];
+        log.info(arrPermission);
 		if(!um.roleExists("Internal/private_"+indexUser)){
-			um.addRole("Internal/private_"+indexUser, [username], arrPermission);
+            var private_role = "Internal/private_"+indexUser;
+			um.addRole(private_role, [username], arrPermission);
+            um.authorizeRole(private_role, arrPermission);
 		}
 	}			
 	var getUserType = function(user_roles){
@@ -103,13 +127,12 @@ var user = (function () {
         addUser: function(ctx){
             log.debug("Check Params"+stringify(ctx));
             var claimMap = new java.util.HashMap();
-
+            var roleState = null;
             claimMap.put(claimEmail, ctx.username);
             claimMap.put(claimFirstName, ctx.first_name);
             claimMap.put(claimLastName, ctx.last_name);
             claimMap.put(claimMobile, ctx.mobile_no);
             var proxy_user = {};
-
             try {
                 var tenantId = common.getTenantID();
                 var users_list = Array();
@@ -127,6 +150,7 @@ var user = (function () {
                         }
                         createPrivateRolePerUser(ctx.username);
                         proxy_user.status = "SUCCESSFULL";
+                        proxy_user.firstName = ctx.first_name;
 						proxy_user.generatedPassword = generated_password;
                     }
                 }
@@ -340,7 +364,7 @@ var user = (function () {
             try {
                 var tenantId = common.getTenantID();
                 if(tenantId){
-                    var devices = db.query(sqlscripts.devices.select40, ctx.userid, tenantId);
+                    var devices = db.query(sqlscripts.devices.select46, ctx.userid, tenantId);
                     if (devices != null && devices != undefined && devices[0] != null && devices[0] != undefined) {
                         if (devices[0].count > 0) {
                             return true;
