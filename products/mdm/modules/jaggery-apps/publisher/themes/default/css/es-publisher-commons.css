@@ -1185,8 +1185,6 @@ circle:hover {
     background: none repeat scroll 0 0 #CCCCCC;
     content: "";
     height: 1px;
-    left: -30px;
-    padding-left: 30px;
     position: absolute;
     width: 100%;
 }

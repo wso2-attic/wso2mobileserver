@@ -15,8 +15,7 @@ var render = function (theme, data, meta, require) {
 	}
 	
 	
-	var lifecycleColors = {"Demote": "btn-blue", "Submit": "btn-blue", "Publish": "btn-blue", "Unpublish": "btn-blue", "Deprecate": "btn-danger", "Retire": "btn-danger", "Approve": "btn-blue", "Reject": "btn-danger"};
-	
+	var lifecycleColors = {"Demote": "btn-blue", "Re-Submit": "btn-blue", "Submit": "btn-blue", "Publish": "btn-blue", "Unpublish": "btn-blue", "Deprecate": "btn-danger", "Retire": "btn-danger", "Approve": "btn-blue", "Reject": "btn-danger"};
 	if(data.artifacts){
 		
 		for(var i = 0; i < data.artifacts.length; i++){	
@@ -37,6 +36,9 @@ var render = function (theme, data, meta, require) {
 						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
 					}
 					if(name == "Submit"){
+						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
+					}
+					if(name == "Re-Submit"){
 						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
 					}
 					if(name == "Unpublish"){
@@ -67,6 +69,9 @@ var render = function (theme, data, meta, require) {
 						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
 					}
 					if(name == "Submit"){
+						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
+					}
+					if(name == "Re-Submit"){
 						lifecycleAvailableActionsButtons.push({name: name, style: lifecycleColors[name]});
 					}
 					if(name == "Unpublish"){
