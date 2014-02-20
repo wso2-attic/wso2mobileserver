@@ -1,4 +1,4 @@
-WSO2 MDM
+WSO2 EMM
 =================
 
-WSO2Mobile - Mobile Device Management
+WSO2 - Enterprise Mobility Management
